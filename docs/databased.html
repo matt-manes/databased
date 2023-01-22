@@ -1,0 +1,1697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>databased.databased API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>databased.databased</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import logging
+import os
+import sqlite3
+from datetime import datetime
+from functools import wraps
+from pathlib import Path
+from typing import Any
+
+from tabulate import tabulate
+
+
+class DataBased:
+    &#34;&#34;&#34;Sqli wrapper so queries don&#39;t need to be written except table definitions.
+
+    Supports saving and reading dates as datetime objects.
+
+    Supports using a context manager.&#34;&#34;&#34;
+
+    def __init__(
+        self,
+        db_path: str | Path,
+        logger_encoding: str = &#34;utf-8&#34;,
+        logger_message_format: str = &#34;{levelname}|-|{asctime}|-|{message}&#34;,
+    ):
+        &#34;&#34;&#34;
+        :param db_path: String or Path object to database file.
+        If a relative path is given, it will be relative to the
+        current working directory. The log file will be saved to the
+        same directory.
+
+        :param logger_message_format: &#39;{&#39; style format string
+        for the logger object.&#34;&#34;&#34;
+        self.db_path = Path(db_path)
+        self.db_name = Path(db_path).name
+        self._logger_init(
+            encoding=logger_encoding, message_format=logger_message_format
+        )
+        self.connection_open = False
+        self.create_manager()
+
+    def __enter__(self):
+        self.open()
+        return self
+
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        self.close()
+
+    def create_manager(self):
+        &#34;&#34;&#34;Create dbManager.py in the same directory
+        as the database file if they don&#39;t exist.&#34;&#34;&#34;
+        manager_template = Path(__file__).parent / &#34;dbManager.py&#34;
+        manager_path = self.db_path.parent / &#34;dbManager.py&#34;
+        if not manager_path.exists():
+            manager_path.write_text(manager_template.read_text())
+
+    def open(self):
+        &#34;&#34;&#34;Open connection to db.&#34;&#34;&#34;
+        self.connection = sqlite3.connect(
+            self.db_path,
+            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+            timeout=10,
+        )
+        self.connection.execute(&#34;pragma foreign_keys = 1&#34;)
+        self.cursor = self.connection.cursor()
+        self.connection_open = True
+
+    def close(self):
+        &#34;&#34;&#34;Save and close connection to db.
+
+        Call this as soon as you are done using the database if you have
+        multiple threads or processes using the same database.&#34;&#34;&#34;
+        if self.connection_open:
+            self.connection.commit()
+            self.connection.close()
+            self.connection_open = False
+
+    def _connect(func):
+        &#34;&#34;&#34;Decorator to open db connection if it isn&#39;t already open.&#34;&#34;&#34;
+
+        @wraps(func)
+        def inner(*args, **kwargs):
+            self = args[0]
+            if not self.connection_open:
+                self.open()
+            results = func(*args, **kwargs)
+            return results
+
+        return inner
+
+    def _logger_init(
+        self,
+        message_format: str = &#34;{levelname}|-|{asctime}|-|{message}&#34;,
+        encoding: str = &#34;utf-8&#34;,
+    ):
+        &#34;&#34;&#34;:param message_format: &#39;{&#39; style format string&#34;&#34;&#34;
+        self.logger = logging.get_logger(self.db_name)
+        if not self.logger.has_handlers():
+            handler = logging.FileHandler(
+                str(self.db_path).replace(&#34;.&#34;, &#34;&#34;) + &#34;.log&#34;, encoding=encoding
+            )
+            handler.set_formatter(
+                logging.Formatter(
+                    message_format, style=&#34;{&#34;, datefmt=&#34;%m/%d/%Y %I:%M:%S %p&#34;
+                )
+            )
+            self.logger.add_handler(handler)
+            self.logger.set_level(logging.INFO)
+
+    def _get_dict(
+        self, table: str, values: list, columns_to_return: list[str] = None
+    ) -&gt; dict:
+        &#34;&#34;&#34;Converts the values of a row into a dictionary with column names as keys.
+
+        :param table: The table that values were pulled from.
+
+        :param values: List of values expected to be the same quantity
+        and in the same order as the column names of table.
+
+        :param columns_to_return: An optional list of column names.
+        If given, only these columns will be included in the returned dictionary.
+        Otherwise all columns and values are returned.&#34;&#34;&#34;
+        return {
+            column: value
+            for column, value in zip(self.get_column_names(table), values)
+            if not columns_to_return or column in columns_to_return
+        }
+
+    def _get_conditions(
+        self, match_criteria: list[tuple] | dict, exact_match: bool = True
+    ) -&gt; str:
+        &#34;&#34;&#34;Builds and returns the conditional portion of a query.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+
+        :param exact_match: If False, the rowValue for a give column
+        will be matched as a substring.
+
+        Usage e.g.:
+
+        self.cursor.execute(f&#39;select * from {table} where {conditions}&#39;)&#34;&#34;&#34;
+        if type(match_criteria) == dict:
+            match_criteria = [(k, v) for k, v in match_criteria.items()]
+        if exact_match:
+            conditions = &#34; and &#34;.join(
+                f&#39;&#34;{column_row[0]}&#34; = &#34;{column_row[1]}&#34;&#39;
+                for column_row in match_criteria
+            )
+        else:
+            conditions = &#34; and &#34;.join(
+                f&#39;&#34;{column_row[0]}&#34; like &#34;%{column_row[1]}%&#34;&#39;
+                for column_row in match_criteria
+            )
+        return f&#34;({conditions})&#34;
+
+    @_connect
+    def create_tables(self, table_statements: list[str] = []):
+        &#34;&#34;&#34;Create tables if they don&#39;t exist.
+
+        :param table_statements: Each statement should be
+        in the form &#39;tableName(columnDefinitions)&#39;&#34;&#34;&#34;
+        if len(table_statements) &gt; 0:
+            table_names = self.get_table_names()
+            for table in table_statements:
+                if table.split(&#34;(&#34;)[0].strip() not in table_names:
+                    self.cursor.execute(f&#34;create table {table}&#34;)
+                    self.logger.info(f&#39;{table.split(&#34;(&#34;)[0]} table created.&#39;)
+
+    @_connect
+    def create_table(self, table: str, column_defs: list[str]):
+        &#34;&#34;&#34;Create a table if it doesn&#39;t exist.
+
+        :param table: Name of the table to create.
+
+        :param column_defs: List of column definitions in
+        proper Sqlite3 sytax.
+        i.e. &#34;columnName text unique&#34; or &#34;columnName int primary key&#34; etc.&#34;&#34;&#34;
+        if table not in self.get_table_names():
+            statement = f&#34;{table}({&#39;, &#39;.join(column_defs)})&#34;
+            self.cursor.execute(statement)
+            self.logger.info(f&#34;&#39;{table}&#39; table created.&#34;)
+
+    @_connect
+    def get_table_names(self) -&gt; list[str]:
+        &#34;&#34;&#34;Returns a list of table names from database.&#34;&#34;&#34;
+        self.cursor.execute(
+            &#39;select name from sqlite_Schema where type = &#34;table&#34; and name not like &#34;sqlite_%&#34;&#39;
+        )
+        return [result[0] for result in self.cursor.fetchall()]
+
+    @_connect
+    def get_column_names(self, table: str) -&gt; list[str]:
+        &#34;&#34;&#34;Return a list of column names from a table.&#34;&#34;&#34;
+        self.cursor.execute(f&#34;select * from {table} where 1=0&#34;)
+        return [description[0] for description in self.cursor.description]
+
+    @_connect
+    def count(
+        self,
+        table: str,
+        match_criteria: list[tuple] | dict = None,
+        exact_match: bool = True,
+    ) -&gt; int:
+        &#34;&#34;&#34;Return number of items in table.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+        If None, all rows from the table will be counted.
+
+        :param exact_match: If False, the row value for a give column
+        in match_criteria will be matched as a substring. Has no effect if
+        match_criteria is None.
+        &#34;&#34;&#34;
+        statement = f&#34;select count(_rowid_) from {table}&#34;
+        try:
+            if match_criteria:
+                self.cursor.execute(
+                    f&#34;{statement} where {self._get_conditions(match_criteria, exact_match)}&#34;
+                )
+            else:
+                self.cursor.execute(f&#34;{statement}&#34;)
+            return self.cursor.fetchone()[0]
+        except:
+            return 0
+
+    @_connect
+    def add_row(self, table: str, values: tuple[any], columns: tuple[str] = None):
+        &#34;&#34;&#34;Add row of values to table.
+
+        :param table: The table to insert into.
+
+        :param values: A tuple of values to be inserted into the table.
+
+        :param columns: If None, values param is expected to supply
+        a value for every column in the table. If columns is
+        provided, it should contain the same number of elements as values.&#34;&#34;&#34;
+        parameterizer = &#34;, &#34;.join(&#34;?&#34; for _ in values)
+        logger_values = &#34;, &#34;.join(str(value) for value in values)
+        try:
+            if columns:
+                columns = &#34;, &#34;.join(column for column in columns)
+                self.cursor.execute(
+                    f&#34;insert into {table} ({columns}) values({parameterizer})&#34;, values
+                )
+            else:
+                self.cursor.execute(
+                    f&#34;insert into {table} values({parameterizer})&#34;, values
+                )
+            self.logger.info(f&#39;Added &#34;{logger_values}&#34; to {table} table.&#39;)
+        except Exception as e:
+            if &#34;constraint&#34; not in str(e).lower():
+                self.logger.exception(
+                    f&#39;Error adding &#34;{logger_values}&#34; to {table} table.&#39;
+                )
+            else:
+                self.logger.debug(str(e))
+
+    @_connect
+    def get_rows(
+        self,
+        table: str,
+        match_criteria: list[tuple] | dict = None,
+        exact_match: bool = True,
+        sort_by_column: str = None,
+        columns_to_return: list[str] = None,
+        values_only: bool = False,
+    ) -&gt; tuple[dict] | tuple[tuple]:
+        &#34;&#34;&#34;Returns rows from table as a list of dictionaries
+        where the key-value pairs of the dictionaries are
+        column name: row value.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+
+        :param exact_match: If False, the rowValue for a give column
+        will be matched as a substring.
+
+        :param sort_by_column: A column name to sort the results by.
+
+        :param columns_to_return: Optional list of column names.
+        If provided, the dictionaries returned by get_rows() will
+        only contain the provided columns. Otherwise every column
+        in the row is returned.
+
+        :param values_only: Return the results as a tuple of tuples
+        instead of a tuple of dictionaries that have column names as keys.
+        The results will still be sorted according to sort_by_column if
+        one is provided.
+        &#34;&#34;&#34;
+        statement = f&#34;select * from {table}&#34;
+        matches = []
+        if not match_criteria:
+            self.cursor.execute(statement)
+        else:
+            self.cursor.execute(
+                f&#34;{statement} where {self._get_conditions(match_criteria, exact_match)}&#34;
+            )
+        matches = self.cursor.fetchall()
+        results = tuple(
+            self._get_dict(table, match, columns_to_return) for match in matches
+        )
+        if sort_by_column:
+            results = tuple(sorted(results, key=lambda x: x[sort_by_column]))
+        if values_only:
+            return tuple(tuple(row.values()) for row in results)
+        else:
+            return results
+
+    @_connect
+    def find(
+        self, table: str, query_string: str, columns: list[str] = None
+    ) -&gt; tuple[dict]:
+        &#34;&#34;&#34;Search for rows that contain query_string as a substring
+        of any column.
+
+        :param table: The table to search.
+
+        :param query_string: The substring to search for in all columns.
+
+        :param columns: A list of columns to search for query_string.
+        If None, all columns in the table will be searched.
+        &#34;&#34;&#34;
+        results = []
+        if not columns:
+            columns = self.get_column_names(table)
+        for column in columns:
+            results.extend(
+                [
+                    row
+                    for row in self.get_rows(
+                        table, [(column, query_string)], exact_match=False
+                    )
+                    if row not in results
+                ]
+            )
+        return tuple(results)
+
+    @_connect
+    def delete(
+        self, table: str, match_criteria: list[tuple] | dict, exact_match: bool = True
+    ) -&gt; int:
+        &#34;&#34;&#34;Delete records from table.
+
+        Returns number of deleted records.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+
+        :param exact_match: If False, the rowValue for a give column
+        will be matched as a substring.
+        &#34;&#34;&#34;
+        num_matches = self.count(table, match_criteria, exact_match)
+        conditions = self._get_conditions(match_criteria, exact_match)
+        try:
+            self.cursor.execute(f&#34;delete from {table} where {conditions}&#34;)
+            self.logger.info(
+                f&#39;Deleted {num_matches} from &#34;{table}&#34; where {conditions}&#34;.&#39;
+            )
+            return num_matches
+        except Exception as e:
+            self.logger.debug(f&#39;Error deleting from &#34;{table}&#34; where {conditions}.\n{e}&#39;)
+            return 0
+
+    @_connect
+    def update(
+        self,
+        table: str,
+        column_to_update: str,
+        new_value: Any,
+        match_criteria: list[tuple] | dict = None,
+    ) -&gt; bool:
+        &#34;&#34;&#34;Update row value for entry matched with match_criteria.
+
+        :param column_to_update: The column to be updated in the matched row.
+
+        :param new_value: The new value to insert.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+        If None, every row will be updated.
+
+        Returns True if successful, False if not.&#34;&#34;&#34;
+        statement = f&#34;update {table} set {column_to_update} = ?&#34;
+        if match_criteria:
+            if self.count(table, match_criteria) == 0:
+                self.logger.info(
+                    f&#34;Couldn&#39;t find matching records in {table} table to update to &#39;{new_value}&#39;&#34;
+                )
+                return False
+            conditions = self._get_conditions(match_criteria)
+            statement += f&#34; where {conditions}&#34;
+        else:
+            conditions = None
+        try:
+            self.cursor.execute(
+                statement,
+                (new_value,),
+            )
+            self.logger.info(
+                f&#39;Updated &#34;{column_to_update}&#34; in &#34;{table}&#34; table to &#34;{new_value}&#34; where {conditions}&#39;
+            )
+            return True
+        except UnboundLocalError:
+            table_filter_string = &#34;\n&#34;.join(
+                table_filter for table_filter in match_criteria
+            )
+            self.logger.error(
+                f&#34;No records found matching filters: {table_filter_string}&#34;
+            )
+            return False
+        except Exception as e:
+            self.logger.error(
+                f&#39;Failed to update &#34;{column_to_update}&#34; in &#34;{table}&#34; table to &#34;{new_value}&#34; where {conditions}&#34;\n{e}&#39;
+            )
+            return False
+
+    @_connect
+    def drop_table(self, table: str) -&gt; bool:
+        &#34;&#34;&#34;Drop a table from the database.
+
+        Returns True if successful, False if not.&#34;&#34;&#34;
+        try:
+            self.cursor.execute(f&#34;drop Table {table}&#34;)
+            self.logger.info(f&#39;Dropped table &#34;{table}&#34;&#39;)
+        except Exception as e:
+            print(e)
+            self.logger.error(f&#39;Failed to drop table &#34;{table}&#34;&#39;)
+
+    @_connect
+    def add_column(
+        self, table: str, column: str, _type: str, default_value: str = None
+    ):
+        &#34;&#34;&#34;Add a new column to table.
+
+        :param column: Name of the column to add.
+
+        :param _type: The data type of the new column.
+
+        :param default_value: Optional default value for the column.&#34;&#34;&#34;
+        try:
+            if default_value:
+                self.cursor.execute(
+                    f&#34;alter table {table} add column {column} {_type} default {default_value}&#34;
+                )
+            else:
+                self.cursor.execute(f&#34;alter table {table} add column {column} {_type}&#34;)
+            self.logger.info(f&#39;Added column &#34;{column}&#34; to &#34;{table}&#34; table.&#39;)
+        except Exception as e:
+            self.logger.error(f&#39;Failed to add column &#34;{column}&#34; to &#34;{table}&#34; table.&#39;)
+
+
+def data_to_string(
+    data: list[dict], sort_key: str = None, wrap_to_terminal: bool = True
+) -&gt; str:
+    &#34;&#34;&#34;Uses tabulate to produce pretty string output
+    from a list of dictionaries.
+
+    :param data: Assumes all dictionaries in list have the same set of keys.
+
+    :param sort_key: Optional dictionary key to sort data with.
+
+    :param wrap_to_terminal: If True, the table width will be wrapped
+    to fit within the current terminal window. Set to False
+    if the output is going into something like a txt file.&#34;&#34;&#34;
+    if len(data) == 0:
+        return &#34;&#34;
+    if sort_key:
+        data = sorted(data, key=lambda d: d[sort_key])
+    for i, d in enumerate(data):
+        for k in d:
+            data[i][k] = str(data[i][k])
+    if wrap_to_terminal:
+        terminal_width = os.get_terminal_size().columns
+        max_col_widths = terminal_width
+        &#34;&#34;&#34; Reducing the column width by tabulating one row at a time
+        and then reducing further by tabulating the whole set proved to be 
+        faster than going straight to tabulating the whole set and reducing
+        the column width.&#34;&#34;&#34;
+        too_wide = True
+        while too_wide and max_col_widths &gt; 1:
+            for i, row in enumerate(data):
+                output = tabulate(
+                    [row],
+                    headers=&#34;keys&#34;,
+                    disable_numparse=True,
+                    tablefmt=&#34;grid&#34;,
+                    maxcolwidths=max_col_widths,
+                )
+                if output.index(&#34;\n&#34;) &gt; terminal_width:
+                    max_col_widths -= 2
+                    too_wide = True
+                    break
+                too_wide = False
+    else:
+        max_col_widths = None
+    output = tabulate(
+        data,
+        headers=&#34;keys&#34;,
+        disable_numparse=True,
+        tablefmt=&#34;grid&#34;,
+        maxcolwidths=max_col_widths,
+    )
+    # trim max column width until the output string is less wide than the current terminal width.
+    if wrap_to_terminal:
+        while output.index(&#34;\n&#34;) &gt; terminal_width and max_col_widths &gt; 1:
+            max_col_widths -= 2
+            max_col_widths = max(1, max_col_widths)
+            output = tabulate(
+                data,
+                headers=&#34;keys&#34;,
+                disable_numparse=True,
+                tablefmt=&#34;grid&#34;,
+                maxcolwidths=max_col_widths,
+            )
+    return output</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="databased.databased.data_to_string"><code class="name flex">
+<span>def <span class="ident">data_to_string</span></span>(<span>data: list[dict], sort_key: str = None, wrap_to_terminal: bool = True) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Uses tabulate to produce pretty string output
+from a list of dictionaries.</p>
+<p>:param data: Assumes all dictionaries in list have the same set of keys.</p>
+<p>:param sort_key: Optional dictionary key to sort data with.</p>
+<p>:param wrap_to_terminal: If True, the table width will be wrapped
+to fit within the current terminal window. Set to False
+if the output is going into something like a txt file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def data_to_string(
+    data: list[dict], sort_key: str = None, wrap_to_terminal: bool = True
+) -&gt; str:
+    &#34;&#34;&#34;Uses tabulate to produce pretty string output
+    from a list of dictionaries.
+
+    :param data: Assumes all dictionaries in list have the same set of keys.
+
+    :param sort_key: Optional dictionary key to sort data with.
+
+    :param wrap_to_terminal: If True, the table width will be wrapped
+    to fit within the current terminal window. Set to False
+    if the output is going into something like a txt file.&#34;&#34;&#34;
+    if len(data) == 0:
+        return &#34;&#34;
+    if sort_key:
+        data = sorted(data, key=lambda d: d[sort_key])
+    for i, d in enumerate(data):
+        for k in d:
+            data[i][k] = str(data[i][k])
+    if wrap_to_terminal:
+        terminal_width = os.get_terminal_size().columns
+        max_col_widths = terminal_width
+        &#34;&#34;&#34; Reducing the column width by tabulating one row at a time
+        and then reducing further by tabulating the whole set proved to be 
+        faster than going straight to tabulating the whole set and reducing
+        the column width.&#34;&#34;&#34;
+        too_wide = True
+        while too_wide and max_col_widths &gt; 1:
+            for i, row in enumerate(data):
+                output = tabulate(
+                    [row],
+                    headers=&#34;keys&#34;,
+                    disable_numparse=True,
+                    tablefmt=&#34;grid&#34;,
+                    maxcolwidths=max_col_widths,
+                )
+                if output.index(&#34;\n&#34;) &gt; terminal_width:
+                    max_col_widths -= 2
+                    too_wide = True
+                    break
+                too_wide = False
+    else:
+        max_col_widths = None
+    output = tabulate(
+        data,
+        headers=&#34;keys&#34;,
+        disable_numparse=True,
+        tablefmt=&#34;grid&#34;,
+        maxcolwidths=max_col_widths,
+    )
+    # trim max column width until the output string is less wide than the current terminal width.
+    if wrap_to_terminal:
+        while output.index(&#34;\n&#34;) &gt; terminal_width and max_col_widths &gt; 1:
+            max_col_widths -= 2
+            max_col_widths = max(1, max_col_widths)
+            output = tabulate(
+                data,
+                headers=&#34;keys&#34;,
+                disable_numparse=True,
+                tablefmt=&#34;grid&#34;,
+                maxcolwidths=max_col_widths,
+            )
+    return output</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="databased.databased.DataBased"><code class="flex name class">
+<span>class <span class="ident">DataBased</span></span>
+<span>(</span><span>db_path: str | pathlib.Path, logger_encoding: str = 'utf-8', logger_message_format: str = '{levelname}|-|{asctime}|-|{message}')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sqli wrapper so queries don't need to be written except table definitions.</p>
+<p>Supports saving and reading dates as datetime objects.</p>
+<p>Supports using a context manager.</p>
+<p>:param db_path: String or Path object to database file.
+If a relative path is given, it will be relative to the
+current working directory. The log file will be saved to the
+same directory.</p>
+<p>:param logger_message_format: '{' style format string
+for the logger object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DataBased:
+    &#34;&#34;&#34;Sqli wrapper so queries don&#39;t need to be written except table definitions.
+
+    Supports saving and reading dates as datetime objects.
+
+    Supports using a context manager.&#34;&#34;&#34;
+
+    def __init__(
+        self,
+        db_path: str | Path,
+        logger_encoding: str = &#34;utf-8&#34;,
+        logger_message_format: str = &#34;{levelname}|-|{asctime}|-|{message}&#34;,
+    ):
+        &#34;&#34;&#34;
+        :param db_path: String or Path object to database file.
+        If a relative path is given, it will be relative to the
+        current working directory. The log file will be saved to the
+        same directory.
+
+        :param logger_message_format: &#39;{&#39; style format string
+        for the logger object.&#34;&#34;&#34;
+        self.db_path = Path(db_path)
+        self.db_name = Path(db_path).name
+        self._logger_init(
+            encoding=logger_encoding, message_format=logger_message_format
+        )
+        self.connection_open = False
+        self.create_manager()
+
+    def __enter__(self):
+        self.open()
+        return self
+
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        self.close()
+
+    def create_manager(self):
+        &#34;&#34;&#34;Create dbManager.py in the same directory
+        as the database file if they don&#39;t exist.&#34;&#34;&#34;
+        manager_template = Path(__file__).parent / &#34;dbManager.py&#34;
+        manager_path = self.db_path.parent / &#34;dbManager.py&#34;
+        if not manager_path.exists():
+            manager_path.write_text(manager_template.read_text())
+
+    def open(self):
+        &#34;&#34;&#34;Open connection to db.&#34;&#34;&#34;
+        self.connection = sqlite3.connect(
+            self.db_path,
+            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+            timeout=10,
+        )
+        self.connection.execute(&#34;pragma foreign_keys = 1&#34;)
+        self.cursor = self.connection.cursor()
+        self.connection_open = True
+
+    def close(self):
+        &#34;&#34;&#34;Save and close connection to db.
+
+        Call this as soon as you are done using the database if you have
+        multiple threads or processes using the same database.&#34;&#34;&#34;
+        if self.connection_open:
+            self.connection.commit()
+            self.connection.close()
+            self.connection_open = False
+
+    def _connect(func):
+        &#34;&#34;&#34;Decorator to open db connection if it isn&#39;t already open.&#34;&#34;&#34;
+
+        @wraps(func)
+        def inner(*args, **kwargs):
+            self = args[0]
+            if not self.connection_open:
+                self.open()
+            results = func(*args, **kwargs)
+            return results
+
+        return inner
+
+    def _logger_init(
+        self,
+        message_format: str = &#34;{levelname}|-|{asctime}|-|{message}&#34;,
+        encoding: str = &#34;utf-8&#34;,
+    ):
+        &#34;&#34;&#34;:param message_format: &#39;{&#39; style format string&#34;&#34;&#34;
+        self.logger = logging.get_logger(self.db_name)
+        if not self.logger.has_handlers():
+            handler = logging.FileHandler(
+                str(self.db_path).replace(&#34;.&#34;, &#34;&#34;) + &#34;.log&#34;, encoding=encoding
+            )
+            handler.set_formatter(
+                logging.Formatter(
+                    message_format, style=&#34;{&#34;, datefmt=&#34;%m/%d/%Y %I:%M:%S %p&#34;
+                )
+            )
+            self.logger.add_handler(handler)
+            self.logger.set_level(logging.INFO)
+
+    def _get_dict(
+        self, table: str, values: list, columns_to_return: list[str] = None
+    ) -&gt; dict:
+        &#34;&#34;&#34;Converts the values of a row into a dictionary with column names as keys.
+
+        :param table: The table that values were pulled from.
+
+        :param values: List of values expected to be the same quantity
+        and in the same order as the column names of table.
+
+        :param columns_to_return: An optional list of column names.
+        If given, only these columns will be included in the returned dictionary.
+        Otherwise all columns and values are returned.&#34;&#34;&#34;
+        return {
+            column: value
+            for column, value in zip(self.get_column_names(table), values)
+            if not columns_to_return or column in columns_to_return
+        }
+
+    def _get_conditions(
+        self, match_criteria: list[tuple] | dict, exact_match: bool = True
+    ) -&gt; str:
+        &#34;&#34;&#34;Builds and returns the conditional portion of a query.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+
+        :param exact_match: If False, the rowValue for a give column
+        will be matched as a substring.
+
+        Usage e.g.:
+
+        self.cursor.execute(f&#39;select * from {table} where {conditions}&#39;)&#34;&#34;&#34;
+        if type(match_criteria) == dict:
+            match_criteria = [(k, v) for k, v in match_criteria.items()]
+        if exact_match:
+            conditions = &#34; and &#34;.join(
+                f&#39;&#34;{column_row[0]}&#34; = &#34;{column_row[1]}&#34;&#39;
+                for column_row in match_criteria
+            )
+        else:
+            conditions = &#34; and &#34;.join(
+                f&#39;&#34;{column_row[0]}&#34; like &#34;%{column_row[1]}%&#34;&#39;
+                for column_row in match_criteria
+            )
+        return f&#34;({conditions})&#34;
+
+    @_connect
+    def create_tables(self, table_statements: list[str] = []):
+        &#34;&#34;&#34;Create tables if they don&#39;t exist.
+
+        :param table_statements: Each statement should be
+        in the form &#39;tableName(columnDefinitions)&#39;&#34;&#34;&#34;
+        if len(table_statements) &gt; 0:
+            table_names = self.get_table_names()
+            for table in table_statements:
+                if table.split(&#34;(&#34;)[0].strip() not in table_names:
+                    self.cursor.execute(f&#34;create table {table}&#34;)
+                    self.logger.info(f&#39;{table.split(&#34;(&#34;)[0]} table created.&#39;)
+
+    @_connect
+    def create_table(self, table: str, column_defs: list[str]):
+        &#34;&#34;&#34;Create a table if it doesn&#39;t exist.
+
+        :param table: Name of the table to create.
+
+        :param column_defs: List of column definitions in
+        proper Sqlite3 sytax.
+        i.e. &#34;columnName text unique&#34; or &#34;columnName int primary key&#34; etc.&#34;&#34;&#34;
+        if table not in self.get_table_names():
+            statement = f&#34;{table}({&#39;, &#39;.join(column_defs)})&#34;
+            self.cursor.execute(statement)
+            self.logger.info(f&#34;&#39;{table}&#39; table created.&#34;)
+
+    @_connect
+    def get_table_names(self) -&gt; list[str]:
+        &#34;&#34;&#34;Returns a list of table names from database.&#34;&#34;&#34;
+        self.cursor.execute(
+            &#39;select name from sqlite_Schema where type = &#34;table&#34; and name not like &#34;sqlite_%&#34;&#39;
+        )
+        return [result[0] for result in self.cursor.fetchall()]
+
+    @_connect
+    def get_column_names(self, table: str) -&gt; list[str]:
+        &#34;&#34;&#34;Return a list of column names from a table.&#34;&#34;&#34;
+        self.cursor.execute(f&#34;select * from {table} where 1=0&#34;)
+        return [description[0] for description in self.cursor.description]
+
+    @_connect
+    def count(
+        self,
+        table: str,
+        match_criteria: list[tuple] | dict = None,
+        exact_match: bool = True,
+    ) -&gt; int:
+        &#34;&#34;&#34;Return number of items in table.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+        If None, all rows from the table will be counted.
+
+        :param exact_match: If False, the row value for a give column
+        in match_criteria will be matched as a substring. Has no effect if
+        match_criteria is None.
+        &#34;&#34;&#34;
+        statement = f&#34;select count(_rowid_) from {table}&#34;
+        try:
+            if match_criteria:
+                self.cursor.execute(
+                    f&#34;{statement} where {self._get_conditions(match_criteria, exact_match)}&#34;
+                )
+            else:
+                self.cursor.execute(f&#34;{statement}&#34;)
+            return self.cursor.fetchone()[0]
+        except:
+            return 0
+
+    @_connect
+    def add_row(self, table: str, values: tuple[any], columns: tuple[str] = None):
+        &#34;&#34;&#34;Add row of values to table.
+
+        :param table: The table to insert into.
+
+        :param values: A tuple of values to be inserted into the table.
+
+        :param columns: If None, values param is expected to supply
+        a value for every column in the table. If columns is
+        provided, it should contain the same number of elements as values.&#34;&#34;&#34;
+        parameterizer = &#34;, &#34;.join(&#34;?&#34; for _ in values)
+        logger_values = &#34;, &#34;.join(str(value) for value in values)
+        try:
+            if columns:
+                columns = &#34;, &#34;.join(column for column in columns)
+                self.cursor.execute(
+                    f&#34;insert into {table} ({columns}) values({parameterizer})&#34;, values
+                )
+            else:
+                self.cursor.execute(
+                    f&#34;insert into {table} values({parameterizer})&#34;, values
+                )
+            self.logger.info(f&#39;Added &#34;{logger_values}&#34; to {table} table.&#39;)
+        except Exception as e:
+            if &#34;constraint&#34; not in str(e).lower():
+                self.logger.exception(
+                    f&#39;Error adding &#34;{logger_values}&#34; to {table} table.&#39;
+                )
+            else:
+                self.logger.debug(str(e))
+
+    @_connect
+    def get_rows(
+        self,
+        table: str,
+        match_criteria: list[tuple] | dict = None,
+        exact_match: bool = True,
+        sort_by_column: str = None,
+        columns_to_return: list[str] = None,
+        values_only: bool = False,
+    ) -&gt; tuple[dict] | tuple[tuple]:
+        &#34;&#34;&#34;Returns rows from table as a list of dictionaries
+        where the key-value pairs of the dictionaries are
+        column name: row value.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+
+        :param exact_match: If False, the rowValue for a give column
+        will be matched as a substring.
+
+        :param sort_by_column: A column name to sort the results by.
+
+        :param columns_to_return: Optional list of column names.
+        If provided, the dictionaries returned by get_rows() will
+        only contain the provided columns. Otherwise every column
+        in the row is returned.
+
+        :param values_only: Return the results as a tuple of tuples
+        instead of a tuple of dictionaries that have column names as keys.
+        The results will still be sorted according to sort_by_column if
+        one is provided.
+        &#34;&#34;&#34;
+        statement = f&#34;select * from {table}&#34;
+        matches = []
+        if not match_criteria:
+            self.cursor.execute(statement)
+        else:
+            self.cursor.execute(
+                f&#34;{statement} where {self._get_conditions(match_criteria, exact_match)}&#34;
+            )
+        matches = self.cursor.fetchall()
+        results = tuple(
+            self._get_dict(table, match, columns_to_return) for match in matches
+        )
+        if sort_by_column:
+            results = tuple(sorted(results, key=lambda x: x[sort_by_column]))
+        if values_only:
+            return tuple(tuple(row.values()) for row in results)
+        else:
+            return results
+
+    @_connect
+    def find(
+        self, table: str, query_string: str, columns: list[str] = None
+    ) -&gt; tuple[dict]:
+        &#34;&#34;&#34;Search for rows that contain query_string as a substring
+        of any column.
+
+        :param table: The table to search.
+
+        :param query_string: The substring to search for in all columns.
+
+        :param columns: A list of columns to search for query_string.
+        If None, all columns in the table will be searched.
+        &#34;&#34;&#34;
+        results = []
+        if not columns:
+            columns = self.get_column_names(table)
+        for column in columns:
+            results.extend(
+                [
+                    row
+                    for row in self.get_rows(
+                        table, [(column, query_string)], exact_match=False
+                    )
+                    if row not in results
+                ]
+            )
+        return tuple(results)
+
+    @_connect
+    def delete(
+        self, table: str, match_criteria: list[tuple] | dict, exact_match: bool = True
+    ) -&gt; int:
+        &#34;&#34;&#34;Delete records from table.
+
+        Returns number of deleted records.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+
+        :param exact_match: If False, the rowValue for a give column
+        will be matched as a substring.
+        &#34;&#34;&#34;
+        num_matches = self.count(table, match_criteria, exact_match)
+        conditions = self._get_conditions(match_criteria, exact_match)
+        try:
+            self.cursor.execute(f&#34;delete from {table} where {conditions}&#34;)
+            self.logger.info(
+                f&#39;Deleted {num_matches} from &#34;{table}&#34; where {conditions}&#34;.&#39;
+            )
+            return num_matches
+        except Exception as e:
+            self.logger.debug(f&#39;Error deleting from &#34;{table}&#34; where {conditions}.\n{e}&#39;)
+            return 0
+
+    @_connect
+    def update(
+        self,
+        table: str,
+        column_to_update: str,
+        new_value: Any,
+        match_criteria: list[tuple] | dict = None,
+    ) -&gt; bool:
+        &#34;&#34;&#34;Update row value for entry matched with match_criteria.
+
+        :param column_to_update: The column to be updated in the matched row.
+
+        :param new_value: The new value to insert.
+
+        :param match_criteria: Can be a list of 2-tuples where each
+        tuple is (columnName, rowValue) or a dictionary where
+        keys are column names and values are row values.
+        If None, every row will be updated.
+
+        Returns True if successful, False if not.&#34;&#34;&#34;
+        statement = f&#34;update {table} set {column_to_update} = ?&#34;
+        if match_criteria:
+            if self.count(table, match_criteria) == 0:
+                self.logger.info(
+                    f&#34;Couldn&#39;t find matching records in {table} table to update to &#39;{new_value}&#39;&#34;
+                )
+                return False
+            conditions = self._get_conditions(match_criteria)
+            statement += f&#34; where {conditions}&#34;
+        else:
+            conditions = None
+        try:
+            self.cursor.execute(
+                statement,
+                (new_value,),
+            )
+            self.logger.info(
+                f&#39;Updated &#34;{column_to_update}&#34; in &#34;{table}&#34; table to &#34;{new_value}&#34; where {conditions}&#39;
+            )
+            return True
+        except UnboundLocalError:
+            table_filter_string = &#34;\n&#34;.join(
+                table_filter for table_filter in match_criteria
+            )
+            self.logger.error(
+                f&#34;No records found matching filters: {table_filter_string}&#34;
+            )
+            return False
+        except Exception as e:
+            self.logger.error(
+                f&#39;Failed to update &#34;{column_to_update}&#34; in &#34;{table}&#34; table to &#34;{new_value}&#34; where {conditions}&#34;\n{e}&#39;
+            )
+            return False
+
+    @_connect
+    def drop_table(self, table: str) -&gt; bool:
+        &#34;&#34;&#34;Drop a table from the database.
+
+        Returns True if successful, False if not.&#34;&#34;&#34;
+        try:
+            self.cursor.execute(f&#34;drop Table {table}&#34;)
+            self.logger.info(f&#39;Dropped table &#34;{table}&#34;&#39;)
+        except Exception as e:
+            print(e)
+            self.logger.error(f&#39;Failed to drop table &#34;{table}&#34;&#39;)
+
+    @_connect
+    def add_column(
+        self, table: str, column: str, _type: str, default_value: str = None
+    ):
+        &#34;&#34;&#34;Add a new column to table.
+
+        :param column: Name of the column to add.
+
+        :param _type: The data type of the new column.
+
+        :param default_value: Optional default value for the column.&#34;&#34;&#34;
+        try:
+            if default_value:
+                self.cursor.execute(
+                    f&#34;alter table {table} add column {column} {_type} default {default_value}&#34;
+                )
+            else:
+                self.cursor.execute(f&#34;alter table {table} add column {column} {_type}&#34;)
+            self.logger.info(f&#39;Added column &#34;{column}&#34; to &#34;{table}&#34; table.&#39;)
+        except Exception as e:
+            self.logger.error(f&#39;Failed to add column &#34;{column}&#34; to &#34;{table}&#34; table.&#39;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="databased.databased.DataBased.add_column"><code class="name flex">
+<span>def <span class="ident">add_column</span></span>(<span>self, table: str, column: str, _type: str, default_value: str = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add a new column to table.</p>
+<p>:param column: Name of the column to add.</p>
+<p>:param _type: The data type of the new column.</p>
+<p>:param default_value: Optional default value for the column.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def add_column(
+    self, table: str, column: str, _type: str, default_value: str = None
+):
+    &#34;&#34;&#34;Add a new column to table.
+
+    :param column: Name of the column to add.
+
+    :param _type: The data type of the new column.
+
+    :param default_value: Optional default value for the column.&#34;&#34;&#34;
+    try:
+        if default_value:
+            self.cursor.execute(
+                f&#34;alter table {table} add column {column} {_type} default {default_value}&#34;
+            )
+        else:
+            self.cursor.execute(f&#34;alter table {table} add column {column} {_type}&#34;)
+        self.logger.info(f&#39;Added column &#34;{column}&#34; to &#34;{table}&#34; table.&#39;)
+    except Exception as e:
+        self.logger.error(f&#39;Failed to add column &#34;{column}&#34; to &#34;{table}&#34; table.&#39;)</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.add_row"><code class="name flex">
+<span>def <span class="ident">add_row</span></span>(<span>self, table: str, values: tuple[any], columns: tuple[str] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add row of values to table.</p>
+<p>:param table: The table to insert into.</p>
+<p>:param values: A tuple of values to be inserted into the table.</p>
+<p>:param columns: If None, values param is expected to supply
+a value for every column in the table. If columns is
+provided, it should contain the same number of elements as values.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def add_row(self, table: str, values: tuple[any], columns: tuple[str] = None):
+    &#34;&#34;&#34;Add row of values to table.
+
+    :param table: The table to insert into.
+
+    :param values: A tuple of values to be inserted into the table.
+
+    :param columns: If None, values param is expected to supply
+    a value for every column in the table. If columns is
+    provided, it should contain the same number of elements as values.&#34;&#34;&#34;
+    parameterizer = &#34;, &#34;.join(&#34;?&#34; for _ in values)
+    logger_values = &#34;, &#34;.join(str(value) for value in values)
+    try:
+        if columns:
+            columns = &#34;, &#34;.join(column for column in columns)
+            self.cursor.execute(
+                f&#34;insert into {table} ({columns}) values({parameterizer})&#34;, values
+            )
+        else:
+            self.cursor.execute(
+                f&#34;insert into {table} values({parameterizer})&#34;, values
+            )
+        self.logger.info(f&#39;Added &#34;{logger_values}&#34; to {table} table.&#39;)
+    except Exception as e:
+        if &#34;constraint&#34; not in str(e).lower():
+            self.logger.exception(
+                f&#39;Error adding &#34;{logger_values}&#34; to {table} table.&#39;
+            )
+        else:
+            self.logger.debug(str(e))</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save and close connection to db.</p>
+<p>Call this as soon as you are done using the database if you have
+multiple threads or processes using the same database.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close(self):
+    &#34;&#34;&#34;Save and close connection to db.
+
+    Call this as soon as you are done using the database if you have
+    multiple threads or processes using the same database.&#34;&#34;&#34;
+    if self.connection_open:
+        self.connection.commit()
+        self.connection.close()
+        self.connection_open = False</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.count"><code class="name flex">
+<span>def <span class="ident">count</span></span>(<span>self, table: str, match_criteria: list[tuple] | dict = None, exact_match: bool = True) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return number of items in table.</p>
+<p>:param match_criteria: Can be a list of 2-tuples where each
+tuple is (columnName, rowValue) or a dictionary where
+keys are column names and values are row values.
+If None, all rows from the table will be counted.</p>
+<p>:param exact_match: If False, the row value for a give column
+in match_criteria will be matched as a substring. Has no effect if
+match_criteria is None.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def count(
+    self,
+    table: str,
+    match_criteria: list[tuple] | dict = None,
+    exact_match: bool = True,
+) -&gt; int:
+    &#34;&#34;&#34;Return number of items in table.
+
+    :param match_criteria: Can be a list of 2-tuples where each
+    tuple is (columnName, rowValue) or a dictionary where
+    keys are column names and values are row values.
+    If None, all rows from the table will be counted.
+
+    :param exact_match: If False, the row value for a give column
+    in match_criteria will be matched as a substring. Has no effect if
+    match_criteria is None.
+    &#34;&#34;&#34;
+    statement = f&#34;select count(_rowid_) from {table}&#34;
+    try:
+        if match_criteria:
+            self.cursor.execute(
+                f&#34;{statement} where {self._get_conditions(match_criteria, exact_match)}&#34;
+            )
+        else:
+            self.cursor.execute(f&#34;{statement}&#34;)
+        return self.cursor.fetchone()[0]
+    except:
+        return 0</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.create_manager"><code class="name flex">
+<span>def <span class="ident">create_manager</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create dbManager.py in the same directory
+as the database file if they don't exist.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_manager(self):
+    &#34;&#34;&#34;Create dbManager.py in the same directory
+    as the database file if they don&#39;t exist.&#34;&#34;&#34;
+    manager_template = Path(__file__).parent / &#34;dbManager.py&#34;
+    manager_path = self.db_path.parent / &#34;dbManager.py&#34;
+    if not manager_path.exists():
+        manager_path.write_text(manager_template.read_text())</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.create_table"><code class="name flex">
+<span>def <span class="ident">create_table</span></span>(<span>self, table: str, column_defs: list[str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create a table if it doesn't exist.</p>
+<p>:param table: Name of the table to create.</p>
+<p>:param column_defs: List of column definitions in
+proper Sqlite3 sytax.
+i.e. "columnName text unique" or "columnName int primary key" etc.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def create_table(self, table: str, column_defs: list[str]):
+    &#34;&#34;&#34;Create a table if it doesn&#39;t exist.
+
+    :param table: Name of the table to create.
+
+    :param column_defs: List of column definitions in
+    proper Sqlite3 sytax.
+    i.e. &#34;columnName text unique&#34; or &#34;columnName int primary key&#34; etc.&#34;&#34;&#34;
+    if table not in self.get_table_names():
+        statement = f&#34;{table}({&#39;, &#39;.join(column_defs)})&#34;
+        self.cursor.execute(statement)
+        self.logger.info(f&#34;&#39;{table}&#39; table created.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.create_tables"><code class="name flex">
+<span>def <span class="ident">create_tables</span></span>(<span>self, table_statements: list[str] = [])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create tables if they don't exist.</p>
+<p>:param table_statements: Each statement should be
+in the form 'tableName(columnDefinitions)'</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def create_tables(self, table_statements: list[str] = []):
+    &#34;&#34;&#34;Create tables if they don&#39;t exist.
+
+    :param table_statements: Each statement should be
+    in the form &#39;tableName(columnDefinitions)&#39;&#34;&#34;&#34;
+    if len(table_statements) &gt; 0:
+        table_names = self.get_table_names()
+        for table in table_statements:
+            if table.split(&#34;(&#34;)[0].strip() not in table_names:
+                self.cursor.execute(f&#34;create table {table}&#34;)
+                self.logger.info(f&#39;{table.split(&#34;(&#34;)[0]} table created.&#39;)</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.delete"><code class="name flex">
+<span>def <span class="ident">delete</span></span>(<span>self, table: str, match_criteria: list[tuple] | dict, exact_match: bool = True) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Delete records from table.</p>
+<p>Returns number of deleted records.</p>
+<p>:param match_criteria: Can be a list of 2-tuples where each
+tuple is (columnName, rowValue) or a dictionary where
+keys are column names and values are row values.</p>
+<p>:param exact_match: If False, the rowValue for a give column
+will be matched as a substring.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def delete(
+    self, table: str, match_criteria: list[tuple] | dict, exact_match: bool = True
+) -&gt; int:
+    &#34;&#34;&#34;Delete records from table.
+
+    Returns number of deleted records.
+
+    :param match_criteria: Can be a list of 2-tuples where each
+    tuple is (columnName, rowValue) or a dictionary where
+    keys are column names and values are row values.
+
+    :param exact_match: If False, the rowValue for a give column
+    will be matched as a substring.
+    &#34;&#34;&#34;
+    num_matches = self.count(table, match_criteria, exact_match)
+    conditions = self._get_conditions(match_criteria, exact_match)
+    try:
+        self.cursor.execute(f&#34;delete from {table} where {conditions}&#34;)
+        self.logger.info(
+            f&#39;Deleted {num_matches} from &#34;{table}&#34; where {conditions}&#34;.&#39;
+        )
+        return num_matches
+    except Exception as e:
+        self.logger.debug(f&#39;Error deleting from &#34;{table}&#34; where {conditions}.\n{e}&#39;)
+        return 0</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.drop_table"><code class="name flex">
+<span>def <span class="ident">drop_table</span></span>(<span>self, table: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Drop a table from the database.</p>
+<p>Returns True if successful, False if not.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def drop_table(self, table: str) -&gt; bool:
+    &#34;&#34;&#34;Drop a table from the database.
+
+    Returns True if successful, False if not.&#34;&#34;&#34;
+    try:
+        self.cursor.execute(f&#34;drop Table {table}&#34;)
+        self.logger.info(f&#39;Dropped table &#34;{table}&#34;&#39;)
+    except Exception as e:
+        print(e)
+        self.logger.error(f&#39;Failed to drop table &#34;{table}&#34;&#39;)</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.find"><code class="name flex">
+<span>def <span class="ident">find</span></span>(<span>self, table: str, query_string: str, columns: list[str] = None) ‑> tuple[dict]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Search for rows that contain query_string as a substring
+of any column.</p>
+<p>:param table: The table to search.</p>
+<p>:param query_string: The substring to search for in all columns.</p>
+<p>:param columns: A list of columns to search for query_string.
+If None, all columns in the table will be searched.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def find(
+    self, table: str, query_string: str, columns: list[str] = None
+) -&gt; tuple[dict]:
+    &#34;&#34;&#34;Search for rows that contain query_string as a substring
+    of any column.
+
+    :param table: The table to search.
+
+    :param query_string: The substring to search for in all columns.
+
+    :param columns: A list of columns to search for query_string.
+    If None, all columns in the table will be searched.
+    &#34;&#34;&#34;
+    results = []
+    if not columns:
+        columns = self.get_column_names(table)
+    for column in columns:
+        results.extend(
+            [
+                row
+                for row in self.get_rows(
+                    table, [(column, query_string)], exact_match=False
+                )
+                if row not in results
+            ]
+        )
+    return tuple(results)</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.get_column_names"><code class="name flex">
+<span>def <span class="ident">get_column_names</span></span>(<span>self, table: str) ‑> list[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a list of column names from a table.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def get_column_names(self, table: str) -&gt; list[str]:
+    &#34;&#34;&#34;Return a list of column names from a table.&#34;&#34;&#34;
+    self.cursor.execute(f&#34;select * from {table} where 1=0&#34;)
+    return [description[0] for description in self.cursor.description]</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.get_rows"><code class="name flex">
+<span>def <span class="ident">get_rows</span></span>(<span>self, table: str, match_criteria: list[tuple] | dict = None, exact_match: bool = True, sort_by_column: str = None, columns_to_return: list[str] = None, values_only: bool = False) ‑> tuple[dict] | tuple[tuple]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns rows from table as a list of dictionaries
+where the key-value pairs of the dictionaries are
+column name: row value.</p>
+<p>:param match_criteria: Can be a list of 2-tuples where each
+tuple is (columnName, rowValue) or a dictionary where
+keys are column names and values are row values.</p>
+<p>:param exact_match: If False, the rowValue for a give column
+will be matched as a substring.</p>
+<p>:param sort_by_column: A column name to sort the results by.</p>
+<p>:param columns_to_return: Optional list of column names.
+If provided, the dictionaries returned by get_rows() will
+only contain the provided columns. Otherwise every column
+in the row is returned.</p>
+<p>:param values_only: Return the results as a tuple of tuples
+instead of a tuple of dictionaries that have column names as keys.
+The results will still be sorted according to sort_by_column if
+one is provided.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def get_rows(
+    self,
+    table: str,
+    match_criteria: list[tuple] | dict = None,
+    exact_match: bool = True,
+    sort_by_column: str = None,
+    columns_to_return: list[str] = None,
+    values_only: bool = False,
+) -&gt; tuple[dict] | tuple[tuple]:
+    &#34;&#34;&#34;Returns rows from table as a list of dictionaries
+    where the key-value pairs of the dictionaries are
+    column name: row value.
+
+    :param match_criteria: Can be a list of 2-tuples where each
+    tuple is (columnName, rowValue) or a dictionary where
+    keys are column names and values are row values.
+
+    :param exact_match: If False, the rowValue for a give column
+    will be matched as a substring.
+
+    :param sort_by_column: A column name to sort the results by.
+
+    :param columns_to_return: Optional list of column names.
+    If provided, the dictionaries returned by get_rows() will
+    only contain the provided columns. Otherwise every column
+    in the row is returned.
+
+    :param values_only: Return the results as a tuple of tuples
+    instead of a tuple of dictionaries that have column names as keys.
+    The results will still be sorted according to sort_by_column if
+    one is provided.
+    &#34;&#34;&#34;
+    statement = f&#34;select * from {table}&#34;
+    matches = []
+    if not match_criteria:
+        self.cursor.execute(statement)
+    else:
+        self.cursor.execute(
+            f&#34;{statement} where {self._get_conditions(match_criteria, exact_match)}&#34;
+        )
+    matches = self.cursor.fetchall()
+    results = tuple(
+        self._get_dict(table, match, columns_to_return) for match in matches
+    )
+    if sort_by_column:
+        results = tuple(sorted(results, key=lambda x: x[sort_by_column]))
+    if values_only:
+        return tuple(tuple(row.values()) for row in results)
+    else:
+        return results</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.get_table_names"><code class="name flex">
+<span>def <span class="ident">get_table_names</span></span>(<span>self) ‑> list[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of table names from database.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def get_table_names(self) -&gt; list[str]:
+    &#34;&#34;&#34;Returns a list of table names from database.&#34;&#34;&#34;
+    self.cursor.execute(
+        &#39;select name from sqlite_Schema where type = &#34;table&#34; and name not like &#34;sqlite_%&#34;&#39;
+    )
+    return [result[0] for result in self.cursor.fetchall()]</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.open"><code class="name flex">
+<span>def <span class="ident">open</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Open connection to db.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def open(self):
+    &#34;&#34;&#34;Open connection to db.&#34;&#34;&#34;
+    self.connection = sqlite3.connect(
+        self.db_path,
+        detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+        timeout=10,
+    )
+    self.connection.execute(&#34;pragma foreign_keys = 1&#34;)
+    self.cursor = self.connection.cursor()
+    self.connection_open = True</code></pre>
+</details>
+</dd>
+<dt id="databased.databased.DataBased.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, table: str, column_to_update: str, new_value: Any, match_criteria: list[tuple] | dict = None) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update row value for entry matched with match_criteria.</p>
+<p>:param column_to_update: The column to be updated in the matched row.</p>
+<p>:param new_value: The new value to insert.</p>
+<p>:param match_criteria: Can be a list of 2-tuples where each
+tuple is (columnName, rowValue) or a dictionary where
+keys are column names and values are row values.
+If None, every row will be updated.</p>
+<p>Returns True if successful, False if not.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@_connect
+def update(
+    self,
+    table: str,
+    column_to_update: str,
+    new_value: Any,
+    match_criteria: list[tuple] | dict = None,
+) -&gt; bool:
+    &#34;&#34;&#34;Update row value for entry matched with match_criteria.
+
+    :param column_to_update: The column to be updated in the matched row.
+
+    :param new_value: The new value to insert.
+
+    :param match_criteria: Can be a list of 2-tuples where each
+    tuple is (columnName, rowValue) or a dictionary where
+    keys are column names and values are row values.
+    If None, every row will be updated.
+
+    Returns True if successful, False if not.&#34;&#34;&#34;
+    statement = f&#34;update {table} set {column_to_update} = ?&#34;
+    if match_criteria:
+        if self.count(table, match_criteria) == 0:
+            self.logger.info(
+                f&#34;Couldn&#39;t find matching records in {table} table to update to &#39;{new_value}&#39;&#34;
+            )
+            return False
+        conditions = self._get_conditions(match_criteria)
+        statement += f&#34; where {conditions}&#34;
+    else:
+        conditions = None
+    try:
+        self.cursor.execute(
+            statement,
+            (new_value,),
+        )
+        self.logger.info(
+            f&#39;Updated &#34;{column_to_update}&#34; in &#34;{table}&#34; table to &#34;{new_value}&#34; where {conditions}&#39;
+        )
+        return True
+    except UnboundLocalError:
+        table_filter_string = &#34;\n&#34;.join(
+            table_filter for table_filter in match_criteria
+        )
+        self.logger.error(
+            f&#34;No records found matching filters: {table_filter_string}&#34;
+        )
+        return False
+    except Exception as e:
+        self.logger.error(
+            f&#39;Failed to update &#34;{column_to_update}&#34; in &#34;{table}&#34; table to &#34;{new_value}&#34; where {conditions}&#34;\n{e}&#39;
+        )
+        return False</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="databased" href="index.html">databased</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="databased.databased.data_to_string" href="#databased.databased.data_to_string">data_to_string</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="databased.databased.DataBased" href="#databased.databased.DataBased">DataBased</a></code></h4>
+<ul class="two-column">
+<li><code><a title="databased.databased.DataBased.add_column" href="#databased.databased.DataBased.add_column">add_column</a></code></li>
+<li><code><a title="databased.databased.DataBased.add_row" href="#databased.databased.DataBased.add_row">add_row</a></code></li>
+<li><code><a title="databased.databased.DataBased.close" href="#databased.databased.DataBased.close">close</a></code></li>
+<li><code><a title="databased.databased.DataBased.count" href="#databased.databased.DataBased.count">count</a></code></li>
+<li><code><a title="databased.databased.DataBased.create_manager" href="#databased.databased.DataBased.create_manager">create_manager</a></code></li>
+<li><code><a title="databased.databased.DataBased.create_table" href="#databased.databased.DataBased.create_table">create_table</a></code></li>
+<li><code><a title="databased.databased.DataBased.create_tables" href="#databased.databased.DataBased.create_tables">create_tables</a></code></li>
+<li><code><a title="databased.databased.DataBased.delete" href="#databased.databased.DataBased.delete">delete</a></code></li>
+<li><code><a title="databased.databased.DataBased.drop_table" href="#databased.databased.DataBased.drop_table">drop_table</a></code></li>
+<li><code><a title="databased.databased.DataBased.find" href="#databased.databased.DataBased.find">find</a></code></li>
+<li><code><a title="databased.databased.DataBased.get_column_names" href="#databased.databased.DataBased.get_column_names">get_column_names</a></code></li>
+<li><code><a title="databased.databased.DataBased.get_rows" href="#databased.databased.DataBased.get_rows">get_rows</a></code></li>
+<li><code><a title="databased.databased.DataBased.get_table_names" href="#databased.databased.DataBased.get_table_names">get_table_names</a></code></li>
+<li><code><a title="databased.databased.DataBased.open" href="#databased.databased.DataBased.open">open</a></code></li>
+<li><code><a title="databased.databased.DataBased.update" href="#databased.databased.DataBased.update">update</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

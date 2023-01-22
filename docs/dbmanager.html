@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>databased.dbmanager API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>databased.dbmanager</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import argparse
+import sys
+from pathlib import Path
+
+from databased import DataBased, data_to_string
+
+&#34;&#34;&#34; A command line tool to interact with a database file.
+Works like a standard argparse based cli
+except it will ask you for arguments indefinitely in a loop
+instead of having to invoke the script with arguments over and over.
+I.e. instead of &#34;python dbManager.py -db database.db -f someString -t someTable&#34;,
+just invoke &#34;python dbManager.py&#34; then a repeating &#34;Enter command: &#34; prompt will appear
+and &#34;-db database.db -f someString -t someTable&#34; can be entered.
+Note: a -db arg only needs to be provided once (if there is no default set) unless
+you wish to change databases. So a subsequent command to the above
+can just be entered as &#34;-f someOtherString -t someTable&#34;.
+
+This is just a quick template and can be customized by adding arguments and adding/overriding functions
+for specific database projects.&#34;&#34;&#34;
+
+# Subclassing to prevent program exit when the -h/--help arg is passed.
+class ArgParser(argparse.ArgumentParser):
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, sys.stderr)
+
+
+def get_args(command: str) -&gt; argparse.Namespace:
+    parser = ArgParser()
+
+    parser.add_argument(
+        &#34;-db&#34;,
+        &#34;--db_name&#34;,
+        type=str,
+        default=None,
+        help=&#34;&#34;&#34;Name of database file to use.
+        Required on the first loop if no default is set,
+        but subsequent loops will resuse the same database
+        unless a new one is provided through this arg.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-i&#34;,
+        &#34;--info&#34;,
+        action=&#34;store_true&#34;,
+        help=&#34;&#34;&#34; Display table names, their respective columns, and how many records they contain.
+        If a -t/--tables arg is passed, just the columns and row count for those tables will be shown.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-t&#34;,
+        &#34;--tables&#34;,
+        type=str,
+        nargs=&#34;*&#34;,
+        default=[],
+        help=&#34;&#34;&#34;Limits commands to a specific list of tables.
+        Optional for some commands, required for others.
+        If this is the only arg given (besides -db if not already set),
+        the whole table will be printed to the terminal.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-c&#34;,
+        &#34;--columns&#34;,
+        type=str,
+        nargs=&#34;*&#34;,
+        default=[],
+        help=&#34;&#34;&#34; Limits commands to a specific list of columns.
+        Optional for some commands, required for others.
+        If this and -t are the only args given 
+        (besides -db if not already set), the whole table will be printed
+        to the terminal, but with only the columns provided with this arg.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-f&#34;,
+        &#34;--find&#34;,
+        type=str,
+        default=None,
+        help=&#34;&#34;&#34; A substring to search the database for. 
+        If a -c/--columns arg(s) is not given, the values will be matched against all columns.
+        Similarly, if a -t/--tables arg(s) is not given, the values will be searched for in all tables.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-sco&#34;,
+        &#34;--show_count_only&#34;,
+        action=&#34;store_true&#34;,
+        help=&#34;&#34;&#34; Show the number of results returned by -f/--find,
+        but don&#39;t print the results to the terminal.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-d&#34;,
+        &#34;--delete&#34;,
+        type=str,
+        nargs=&#34;*&#34;,
+        default=[],
+        help=&#34;&#34;&#34; A list of values to be deleted from the database.
+        A -c/--columns arg must be supplied.
+        A -t/--tables arg must be supplied.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-u&#34;,
+        &#34;--update&#34;,
+        type=str,
+        default=None,
+        nargs=2,
+        help=&#34;&#34;&#34; Update a record in the database.
+        Expects two arguments: the current value and the new value.
+        A -c/--columns arg must be supplied.
+        A -t/--tables arg must be supplied.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-sb&#34;, &#34;--sort_by&#34;, type=str, default=None, help=&#34;Column to sort results by.&#34;
+    )
+
+    args = parser.parse_args(command)
+
+    if args.db_name and not Path(args.db_name).exists():
+        raise Exception(f&#34;{args.db_name} does not exist.&#34;)
+
+    return args
+
+
+def info():
+    print(&#34;Getting database info...&#34;)
+    print()
+    if not args.tables:
+        args.tables = db.get_table_names()
+    results = []
+    for table in args.tables:
+        count = db.count(table)
+        columns = db.get_column_names(table)
+        results.append(
+            {
+                &#34;table name&#34;: table,
+                &#34;columns&#34;: &#34;, &#34;.join(columns),
+                &#34;number of rows&#34;: count,
+            }
+        )
+    if args.sort_by and args.sort_by in results[0]:
+        results = sorted(results, key=lambda x: x[args.sort_by])
+    print(data_to_string(results))
+
+
+def find():
+    print(&#34;Finding records... &#34;)
+    print()
+    if not args.tables:
+        args.tables = db.get_table_names()
+    for table in args.tables:
+        results = db.find(table, args.find, args.columns)
+        if args.sort_by and args.sort_by in results[0]:
+            results = sorted(results, key=lambda x: x[args.sort_by])
+        if args.columns:
+            print(
+                f&#34;{len(results)} results for &#39;{args.find}&#39; in &#39;{&#39;, &#39;.join(args.columns)}&#39; column(s) of &#39;{table}&#39; table:&#34;
+            )
+        else:
+            print(f&#34;{len(results)} results for &#39;{args.find}&#39; in &#39;{table}&#39; table:&#34;)
+        if not args.show_count_only:
+            print(data_to_string(results))
+        print()
+
+
+def delete():
+    if not args.tables:
+        raise ValueError(&#34;Missing -t/--tables arg for -d/--delete function.&#34;)
+    if not args.columns:
+        raise ValueError(&#34;Missing -c/--columns arg for -d/--delete function.&#34;)
+    print(&#34;Deleting records... &#34;)
+    print()
+    num_deleted_records = 0
+    failed_deletions = []
+    for item in args.delete:
+        success = db.delete(args.tables[0], [(args.columns[0], item)])
+        if success:
+            num_deleted_records += success
+        else:
+            failed_deletions.append(item)
+    print(f&#34;Deleted {num_deleted_records} record(s) from &#39;{args.tables[0]}&#39; table.&#34;)
+    if len(failed_deletions) &gt; 0:
+        print(
+            f&#34;Failed to delete the following {len(failed_deletions)} record(s) from &#39;{args.tables[0]}&#39; table:&#34;
+        )
+        for fail in failed_deletions:
+            print(f&#34;  {fail}&#34;)
+
+
+def update():
+    if not args.tables:
+        raise ValueError(&#34;Missing -t/--tables arg for -u/--update function.&#34;)
+    if not args.columns:
+        raise ValueError(&#34;Missing -c/--columns arg for -u/--update function.&#34;)
+    print(&#34;Updating record... &#34;)
+    print()
+    if db.update(
+        args.tables[0],
+        args.columns[0],
+        args.update[1],
+        [(args.columns[0], args.update[0])],
+    ):
+        print(
+            f&#34;Updated &#39;{args.columns[0]}&#39; column from &#39;{args.update[0]}&#39; to &#39;{args.update[1]}&#39; in &#39;{args.tables[0]}&#39; table.&#34;
+        )
+    else:
+        print(
+            f&#34;Failed to update &#39;{args.columns[0]}&#39; column from &#39;{args.update[0]}&#39; to &#39;{args.update[1]}&#39; in &#39;{args.tables[0]}&#39; table.&#34;
+        )
+
+
+def print_table():
+    for table in args.tables:
+        rows = db.get_rows(
+            table, columns_to_return=args.columns, sort_by_column=args.sort_by
+        )
+        print(f&#34;{table} table:&#34;)
+        print(data_to_string(rows))
+
+
+if __name__ == &#34;__main__&#34;:
+    sys.tracebacklimit = 0
+    while True:
+        try:
+            command = input(&#34;Enter command: &#34;).split()
+            args = get_args(command)
+            if args.db_name:
+                db_name = args.db_name
+            with DataBased(db_path=db_name) as db:
+                if args.info:
+                    info()
+                elif args.find:
+                    find()
+                elif args.delete:
+                    delete()
+                elif args.update:
+                    update()
+                else:
+                    print_table()
+        except KeyboardInterrupt:
+            break
+        except Exception as e:
+            print(e)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="databased.dbmanager.delete"><code class="name flex">
+<span>def <span class="ident">delete</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete():
+    if not args.tables:
+        raise ValueError(&#34;Missing -t/--tables arg for -d/--delete function.&#34;)
+    if not args.columns:
+        raise ValueError(&#34;Missing -c/--columns arg for -d/--delete function.&#34;)
+    print(&#34;Deleting records... &#34;)
+    print()
+    num_deleted_records = 0
+    failed_deletions = []
+    for item in args.delete:
+        success = db.delete(args.tables[0], [(args.columns[0], item)])
+        if success:
+            num_deleted_records += success
+        else:
+            failed_deletions.append(item)
+    print(f&#34;Deleted {num_deleted_records} record(s) from &#39;{args.tables[0]}&#39; table.&#34;)
+    if len(failed_deletions) &gt; 0:
+        print(
+            f&#34;Failed to delete the following {len(failed_deletions)} record(s) from &#39;{args.tables[0]}&#39; table:&#34;
+        )
+        for fail in failed_deletions:
+            print(f&#34;  {fail}&#34;)</code></pre>
+</details>
+</dd>
+<dt id="databased.dbmanager.find"><code class="name flex">
+<span>def <span class="ident">find</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find():
+    print(&#34;Finding records... &#34;)
+    print()
+    if not args.tables:
+        args.tables = db.get_table_names()
+    for table in args.tables:
+        results = db.find(table, args.find, args.columns)
+        if args.sort_by and args.sort_by in results[0]:
+            results = sorted(results, key=lambda x: x[args.sort_by])
+        if args.columns:
+            print(
+                f&#34;{len(results)} results for &#39;{args.find}&#39; in &#39;{&#39;, &#39;.join(args.columns)}&#39; column(s) of &#39;{table}&#39; table:&#34;
+            )
+        else:
+            print(f&#34;{len(results)} results for &#39;{args.find}&#39; in &#39;{table}&#39; table:&#34;)
+        if not args.show_count_only:
+            print(data_to_string(results))
+        print()</code></pre>
+</details>
+</dd>
+<dt id="databased.dbmanager.get_args"><code class="name flex">
+<span>def <span class="ident">get_args</span></span>(<span>command: str) ‑> argparse.Namespace</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_args(command: str) -&gt; argparse.Namespace:
+    parser = ArgParser()
+
+    parser.add_argument(
+        &#34;-db&#34;,
+        &#34;--db_name&#34;,
+        type=str,
+        default=None,
+        help=&#34;&#34;&#34;Name of database file to use.
+        Required on the first loop if no default is set,
+        but subsequent loops will resuse the same database
+        unless a new one is provided through this arg.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-i&#34;,
+        &#34;--info&#34;,
+        action=&#34;store_true&#34;,
+        help=&#34;&#34;&#34; Display table names, their respective columns, and how many records they contain.
+        If a -t/--tables arg is passed, just the columns and row count for those tables will be shown.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-t&#34;,
+        &#34;--tables&#34;,
+        type=str,
+        nargs=&#34;*&#34;,
+        default=[],
+        help=&#34;&#34;&#34;Limits commands to a specific list of tables.
+        Optional for some commands, required for others.
+        If this is the only arg given (besides -db if not already set),
+        the whole table will be printed to the terminal.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-c&#34;,
+        &#34;--columns&#34;,
+        type=str,
+        nargs=&#34;*&#34;,
+        default=[],
+        help=&#34;&#34;&#34; Limits commands to a specific list of columns.
+        Optional for some commands, required for others.
+        If this and -t are the only args given 
+        (besides -db if not already set), the whole table will be printed
+        to the terminal, but with only the columns provided with this arg.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-f&#34;,
+        &#34;--find&#34;,
+        type=str,
+        default=None,
+        help=&#34;&#34;&#34; A substring to search the database for. 
+        If a -c/--columns arg(s) is not given, the values will be matched against all columns.
+        Similarly, if a -t/--tables arg(s) is not given, the values will be searched for in all tables.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-sco&#34;,
+        &#34;--show_count_only&#34;,
+        action=&#34;store_true&#34;,
+        help=&#34;&#34;&#34; Show the number of results returned by -f/--find,
+        but don&#39;t print the results to the terminal.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-d&#34;,
+        &#34;--delete&#34;,
+        type=str,
+        nargs=&#34;*&#34;,
+        default=[],
+        help=&#34;&#34;&#34; A list of values to be deleted from the database.
+        A -c/--columns arg must be supplied.
+        A -t/--tables arg must be supplied.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-u&#34;,
+        &#34;--update&#34;,
+        type=str,
+        default=None,
+        nargs=2,
+        help=&#34;&#34;&#34; Update a record in the database.
+        Expects two arguments: the current value and the new value.
+        A -c/--columns arg must be supplied.
+        A -t/--tables arg must be supplied.&#34;&#34;&#34;,
+    )
+
+    parser.add_argument(
+        &#34;-sb&#34;, &#34;--sort_by&#34;, type=str, default=None, help=&#34;Column to sort results by.&#34;
+    )
+
+    args = parser.parse_args(command)
+
+    if args.db_name and not Path(args.db_name).exists():
+        raise Exception(f&#34;{args.db_name} does not exist.&#34;)
+
+    return args</code></pre>
+</details>
+</dd>
+<dt id="databased.dbmanager.info"><code class="name flex">
+<span>def <span class="ident">info</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def info():
+    print(&#34;Getting database info...&#34;)
+    print()
+    if not args.tables:
+        args.tables = db.get_table_names()
+    results = []
+    for table in args.tables:
+        count = db.count(table)
+        columns = db.get_column_names(table)
+        results.append(
+            {
+                &#34;table name&#34;: table,
+                &#34;columns&#34;: &#34;, &#34;.join(columns),
+                &#34;number of rows&#34;: count,
+            }
+        )
+    if args.sort_by and args.sort_by in results[0]:
+        results = sorted(results, key=lambda x: x[args.sort_by])
+    print(data_to_string(results))</code></pre>
+</details>
+</dd>
+<dt id="databased.dbmanager.print_table"><code class="name flex">
+<span>def <span class="ident">print_table</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print_table():
+    for table in args.tables:
+        rows = db.get_rows(
+            table, columns_to_return=args.columns, sort_by_column=args.sort_by
+        )
+        print(f&#34;{table} table:&#34;)
+        print(data_to_string(rows))</code></pre>
+</details>
+</dd>
+<dt id="databased.dbmanager.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update():
+    if not args.tables:
+        raise ValueError(&#34;Missing -t/--tables arg for -u/--update function.&#34;)
+    if not args.columns:
+        raise ValueError(&#34;Missing -c/--columns arg for -u/--update function.&#34;)
+    print(&#34;Updating record... &#34;)
+    print()
+    if db.update(
+        args.tables[0],
+        args.columns[0],
+        args.update[1],
+        [(args.columns[0], args.update[0])],
+    ):
+        print(
+            f&#34;Updated &#39;{args.columns[0]}&#39; column from &#39;{args.update[0]}&#39; to &#39;{args.update[1]}&#39; in &#39;{args.tables[0]}&#39; table.&#34;
+        )
+    else:
+        print(
+            f&#34;Failed to update &#39;{args.columns[0]}&#39; column from &#39;{args.update[0]}&#39; to &#39;{args.update[1]}&#39; in &#39;{args.tables[0]}&#39; table.&#34;
+        )</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="databased.dbmanager.ArgParser"><code class="flex name class">
+<span>class <span class="ident">ArgParser</span></span>
+<span>(</span><span>prog=None, usage=None, description=None, epilog=None, parents=[], formatter_class=argparse.HelpFormatter, prefix_chars='-', fromfile_prefix_chars=None, argument_default=None, conflict_handler='error', add_help=True, allow_abbrev=True, exit_on_error=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Object for parsing command line strings into Python objects.</p>
+<p>Keyword Arguments:
+- prog &ndash; The name of the program (default:
+<code>os.path.basename(sys.argv[0])</code>)
+- usage &ndash; A usage message (default: auto-generated from arguments)
+- description &ndash; A description of what the program does
+- epilog &ndash; Text following the argument descriptions
+- parents &ndash; Parsers whose arguments should be copied into this one
+- formatter_class &ndash; HelpFormatter class for printing help messages
+- prefix_chars &ndash; Characters that prefix optional arguments
+- fromfile_prefix_chars &ndash; Characters that prefix files containing
+additional arguments
+- argument_default &ndash; The default value for all arguments
+- conflict_handler &ndash; String indicating how to handle conflicts
+- add_help &ndash; Add a -h/-help option
+- allow_abbrev &ndash; Allow long options to be abbreviated unambiguously
+- exit_on_error &ndash; Determines whether or not ArgumentParser exits with
+error info when an error occurs</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ArgParser(argparse.ArgumentParser):
+    def exit(self, status=0, message=None):
+        if message:
+            self._print_message(message, sys.stderr)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>argparse.ArgumentParser</li>
+<li>argparse._AttributeHolder</li>
+<li>argparse._ActionsContainer</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="databased.dbmanager.ArgParser.exit"><code class="name flex">
+<span>def <span class="ident">exit</span></span>(<span>self, status=0, message=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def exit(self, status=0, message=None):
+    if message:
+        self._print_message(message, sys.stderr)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="databased" href="index.html">databased</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="databased.dbmanager.delete" href="#databased.dbmanager.delete">delete</a></code></li>
+<li><code><a title="databased.dbmanager.find" href="#databased.dbmanager.find">find</a></code></li>
+<li><code><a title="databased.dbmanager.get_args" href="#databased.dbmanager.get_args">get_args</a></code></li>
+<li><code><a title="databased.dbmanager.info" href="#databased.dbmanager.info">info</a></code></li>
+<li><code><a title="databased.dbmanager.print_table" href="#databased.dbmanager.print_table">print_table</a></code></li>
+<li><code><a title="databased.dbmanager.update" href="#databased.dbmanager.update">update</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="databased.dbmanager.ArgParser" href="#databased.dbmanager.ArgParser">ArgParser</a></code></h4>
+<ul class="">
+<li><code><a title="databased.dbmanager.ArgParser.exit" href="#databased.dbmanager.ArgParser.exit">exit</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
