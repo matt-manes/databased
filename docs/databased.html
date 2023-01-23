@@ -121,18 +121,18 @@ class DataBased:
         encoding: str = &#34;utf-8&#34;,
     ):
         &#34;&#34;&#34;:param message_format: &#39;{&#39; style format string&#34;&#34;&#34;
-        self.logger = logging.get_logger(self.db_name)
-        if not self.logger.has_handlers():
+        self.logger = logging.getLogger(self.db_name)
+        if not self.logger.hasHandlers():
             handler = logging.FileHandler(
                 str(self.db_path).replace(&#34;.&#34;, &#34;&#34;) + &#34;.log&#34;, encoding=encoding
             )
-            handler.set_formatter(
+            handler.setFormatter(
                 logging.Formatter(
                     message_format, style=&#34;{&#34;, datefmt=&#34;%m/%d/%Y %I:%M:%S %p&#34;
                 )
             )
-            self.logger.add_handler(handler)
-            self.logger.set_level(logging.INFO)
+            self.logger.addHandler(handler)
+            self.logger.setLevel(logging.INFO)
 
     def _get_dict(
         self, table: str, values: list, columns_to_return: list[str] = None
@@ -743,18 +743,18 @@ for the logger object.</p></div>
         encoding: str = &#34;utf-8&#34;,
     ):
         &#34;&#34;&#34;:param message_format: &#39;{&#39; style format string&#34;&#34;&#34;
-        self.logger = logging.get_logger(self.db_name)
-        if not self.logger.has_handlers():
+        self.logger = logging.getLogger(self.db_name)
+        if not self.logger.hasHandlers():
             handler = logging.FileHandler(
                 str(self.db_path).replace(&#34;.&#34;, &#34;&#34;) + &#34;.log&#34;, encoding=encoding
             )
-            handler.set_formatter(
+            handler.setFormatter(
                 logging.Formatter(
                     message_format, style=&#34;{&#34;, datefmt=&#34;%m/%d/%Y %I:%M:%S %p&#34;
                 )
             )
-            self.logger.add_handler(handler)
-            self.logger.set_level(logging.INFO)
+            self.logger.addHandler(handler)
+            self.logger.setLevel(logging.INFO)
 
     def _get_dict(
         self, table: str, values: list, columns_to_return: list[str] = None

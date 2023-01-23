@@ -93,18 +93,18 @@ class DataBased:
         encoding: str = "utf-8",
     ):
         """:param message_format: '{' style format string"""
-        self.logger = logging.get_logger(self.db_name)
-        if not self.logger.has_handlers():
+        self.logger = logging.getLogger(self.db_name)
+        if not self.logger.hasHandlers():
             handler = logging.FileHandler(
                 str(self.db_path).replace(".", "") + ".log", encoding=encoding
             )
-            handler.set_formatter(
+            handler.setFormatter(
                 logging.Formatter(
                     message_format, style="{", datefmt="%m/%d/%Y %I:%M:%S %p"
                 )
             )
-            self.logger.add_handler(handler)
-            self.logger.set_level(logging.INFO)
+            self.logger.addHandler(handler)
+            self.logger.setLevel(logging.INFO)
 
     def _get_dict(
         self, table: str, values: list, columns_to_return: list[str] = None

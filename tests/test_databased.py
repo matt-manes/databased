@@ -3,6 +3,10 @@ import pytest
 import databased
 
 
+def test_is_this_thing_on():
+    db = databased.DataBased("db.db")
+
+
 def test_databased___enter__():
     ...
 
