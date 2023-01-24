@@ -48,8 +48,8 @@ class DataBased:
     def create_manager(self):
         """Create dbManager.py in the same directory
         as the database file if they don't exist."""
-        manager_template = Path(__file__).parent / "dbManager.py"
-        manager_path = self.db_path.parent / "dbManager.py"
+        manager_template = Path(__file__).parent / "dbmanager.py"
+        manager_path = self.db_path.parent / "dbmanager.py"
         if not manager_path.exists():
             manager_path.write_text(manager_template.read_text())
 
@@ -290,6 +290,8 @@ class DataBased:
         The results will still be sorted according to sort_by_column if
         one is provided.
         """
+        if type(columns_to_return) is str:
+            columns_to_return = [columns_to_return]
         statement = f"select * from {table}"
         matches = []
         if not match_criteria:
@@ -323,6 +325,8 @@ class DataBased:
         :param columns: A list of columns to search for query_string.
         If None, all columns in the table will be searched.
         """
+        if type(columns) is str:
+            columns = [columns]
         results = []
         if not columns:
             columns = self.get_column_names(table)

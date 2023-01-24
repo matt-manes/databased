@@ -76,8 +76,8 @@ class DataBased:
     def create_manager(self):
         &#34;&#34;&#34;Create dbManager.py in the same directory
         as the database file if they don&#39;t exist.&#34;&#34;&#34;
-        manager_template = Path(__file__).parent / &#34;dbManager.py&#34;
-        manager_path = self.db_path.parent / &#34;dbManager.py&#34;
+        manager_template = Path(__file__).parent / &#34;dbmanager.py&#34;
+        manager_path = self.db_path.parent / &#34;dbmanager.py&#34;
         if not manager_path.exists():
             manager_path.write_text(manager_template.read_text())
 
@@ -318,6 +318,8 @@ class DataBased:
         The results will still be sorted according to sort_by_column if
         one is provided.
         &#34;&#34;&#34;
+        if type(columns_to_return) is str:
+            columns_to_return = [columns_to_return]
         statement = f&#34;select * from {table}&#34;
         matches = []
         if not match_criteria:
@@ -351,6 +353,8 @@ class DataBased:
         :param columns: A list of columns to search for query_string.
         If None, all columns in the table will be searched.
         &#34;&#34;&#34;
+        if type(columns) is str:
+            columns = [columns]
         results = []
         if not columns:
             columns = self.get_column_names(table)
@@ -698,8 +702,8 @@ for the logger object.</p></div>
     def create_manager(self):
         &#34;&#34;&#34;Create dbManager.py in the same directory
         as the database file if they don&#39;t exist.&#34;&#34;&#34;
-        manager_template = Path(__file__).parent / &#34;dbManager.py&#34;
-        manager_path = self.db_path.parent / &#34;dbManager.py&#34;
+        manager_template = Path(__file__).parent / &#34;dbmanager.py&#34;
+        manager_path = self.db_path.parent / &#34;dbmanager.py&#34;
         if not manager_path.exists():
             manager_path.write_text(manager_template.read_text())
 
@@ -940,6 +944,8 @@ for the logger object.</p></div>
         The results will still be sorted according to sort_by_column if
         one is provided.
         &#34;&#34;&#34;
+        if type(columns_to_return) is str:
+            columns_to_return = [columns_to_return]
         statement = f&#34;select * from {table}&#34;
         matches = []
         if not match_criteria:
@@ -973,6 +979,8 @@ for the logger object.</p></div>
         :param columns: A list of columns to search for query_string.
         If None, all columns in the table will be searched.
         &#34;&#34;&#34;
+        if type(columns) is str:
+            columns = [columns]
         results = []
         if not columns:
             columns = self.get_column_names(table)
@@ -1269,8 +1277,8 @@ as the database file if they don't exist.</p></div>
 <pre><code class="python">def create_manager(self):
     &#34;&#34;&#34;Create dbManager.py in the same directory
     as the database file if they don&#39;t exist.&#34;&#34;&#34;
-    manager_template = Path(__file__).parent / &#34;dbManager.py&#34;
-    manager_path = self.db_path.parent / &#34;dbManager.py&#34;
+    manager_template = Path(__file__).parent / &#34;dbmanager.py&#34;
+    manager_path = self.db_path.parent / &#34;dbmanager.py&#34;
     if not manager_path.exists():
         manager_path.write_text(manager_template.read_text())</code></pre>
 </details>
@@ -1422,6 +1430,8 @@ def find(
     :param columns: A list of columns to search for query_string.
     If None, all columns in the table will be searched.
     &#34;&#34;&#34;
+    if type(columns) is str:
+        columns = [columns]
     results = []
     if not columns:
         columns = self.get_column_names(table)
@@ -1512,6 +1522,8 @@ def get_rows(
     The results will still be sorted according to sort_by_column if
     one is provided.
     &#34;&#34;&#34;
+    if type(columns_to_return) is str:
+        columns_to_return = [columns_to_return]
     statement = f&#34;select * from {table}&#34;
     matches = []
     if not match_criteria:
