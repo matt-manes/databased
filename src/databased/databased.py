@@ -177,7 +177,7 @@ class DataBased:
         proper Sqlite3 sytax.
         i.e. "columnName text unique" or "columnName int primary key" etc."""
         if table not in self.get_table_names():
-            statement = f"{table}({', '.join(column_defs)})"
+            statement = f"create table {table}({', '.join(column_defs)})"
             self.cursor.execute(statement)
             self.logger.info(f"'{table}' table created.")
 

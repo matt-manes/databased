@@ -205,7 +205,7 @@ class DataBased:
         proper Sqlite3 sytax.
         i.e. &#34;columnName text unique&#34; or &#34;columnName int primary key&#34; etc.&#34;&#34;&#34;
         if table not in self.get_table_names():
-            statement = f&#34;{table}({&#39;, &#39;.join(column_defs)})&#34;
+            statement = f&#34;create table {table}({&#39;, &#39;.join(column_defs)})&#34;
             self.cursor.execute(statement)
             self.logger.info(f&#34;&#39;{table}&#39; table created.&#34;)
 
@@ -831,7 +831,7 @@ for the logger object.</p></div>
         proper Sqlite3 sytax.
         i.e. &#34;columnName text unique&#34; or &#34;columnName int primary key&#34; etc.&#34;&#34;&#34;
         if table not in self.get_table_names():
-            statement = f&#34;{table}({&#39;, &#39;.join(column_defs)})&#34;
+            statement = f&#34;create table {table}({&#39;, &#39;.join(column_defs)})&#34;
             self.cursor.execute(statement)
             self.logger.info(f&#34;&#39;{table}&#39; table created.&#34;)
 
@@ -1306,7 +1306,7 @@ def create_table(self, table: str, column_defs: list[str]):
     proper Sqlite3 sytax.
     i.e. &#34;columnName text unique&#34; or &#34;columnName int primary key&#34; etc.&#34;&#34;&#34;
     if table not in self.get_table_names():
-        statement = f&#34;{table}({&#39;, &#39;.join(column_defs)})&#34;
+        statement = f&#34;create table {table}({&#39;, &#39;.join(column_defs)})&#34;
         self.cursor.execute(statement)
         self.logger.info(f&#34;&#39;{table}&#39; table created.&#34;)</code></pre>
 </details>
