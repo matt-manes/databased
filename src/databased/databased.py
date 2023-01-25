@@ -18,20 +18,20 @@ class DataBased:
 
     def __init__(
         self,
-        db_path: str | Path,
+        dbpath: str | Path,
         logger_encoding: str = "utf-8",
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
     ):
         """
-        :param db_path: String or Path object to database file.
+        :param dbpath: String or Path object to database file.
         If a relative path is given, it will be relative to the
         current working directory. The log file will be saved to the
         same directory.
 
         :param logger_message_format: '{' style format string
         for the logger object."""
-        self.db_path = Path(db_path)
-        self.db_name = Path(db_path).name
+        self.dbpath = Path(dbpath)
+        self.dbname = Path(dbpath).name
         self._logger_init(
             encoding=logger_encoding, message_format=logger_message_format
         )
@@ -47,16 +47,16 @@ class DataBased:
 
     def create_manager(self):
         """Create dbManager.py in the same directory
-        as the database file if they don't exist."""
+        as the database file if it doesn't exist."""
         manager_template = Path(__file__).parent / "dbmanager.py"
-        manager_path = self.db_path.parent / "dbmanager.py"
+        manager_path = self.dbpath.parent / "dbmanager.py"
         if not manager_path.exists():
             manager_path.write_text(manager_template.read_text())
 
     def open(self):
         """Open connection to db."""
         self.connection = sqlite3.connect(
-            self.db_path,
+            self.dbpath,
             detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
             timeout=10,
         )
@@ -93,10 +93,10 @@ class DataBased:
         encoding: str = "utf-8",
     ):
         """:param message_format: '{' style format string"""
-        self.logger = logging.getLogger(self.db_name)
+        self.logger = logging.getLogger(self.dbname)
         if not self.logger.hasHandlers():
             handler = logging.FileHandler(
-                str(self.db_path).replace(".", "") + ".log", encoding=encoding
+                str(self.dbpath).replace(".", "") + ".log", encoding=encoding
             )
             handler.setFormatter(
                 logging.Formatter(

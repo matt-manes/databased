@@ -46,20 +46,20 @@ class DataBased:
 
     def __init__(
         self,
-        db_path: str | Path,
+        dbpath: str | Path,
         logger_encoding: str = &#34;utf-8&#34;,
         logger_message_format: str = &#34;{levelname}|-|{asctime}|-|{message}&#34;,
     ):
         &#34;&#34;&#34;
-        :param db_path: String or Path object to database file.
+        :param dbpath: String or Path object to database file.
         If a relative path is given, it will be relative to the
         current working directory. The log file will be saved to the
         same directory.
 
         :param logger_message_format: &#39;{&#39; style format string
         for the logger object.&#34;&#34;&#34;
-        self.db_path = Path(db_path)
-        self.db_name = Path(db_path).name
+        self.dbpath = Path(dbpath)
+        self.dbname = Path(dbpath).name
         self._logger_init(
             encoding=logger_encoding, message_format=logger_message_format
         )
@@ -75,16 +75,16 @@ class DataBased:
 
     def create_manager(self):
         &#34;&#34;&#34;Create dbManager.py in the same directory
-        as the database file if they don&#39;t exist.&#34;&#34;&#34;
+        as the database file if it doesn&#39;t exist.&#34;&#34;&#34;
         manager_template = Path(__file__).parent / &#34;dbmanager.py&#34;
-        manager_path = self.db_path.parent / &#34;dbmanager.py&#34;
+        manager_path = self.dbpath.parent / &#34;dbmanager.py&#34;
         if not manager_path.exists():
             manager_path.write_text(manager_template.read_text())
 
     def open(self):
         &#34;&#34;&#34;Open connection to db.&#34;&#34;&#34;
         self.connection = sqlite3.connect(
-            self.db_path,
+            self.dbpath,
             detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
             timeout=10,
         )
@@ -121,10 +121,10 @@ class DataBased:
         encoding: str = &#34;utf-8&#34;,
     ):
         &#34;&#34;&#34;:param message_format: &#39;{&#39; style format string&#34;&#34;&#34;
-        self.logger = logging.getLogger(self.db_name)
+        self.logger = logging.getLogger(self.dbname)
         if not self.logger.hasHandlers():
             handler = logging.FileHandler(
-                str(self.db_path).replace(&#34;.&#34;, &#34;&#34;) + &#34;.log&#34;, encoding=encoding
+                str(self.dbpath).replace(&#34;.&#34;, &#34;&#34;) + &#34;.log&#34;, encoding=encoding
             )
             handler.setFormatter(
                 logging.Formatter(
@@ -647,13 +647,13 @@ if the output is going into something like a txt file.</p></div>
 <dl>
 <dt id="databased.databased.DataBased"><code class="flex name class">
 <span>class <span class="ident">DataBased</span></span>
-<span>(</span><span>db_path: str | pathlib.Path, logger_encoding: str = 'utf-8', logger_message_format: str = '{levelname}|-|{asctime}|-|{message}')</span>
+<span>(</span><span>dbpath: str | pathlib.Path, logger_encoding: str = 'utf-8', logger_message_format: str = '{levelname}|-|{asctime}|-|{message}')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Sqli wrapper so queries don't need to be written except table definitions.</p>
 <p>Supports saving and reading dates as datetime objects.</p>
 <p>Supports using a context manager.</p>
-<p>:param db_path: String or Path object to database file.
+<p>:param dbpath: String or Path object to database file.
 If a relative path is given, it will be relative to the
 current working directory. The log file will be saved to the
 same directory.</p>
@@ -672,20 +672,20 @@ for the logger object.</p></div>
 
     def __init__(
         self,
-        db_path: str | Path,
+        dbpath: str | Path,
         logger_encoding: str = &#34;utf-8&#34;,
         logger_message_format: str = &#34;{levelname}|-|{asctime}|-|{message}&#34;,
     ):
         &#34;&#34;&#34;
-        :param db_path: String or Path object to database file.
+        :param dbpath: String or Path object to database file.
         If a relative path is given, it will be relative to the
         current working directory. The log file will be saved to the
         same directory.
 
         :param logger_message_format: &#39;{&#39; style format string
         for the logger object.&#34;&#34;&#34;
-        self.db_path = Path(db_path)
-        self.db_name = Path(db_path).name
+        self.dbpath = Path(dbpath)
+        self.dbname = Path(dbpath).name
         self._logger_init(
             encoding=logger_encoding, message_format=logger_message_format
         )
@@ -701,16 +701,16 @@ for the logger object.</p></div>
 
     def create_manager(self):
         &#34;&#34;&#34;Create dbManager.py in the same directory
-        as the database file if they don&#39;t exist.&#34;&#34;&#34;
+        as the database file if it doesn&#39;t exist.&#34;&#34;&#34;
         manager_template = Path(__file__).parent / &#34;dbmanager.py&#34;
-        manager_path = self.db_path.parent / &#34;dbmanager.py&#34;
+        manager_path = self.dbpath.parent / &#34;dbmanager.py&#34;
         if not manager_path.exists():
             manager_path.write_text(manager_template.read_text())
 
     def open(self):
         &#34;&#34;&#34;Open connection to db.&#34;&#34;&#34;
         self.connection = sqlite3.connect(
-            self.db_path,
+            self.dbpath,
             detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
             timeout=10,
         )
@@ -747,10 +747,10 @@ for the logger object.</p></div>
         encoding: str = &#34;utf-8&#34;,
     ):
         &#34;&#34;&#34;:param message_format: &#39;{&#39; style format string&#34;&#34;&#34;
-        self.logger = logging.getLogger(self.db_name)
+        self.logger = logging.getLogger(self.dbname)
         if not self.logger.hasHandlers():
             handler = logging.FileHandler(
-                str(self.db_path).replace(&#34;.&#34;, &#34;&#34;) + &#34;.log&#34;, encoding=encoding
+                str(self.dbpath).replace(&#34;.&#34;, &#34;&#34;) + &#34;.log&#34;, encoding=encoding
             )
             handler.setFormatter(
                 logging.Formatter(
@@ -1269,16 +1269,16 @@ def count(
 </code></dt>
 <dd>
 <div class="desc"><p>Create dbManager.py in the same directory
-as the database file if they don't exist.</p></div>
+as the database file if it doesn't exist.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def create_manager(self):
     &#34;&#34;&#34;Create dbManager.py in the same directory
-    as the database file if they don&#39;t exist.&#34;&#34;&#34;
+    as the database file if it doesn&#39;t exist.&#34;&#34;&#34;
     manager_template = Path(__file__).parent / &#34;dbmanager.py&#34;
-    manager_path = self.db_path.parent / &#34;dbmanager.py&#34;
+    manager_path = self.dbpath.parent / &#34;dbmanager.py&#34;
     if not manager_path.exists():
         manager_path.write_text(manager_template.read_text())</code></pre>
 </details>
@@ -1574,7 +1574,7 @@ def get_table_names(self) -&gt; list[str]:
 <pre><code class="python">def open(self):
     &#34;&#34;&#34;Open connection to db.&#34;&#34;&#34;
     self.connection = sqlite3.connect(
-        self.db_path,
+        self.dbpath,
         detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
         timeout=10,
     )

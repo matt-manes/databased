@@ -30,7 +30,7 @@ def get_args(command: str) -> argparse.Namespace:
 
     parser.add_argument(
         "-db",
-        "--db_name",
+        "--dbname",
         type=str,
         default=None,
         help="""Name of database file to use.
@@ -119,8 +119,8 @@ def get_args(command: str) -> argparse.Namespace:
 
     args = parser.parse_args(command)
 
-    if args.db_name and not Path(args.db_name).exists():
-        raise Exception(f"{args.db_name} does not exist.")
+    if args.dbname and not Path(args.dbname).exists():
+        raise Exception(f"{args.dbname} does not exist.")
 
     return args
 
@@ -227,9 +227,9 @@ if __name__ == "__main__":
         try:
             command = input("Enter command: ").split()
             args = get_args(command)
-            if args.db_name:
-                db_name = args.db_name
-            with DataBased(db_path=db_name) as db:
+            if args.dbname:
+                dbname = args.dbname
+            with DataBased(dbpath=dbname) as db:
                 if args.info:
                     info()
                 elif args.find:

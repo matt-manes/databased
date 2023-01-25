@@ -21,7 +21,7 @@ from datetime import datetime
 
 # if the .db file specified doesn't exist, it will be created
 # a log file with the same name will be generated and stored in the same directory
-with DataBased(db_path="records.db") as db:
+with DataBased(dbpath="records.db") as db:
     tables = [
         "kitchen_tables(num_legs int, top_material text, shape text, date_added timestamp)"
     ]
@@ -89,7 +89,7 @@ usage: dbmanager.py [-h] [-db DB_NAME] [-i] [-t [TABLES ...]] [-c [COLUMNS ...]]
 
 options:
   -h, --help            show this help message and exit
-  -db DB_NAME, --db_name DB_NAME
+  -db DBNAME, --dbname DBNAME
                         Name of database file to use. Required on the first loop if no default is set, but subsequent loops will resuse the same database unless a new one is provided through this arg.
   -i, --info            Display table names, their respective columns, and how many records they contain. If a -t/--tables arg is passed, just the columns and row count for those tables will be shown.
   -t [TABLES ...], --tables [TABLES ...]
