@@ -1,6 +1,7 @@
 import argparse
 import sys
 from pathlib import Path
+import shlex
 
 from databased import DataBased, data_to_string
 
@@ -225,7 +226,7 @@ if __name__ == "__main__":
     sys.tracebacklimit = 0
     while True:
         try:
-            command = input("Enter command: ").split()
+            command = shlex.split(input("Enter command: "))
             args = get_args(command)
             if args.dbname:
                 dbname = args.dbname
