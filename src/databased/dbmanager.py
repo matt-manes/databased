@@ -1,7 +1,7 @@
 import argparse
+import shlex
 import sys
 from pathlib import Path
-import shlex
 
 from databased import DataBased, data_to_string
 
