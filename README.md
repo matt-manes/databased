@@ -1,12 +1,12 @@
-# databased
-databased is a package that wraps the standard library Sqlite3 module to make setting up and using a database quicker and easier.<br>
+# Databased
+Databased is a package that wraps the standard library Sqlite3 module to make setting up and using a database quicker and easier.<br>
 Install with:
 <pre>pip install databased</pre>
 databased is a package that wraps the standard library Sqlite3 module to largely avoid writing queries except for table definitions.<br>
 It consists of the class DataBased and an additional function for displaying information in a grid called data_to_string.<br>
 The DataBased class contains functions for creating databases and tables; inserting, updating, and deleting rows; 
 as well as retrieving data and schema information.<br>
-The data_to_string function uses the tabulate package (https://pypi.org/project/tabulate/) to generate a grid as a string from a list of dictionaries.<br>
+The data_to_string function uses the [tabulate](https://pypi.org/project/tabulate/) to generate a grid as a string from a list of dictionaries.<br>
 By default, data_to_string will automatically wrap the width of columns to fit within the current terminal window.<br><br>
 Member functions that require a database connection will
 automatically create one when called if one isn't already open,
