@@ -266,7 +266,7 @@ class DataBased:
         sort_by_column: str = None,
         columns_to_return: list[str] = None,
         values_only: bool = False,
-    ) -> tuple[dict] | tuple[tuple]:
+    ) -> list[dict] | list[tuple]:
         """Returns rows from table as a list of dictionaries
         where the key-value pairs of the dictionaries are
         column name: row value.
@@ -281,12 +281,12 @@ class DataBased:
         :param sort_by_column: A column name to sort the results by.
 
         :param columns_to_return: Optional list of column names.
-        If provided, the dictionaries returned by get_rows() will
+        If provided, the elements returned by get_rows() will
         only contain the provided columns. Otherwise every column
         in the row is returned.
 
-        :param values_only: Return the results as a tuple of tuples
-        instead of a tuple of dictionaries that have column names as keys.
+        :param values_only: Return the results as a list of tuples
+        instead of a list of dictionaries that have column names as keys.
         The results will still be sorted according to sort_by_column if
         one is provided.
         """
@@ -301,13 +301,11 @@ class DataBased:
                 f"{statement} where {self._get_conditions(match_criteria, exact_match)}"
             )
         matches = self.cursor.fetchall()
-        results = tuple(
-            self._get_dict(table, match, columns_to_return) for match in matches
-        )
+        results = [self._get_dict(table, match, columns_to_return) for match in matches]
         if sort_by_column:
-            results = tuple(sorted(results, key=lambda x: x[sort_by_column]))
+            results = sorted(results, key=lambda x: x[sort_by_column])
         if values_only:
-            return tuple(tuple(row.values()) for row in results)
+            return [tuple(row.values()) for row in results]
         else:
             return results
 
@@ -340,7 +338,7 @@ class DataBased:
                     if row not in results
                 ]
             )
-        return tuple(results)
+        return results
 
     @_connect
     def delete(
