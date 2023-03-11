@@ -9,6 +9,20 @@ from typing import Any
 from tabulate import tabulate
 
 
+def _connect(func):
+    """Decorator to open db connection if it isn't already open."""
+
+    @wraps(func)
+    def inner(self, *args, **kwargs):
+        self = args[0]
+        if not self.connection_open:
+            self.open()
+        results = func(self, *args, **kwargs)
+        return results
+
+    return inner
+
+
 class DataBased:
     """Sqli wrapper so queries don't need to be written except table definitions.
 
@@ -73,19 +87,6 @@ class DataBased:
             self.connection.commit()
             self.connection.close()
             self.connection_open = False
-
-    def _connect(func):
-        """Decorator to open db connection if it isn't already open."""
-
-        @wraps(func)
-        def inner(*args, **kwargs):
-            self = args[0]
-            if not self.connection_open:
-                self.open()
-            results = func(*args, **kwargs)
-            return results
-
-        return inner
 
     def _logger_init(
         self,
