@@ -15,7 +15,6 @@ def _connect(func):
 
     @wraps(func)
     def inner(self, *args, **kwargs):
-        self = args[0]
         if not self.connection_open:
             self.open()
         results = func(self, *args, **kwargs)
