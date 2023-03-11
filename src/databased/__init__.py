@@ -1,1 +1,1 @@
-from .databased import DataBased, data_to_string, _connect
+from .databased import DataBased, _connect, data_to_string

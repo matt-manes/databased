@@ -1,7 +1,9 @@
-import pytest
 from datetime import datetime
-import databased
 from pathlib import Path
+
+import pytest
+
+import databased
 
 root = Path(__file__).parent
 dbpath = root / "dummy" / "db.db"
