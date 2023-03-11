@@ -157,14 +157,14 @@ class DataBased:
         return f"({conditions})"
 
     @_connect
-    def create_tables(self, table_statements: list[str] = []):
+    def create_tables(self, table_querys: list[str] = []):
         """Create tables if they don't exist.
 
-        :param table_statements: Each statement should be
+        :param table_querys: Each query should be
         in the form 'tableName(columnDefinitions)'"""
-        if len(table_statements) > 0:
+        if len(table_querys) > 0:
             table_names = self.get_table_names()
-            for table in table_statements:
+            for table in table_querys:
                 if table.split("(")[0].strip() not in table_names:
                     self.cursor.execute(f"create table {table}")
                     self.logger.info(f'{table.split("(")[0]} table created.')
@@ -179,8 +179,8 @@ class DataBased:
         proper Sqlite3 sytax.
         i.e. "columnName text unique" or "columnName int primary key" etc."""
         if table not in self.get_table_names():
-            statement = f"create table {table}({', '.join(column_defs)})"
-            self.cursor.execute(statement)
+            query = f"create table {table}({', '.join(column_defs)})"
+            self.cursor.execute(query)
             self.logger.info(f"'{table}' table created.")
 
     @_connect
@@ -215,14 +215,14 @@ class DataBased:
         in match_criteria will be matched as a substring. Has no effect if
         match_criteria is None.
         """
-        statement = f"select count(_rowid_) from {table}"
+        query = f"select count(_rowid_) from {table}"
         try:
             if match_criteria:
                 self.cursor.execute(
-                    f"{statement} where {self._get_conditions(match_criteria, exact_match)}"
+                    f"{query} where {self._get_conditions(match_criteria, exact_match)}"
                 )
             else:
-                self.cursor.execute(f"{statement}")
+                self.cursor.execute(f"{query}")
             return self.cursor.fetchone()[0]
         except:
             return 0
@@ -268,6 +268,8 @@ class DataBased:
         sort_by_column: str = None,
         columns_to_return: list[str] = None,
         values_only: bool = False,
+        order_by: str = None,
+        limit: str | int = None,
     ) -> list[dict] | list[tuple]:
         """Returns rows from table as a list of dictionaries
         where the key-value pairs of the dictionaries are
@@ -281,6 +283,8 @@ class DataBased:
         will be matched as a substring.
 
         :param sort_by_column: A column name to sort the results by.
+        This will sort results in Python after retrieving them from the db.
+        Use the 'order_by' param to use SQLite engine for ordering.
 
         :param columns_to_return: Optional list of column names.
         If provided, the elements returned by get_rows() will
@@ -291,17 +295,25 @@ class DataBased:
         instead of a list of dictionaries that have column names as keys.
         The results will still be sorted according to sort_by_column if
         one is provided.
+
+        :param order_by: If given, a 'order by {order_by}' clause
+        will be added to the select query.
+
+        :param limit: If given, a 'limit {limit}' clause will be
+        added to the select query.
         """
         if type(columns_to_return) is str:
             columns_to_return = [columns_to_return]
-        statement = f"select * from {table}"
+        query = f"select * from {table}"
         matches = []
-        if not match_criteria:
-            self.cursor.execute(statement)
-        else:
-            self.cursor.execute(
-                f"{statement} where {self._get_conditions(match_criteria, exact_match)}"
-            )
+        if match_criteria:
+            query += f" where {self._get_conditions(match_criteria, exact_match)}"
+        if order_by:
+            query += f" order by {order_by}"
+        if limit:
+            query += f" limit {limit}"
+        query += ";"
+        self.cursor.execute(query)
         matches = self.cursor.fetchall()
         results = [self._get_dict(table, match, columns_to_return) for match in matches]
         if sort_by_column:
@@ -389,7 +401,7 @@ class DataBased:
         If None, every row will be updated.
 
         Returns True if successful, False if not."""
-        statement = f"update {table} set {column_to_update} = ?"
+        query = f"update {table} set {column_to_update} = ?"
         if match_criteria:
             if self.count(table, match_criteria) == 0:
                 self.logger.info(
@@ -397,12 +409,12 @@ class DataBased:
                 )
                 return False
             conditions = self._get_conditions(match_criteria)
-            statement += f" where {conditions}"
+            query += f" where {conditions}"
         else:
             conditions = None
         try:
             self.cursor.execute(
-                statement,
+                query,
                 (new_value,),
             )
             self.logger.info(
