@@ -125,6 +125,14 @@ def get_args(command: str) -> argparse.Namespace:
         "-sb", "--sort_by", type=str, default=None, help="Column to sort results by."
     )
 
+    parser.add_argument(
+        "-q",
+        "--query",
+        type=str,
+        default=None,
+        help=""" Directly execute a query against the database. """,
+    )
+
     args = parser.parse_args(command)
 
     if args.dbname and not Path(args.dbname).exists():
@@ -237,6 +245,15 @@ def print_table():
         print(data_to_string(rows))
 
 
+def query():
+    results = db.query(args.query)
+    try:
+        for result in results:
+            print(*result, sep=" * ")
+    except Exception as e:
+        print(f"Couldn't display results of '{args.query}'.")
+
+
 if __name__ == "__main__":
     sys.tracebacklimit = 0
     while True:
@@ -254,6 +271,8 @@ if __name__ == "__main__":
                     delete()
                 elif args.update:
                     update()
+                elif args.query:
+                    query()
                 else:
                     print_table()
         except KeyboardInterrupt:
