@@ -106,3 +106,8 @@ def test__databased__add_column():
 
 def test__databased__data_to_string():
     ...
+
+
+def test__cleanup():
+    for path in dbpath.parent.iterdir():
+        path.unlink()
