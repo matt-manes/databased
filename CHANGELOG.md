@@ -1,6 +1,13 @@
 # Changelog
 
-## 1.1.0 (2023-03-11)
+## 1.2.0 (2023-03-11)
+
+#### New Features
+
+* add query switch
+
+
+## v1.1.0 (2023-03-11)
 
 #### New Features
 
@@ -22,6 +29,8 @@
 * move connection decorator outside of DataBased
 #### Others
 
+* build v1.1.0
+* update changelog
 * add tests
 
 
