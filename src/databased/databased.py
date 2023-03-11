@@ -47,6 +47,7 @@ class DataBased:
         for the logger object."""
         self.dbpath = Path(dbpath)
         self.dbname = Path(dbpath).name
+        self.dbpath.parent.mkdir(parents=True, exist_ok=True)
         self._logger_init(
             encoding=logger_encoding, message_format=logger_message_format
         )
