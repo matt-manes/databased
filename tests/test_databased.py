@@ -52,9 +52,9 @@ def test__databased__add_row():
         ]:
             db.add_row("dummy", row)
         for row in [
-            ("John Smith", 31, datetime.now()),
+            ("John Smith", 111, datetime.now()),
             ("Deshawn Sanders", 99, datetime.now()),
-            ("Marsha Wallander", 111, datetime.now()),
+            ("Marsha Wallander", 31, datetime.now()),
         ]:
             db.add_row("dummy2", row)
 
@@ -82,6 +82,18 @@ def test__databased__get_rows():
         rows = db.get_rows("dummy2", columns_to_return=["name"], values_only=True)
         assert type(rows[0]) == tuple
         assert rows[0][0] == "John Smith"
+        assert len(db.get_rows("dummy2", limit=1)) == 1
+        assert (
+            db.get_rows("dummy2", order_by="favorite_int")[0]["name"]
+            == "Marsha Wallander"
+        )
+
+
+def test__databased_query():
+    with databased.DataBased(dbpath) as db:
+        rows = db.query("select name from dummy2 where name like 'Deshawn Sanders';")
+        assert len(rows) == 1
+        assert rows[0][0] == "Deshawn Sanders"
 
 
 def test__databased__find():
