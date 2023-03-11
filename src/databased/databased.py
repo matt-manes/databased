@@ -157,6 +157,13 @@ class DataBased:
         return f"({conditions})"
 
     @_connect
+    def query(self, query_) -> list[Any]:
+        """Execute an arbitrary query and
+        return the results."""
+        self.cursor.execute(query_)
+        return self.cursor.fetchall()
+
+    @_connect
     def create_tables(self, table_querys: list[str] = []):
         """Create tables if they don't exist.
 
