@@ -5,6 +5,7 @@ from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from typing import Any
+import shutil
 
 from tabulate import tabulate
 
@@ -65,7 +66,7 @@ class DataBased:
         manager_template = Path(__file__).parent / "dbmanager.py"
         manager_path = self.dbpath.parent / "dbmanager.py"
         if not manager_path.exists():
-            manager_path.write_text(manager_template.read_text())
+            shutil.copyfile(manager_template, manager_path)
 
     def open(self):
         """Open connection to db."""
