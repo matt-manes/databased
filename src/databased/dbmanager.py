@@ -107,11 +107,18 @@ def get_args(command: str) -> argparse.Namespace:
         "--update",
         type=str,
         default=None,
-        nargs=2,
+        nargs="*",
         help=""" Update a record in the database.
-        Expects two arguments: the current value and the new value.
+        Expects the first argument to be the new value and interprets
+        subsequent arguements as pairs of 'column' and 'value' to use
+        when selecting which rows to update. The -c/--columns arg will
+        be the column that is updated with the new value for matching rows.
         A -c/--columns arg must be supplied.
-        A -t/--tables arg must be supplied.""",
+        A -t/--tables arg must be supplied.
+        e.g '-t birds -c last_seen -u today name sparrow migratory 0'
+        will update the 'last_seen' column of the 'birds' table to 'today'
+        for all rows that have either/both of their 'name' and 'migratory'
+        columns set to 'sparrow' and '0', respectively.""",
     )
 
     parser.add_argument(
@@ -198,18 +205,26 @@ def update():
         raise ValueError("Missing -c/--columns arg for -u/--update function.")
     print("Updating record... ")
     print()
+    new_value = args.update[0]
+    if len(args.update) > 1:
+        args.update = args.update[1:]
+        match_criteria = [
+            (args.update[i], args.update[i + 1]) for i in range(0, len(args.update), 2)
+        ]
+    else:
+        match_criteria = None
     if db.update(
         args.tables[0],
         args.columns[0],
-        args.update[1],
-        [(args.columns[0], args.update[0])],
+        new_value,
+        match_criteria,
     ):
         print(
-            f"Updated '{args.columns[0]}' column from '{args.update[0]}' to '{args.update[1]}' in '{args.tables[0]}' table."
+            f"Updated '{args.columns[0]}' column to '{new_value}' in '{args.tables[0]}' table for match_criteria {match_criteria}."
         )
     else:
         print(
-            f"Failed to update '{args.columns[0]}' column from '{args.update[0]}' to '{args.update[1]}' in '{args.tables[0]}' table."
+            f"Failed to update '{args.columns[0]}' column to '{new_value}' in '{args.tables[0]}' table for match_criteria {match_criteria}."
         )
 
 
