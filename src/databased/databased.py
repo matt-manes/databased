@@ -457,6 +457,22 @@ class DataBased:
         except Exception as e:
             self.logger.error(f'Failed to add column "{column}" to "{table}" table.')
 
+    @staticmethod
+    def data_to_string(
+        data: list[dict], sort_key: str = None, wrap_to_terminal: bool = True
+    ) -> str:
+        """Uses tabulate to produce pretty string output
+        from a list of dictionaries.
+
+        :param data: Assumes all dictionaries in list have the same set of keys.
+
+        :param sort_key: Optional dictionary key to sort data with.
+
+        :param wrap_to_terminal: If True, the table width will be wrapped
+        to fit within the current terminal window. Set to False
+        if the output is going into something like a txt file."""
+        return data_to_string(data, sort_key, wrap_to_terminal)
+
 
 def data_to_string(
     data: list[dict], sort_key: str = None, wrap_to_terminal: bool = True
