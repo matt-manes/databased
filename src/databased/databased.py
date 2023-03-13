@@ -6,6 +6,7 @@ from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from typing import Any
+import pandas
 
 from tabulate import tabulate
 
@@ -274,10 +275,11 @@ class DataBased:
         exact_match: bool = True,
         sort_by_column: str = None,
         columns_to_return: list[str] = None,
+        return_as_dataframe: bool = False,
         values_only: bool = False,
         order_by: str = None,
         limit: str | int = None,
-    ) -> list[dict] | list[tuple]:
+    ) -> list[dict] | list[tuple] | pandas.DataFrame:
         """Returns rows from table as a list of dictionaries
         where the key-value pairs of the dictionaries are
         column name: row value.
@@ -298,6 +300,9 @@ class DataBased:
         only contain the provided columns. Otherwise every column
         in the row is returned.
 
+        :param return_as_dataframe: If True,
+        the results will be returned as a pandas.DataFrame object.
+
         :param values_only: Return the results as a list of tuples
         instead of a list of dictionaries that have column names as keys.
         The results will still be sorted according to sort_by_column if
@@ -309,6 +314,7 @@ class DataBased:
         :param limit: If given, a 'limit {limit}' clause will be
         added to the select query.
         """
+
         if type(columns_to_return) is str:
             columns_to_return = [columns_to_return]
         query = f"select * from {table}"
@@ -325,6 +331,8 @@ class DataBased:
         results = [self._get_dict(table, match, columns_to_return) for match in matches]
         if sort_by_column:
             results = sorted(results, key=lambda x: x[sort_by_column])
+        if return_as_dataframe:
+            return pandas.DataFrame(results)
         if values_only:
             return [tuple(row.values()) for row in results]
         else:
