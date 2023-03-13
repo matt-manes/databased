@@ -6,8 +6,8 @@ from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from typing import Any
-import pandas
 
+import pandas
 from tabulate import tabulate
 
 
