@@ -1,10 +1,25 @@
 # Changelog
 
-## 1.2.0 (2023-03-11)
+## 1.3.0 (2023-03-13)
+
+#### New Features
+
+* add option to return a pandas.DataFrame from get_rows()
+#### Others
+
+* update test for get_rows
+* remove duplicate dependency
+
+
+## v1.2.0 (2023-03-11)
 
 #### New Features
 
 * add query switch
+#### Others
+
+* build v1.2.0
+* update changelog
 
 
 ## v1.1.0 (2023-03-11)
