@@ -1,6 +1,6 @@
 from datetime import datetime
 from pathlib import Path
-
+import pandas
 import pytest
 
 import databased
@@ -89,6 +89,16 @@ def test__databased__get_rows():
             db.get_rows("dummy2", order_by="favorite_int")[0]["name"]
             == "Marsha Wallander"
         )
+        df = db.get_rows("dummy2", return_as_dataframe=True)
+        assert type(df) == pandas.DataFrame
+        cols = db.get_column_names("dummy2")
+        assert len(df.columns) == len(cols)
+        for i in range(len(cols)):
+            assert df.columns[i] == cols[i]
+        rows = db.get_rows("dummy2", values_only=True)
+        for row, df_row in zip(rows, df.values):
+            for item1, item2 in zip(row, df_row):
+                assert item1 == item2
 
 
 def test__databased_query():
