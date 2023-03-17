@@ -1,12 +1,24 @@
 # Changelog
 
-## 1.3.0 (2023-03-13)
+## 1.4.0 (2023-03-17)
+
+#### New Features
+
+* set -db switch default in dbmanager to in-use dbname when it's  created
+#### Fixes
+
+* print results directly in dbmanager find() func when results are too wide for tabulator
+
+
+## v1.3.0 (2023-03-13)
 
 #### New Features
 
 * add option to return a pandas.DataFrame from get_rows()
 #### Others
 
+* build v1.3.0
+* update changelog
 * update test for get_rows
 * remove duplicate dependency
 
