@@ -62,12 +62,12 @@ class DataBased:
         self.close()
 
     def create_manager(self):
-        """Create dbManager.py in the same directory
+        """Create dbmanager.py in the same directory
         as the database file if it doesn't exist."""
-        manager_template = Path(__file__).parent / "dbmanager.py"
         manager_path = self.dbpath.parent / "dbmanager.py"
         if not manager_path.exists():
-            shutil.copyfile(manager_template, manager_path)
+            manager_template = (Path(__file__).parent / "dbmanager.py").read_text()
+            manager_path.write_text(manager_template.replace("$dbname", self.dbname))
 
     def open(self):
         """Open connection to db."""

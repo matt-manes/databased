@@ -33,7 +33,7 @@ def get_args(command: str) -> argparse.Namespace:
         "-db",
         "--dbname",
         type=str,
-        default=None,
+        default="$dbname",
         help="""Name of database file to use.
         Required on the first loop if no default is set,
         but subsequent loops will resuse the same database
