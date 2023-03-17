@@ -178,7 +178,11 @@ def find():
         else:
             print(f"{len(results)} results for '{args.find}' in '{table}' table:")
         if not args.show_count_only:
-            print(data_to_string(results))
+            try:
+                print(data_to_string(results))
+            except Exception as e:
+                print("Couldn't fit data into a grid.")
+                print(*results, sep="\n")
         print()
 
 
