@@ -33,7 +33,7 @@ def get_args(command: str) -> argparse.Namespace:
         "-db",
         "--dbname",
         type=str,
-        default="$dbname",
+        default=None,
         help="""Name of database file to use.
         Required on the first loop if no default is set,
         but subsequent loops will resuse the same database
@@ -260,6 +260,7 @@ def query():
 
 if __name__ == "__main__":
     sys.tracebacklimit = 0
+    dbname = "$dbname"
     while True:
         try:
             command = shlex.split(input("Enter command: "))
