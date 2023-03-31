@@ -1,6 +1,20 @@
 # Changelog
 
-## 1.4.0 (2023-03-17)
+## 1.4.2 (2023-03-31)
+
+#### Fixes
+
+* fix dbmanager switching back to default dbname after user sets it with -db/--dbname switch
+
+
+## v1.4.1 (2023-03-22)
+
+#### Others
+
+* build v1.4.1
+
+
+## v1.4.0 (2023-03-17)
 
 #### New Features
 
@@ -8,6 +22,10 @@
 #### Fixes
 
 * print results directly in dbmanager find() func when results are too wide for tabulator
+#### Others
+
+* build v1.4.0
+* update changelog
 
 
 ## v1.3.0 (2023-03-13)
