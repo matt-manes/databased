@@ -1,12 +1,10 @@
 import logging
 import os
-import shutil
 import sqlite3
 from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from typing import Any
-
 import pandas
 from tabulate import tabulate
 
@@ -504,16 +502,15 @@ class DataBased:
 def data_to_string(
     data: list[dict], sort_key: str = None, wrap_to_terminal: bool = True
 ) -> str:
-    """Uses tabulate to produce pretty string output
-    from a list of dictionaries.
+    """Use tabulate to produce grid output from a list of dictionaries.
 
     :param data: Assumes all dictionaries in list have the same set of keys.
 
     :param sort_key: Optional dictionary key to sort data with.
 
-    :param wrap_to_terminal: If True, the table width will be wrapped
-    to fit within the current terminal window. Set to False
-    if the output is going into something like a txt file."""
+    :param wrap_to_terminal: If True, the column widths will be reduced so the grid fits
+    within the current terminal window without wrapping. If the column widths have reduced to 1
+    and the grid is still too wide, str(data) will be returned."""
     if len(data) == 0:
         return ""
     if sort_key:
@@ -521,30 +518,12 @@ def data_to_string(
     for i, d in enumerate(data):
         for k in d:
             data[i][k] = str(data[i][k])
-    if wrap_to_terminal:
-        terminal_width = os.get_terminal_size().columns
-        max_col_widths = terminal_width
-        """ Reducing the column width by tabulating one row at a time
-        and then reducing further by tabulating the whole set proved to be 
-        faster than going straight to tabulating the whole set and reducing
-        the column width."""
-        too_wide = True
-        while too_wide and max_col_widths > 1:
-            for i, row in enumerate(data):
-                output = tabulate(
-                    [row],
-                    headers="keys",
-                    disable_numparse=True,
-                    tablefmt="grid",
-                    maxcolwidths=max_col_widths,
-                )
-                if output.index("\n") > terminal_width:
-                    max_col_widths -= 2
-                    too_wide = True
-                    break
-                too_wide = False
-    else:
-        max_col_widths = None
+
+    too_wide = True
+    terminal_width = os.get_terminal_size().columns
+    max_col_widths = terminal_width
+    # Make an output with effectively unrestricted column widths
+    # to see if shrinking is necessary
     output = tabulate(
         data,
         headers="keys",
@@ -552,11 +531,19 @@ def data_to_string(
         tablefmt="grid",
         maxcolwidths=max_col_widths,
     )
-    # trim max column width until the output string is less wide than the current terminal width.
-    if wrap_to_terminal:
-        while output.index("\n") > terminal_width and max_col_widths > 1:
-            max_col_widths -= 2
-            max_col_widths = max(1, max_col_widths)
+    current_width = output.index("\n")
+    if current_width < terminal_width:
+        too_wide = False
+    if wrap_to_terminal and too_wide:
+        previous_col_widths = max_col_widths
+        while too_wide and max_col_widths > 1:
+            if current_width > terminal_width:
+                previous_col_widths = max_col_widths
+                max_col_widths = int(max_col_widths * 0.5)
+            elif current_width < terminal_width:
+                max_col_widths = int(
+                    max_col_widths + ((previous_col_widths - max_col_widths) * 0.5)
+                )
             output = tabulate(
                 data,
                 headers="keys",
@@ -564,4 +551,9 @@ def data_to_string(
                 tablefmt="grid",
                 maxcolwidths=max_col_widths,
             )
-    return output
+            current_width = output.index("\n")
+            if terminal_width - 10 < current_width < terminal_width:
+                too_wide = False
+        if too_wide:
+            return str(data)
+        return output
