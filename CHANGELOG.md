@@ -1,10 +1,21 @@
 # Changelog
 
-## 1.4.2 (2023-03-31)
+## 1.4.3 (2023-04-02)
+
+#### Performance improvements
+
+* rewrite data_to_string() with a different resizing algo
+
+
+## v1.4.2 (2023-03-31)
 
 #### Fixes
 
 * fix dbmanager switching back to default dbname after user sets it with -db/--dbname switch
+#### Others
+
+* build v1.4.2
+* update changelog
 
 
 ## v1.4.1 (2023-03-22)
