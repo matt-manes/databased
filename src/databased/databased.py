@@ -5,6 +5,7 @@ from datetime import datetime
 from functools import wraps
 from pathlib import Path
 from typing import Any
+
 import pandas
 from tabulate import tabulate
 
