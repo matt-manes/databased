@@ -1,10 +1,21 @@
 # Changelog
 
-## 1.4.3 (2023-04-02)
+## 1.4.4 (2023-04-02)
+
+#### Fixes
+
+* return statement was indented one level too many
+
+
+## v1.4.3 (2023-04-02)
 
 #### Performance improvements
 
 * rewrite data_to_string() with a different resizing algo
+#### Others
+
+* build v1.4.3
+* update changelog
 
 
 ## v1.4.2 (2023-03-31)
