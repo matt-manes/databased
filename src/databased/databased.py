@@ -557,4 +557,4 @@ def data_to_string(
                 too_wide = False
         if too_wide:
             return str(data)
-        return output
+    return output
