@@ -538,7 +538,6 @@ def data_to_string(
     if wrap_to_terminal and too_wide:
         previous_col_widths = max_col_widths
         acceptable_width = terminal_width - 10
-        inrange = lambda: acceptable_width < current_width < terminal_width
         while too_wide and max_col_widths > 1:
             if current_width > terminal_width:
                 previous_col_widths = max_col_widths
@@ -558,7 +557,7 @@ def data_to_string(
                 maxcolwidths=max_col_widths,
             )
             current_width = output.index("\n")
-            if inrange():
+            if acceptable_width < current_width < terminal_width:
                 too_wide = False
         if too_wide:
             return str(data)
