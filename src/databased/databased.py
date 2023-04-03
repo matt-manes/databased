@@ -537,13 +537,18 @@ def data_to_string(
         too_wide = False
     if wrap_to_terminal and too_wide:
         previous_col_widths = max_col_widths
+        acceptable_width = terminal_width - 10
+        inrange = lambda: acceptable_width < current_width < terminal_width
         while too_wide and max_col_widths > 1:
             if current_width > terminal_width:
                 previous_col_widths = max_col_widths
                 max_col_widths = int(max_col_widths * 0.5)
             elif current_width < terminal_width:
+                # Without lowering acceptable_width, this condition will cause infinite loop
+                if max_col_widths == previous_col_widths - 1:
+                    acceptable_width -= 10
                 max_col_widths = int(
-                    max_col_widths + ((previous_col_widths - max_col_widths) * 0.5)
+                    max_col_widths + (0.5 * (previous_col_widths - max_col_widths))
                 )
             output = tabulate(
                 data,
@@ -553,7 +558,7 @@ def data_to_string(
                 maxcolwidths=max_col_widths,
             )
             current_width = output.index("\n")
-            if terminal_width - 10 < current_width < terminal_width:
+            if inrange():
                 too_wide = False
         if too_wide:
             return str(data)
