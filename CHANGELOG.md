@@ -1,10 +1,25 @@
 # Changelog
 
-## 1.4.4 (2023-04-02)
+## 1.4.5 (2023-04-03)
+
+#### Fixes
+
+* fix condition causing infinite loop in data_to_string
+#### Refactorings
+
+* add print statements to data_to_string
+* remove uneeded lambda in data_to_string
+
+
+## v1.4.4 (2023-04-02)
 
 #### Fixes
 
 * return statement was indented one level too many
+#### Others
+
+* build v1.4.4
+* update changelog
 
 
 ## v1.4.3 (2023-04-02)
