@@ -70,6 +70,14 @@ class DBManager(argshell.ArgShell):
         """Print the .db file in use."""
         print(self.dbname)
 
+    def do_backup(self, command: str):
+        """Create a backup of the current db file."""
+        print(f"Creating a back up for {self.dbname}...")
+        backup_path = self.dbname.with_stem(f"{self.dbname.stem}_bckup")
+        self.dbname.copy(backup_path, True)
+        print("Creating backup is complete.")
+        print(f"Backup path: {backup_path}")
+
     @argshell.with_parser(get_parser, [convert_match_pairs])
     def do_info(self, command: argshell.Namespace):
         """Print out the names of the database tables, their columns, and the number of rows.
