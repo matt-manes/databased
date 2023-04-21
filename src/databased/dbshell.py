@@ -51,6 +51,13 @@ def get_parser() -> argshell.Namespace:
         help=""" The name of a column to sort results by.
         Can include 'desc' as part of the argument.""",
     )
+    parser.add_argument(
+        "-l",
+        "--limit",
+        type=int,
+        default=None,
+        help=""" Only return this many results. """,
+    )
     return parser
 
 
@@ -107,8 +114,9 @@ class DBManager(argshell.ArgShell):
     @argshell.with_parser(get_parser, [convert_match_pairs])
     def do_find(self, args: argshell.Namespace):
         """Find and print rows from the database.
-        Use the -t/--table and -m/--match_pairs flags to limit the search.
+        Use the -t/--table, -m/--match_pairs, and -l/--limit flags to limit the search.
         Use the -c/--columns flag to limit what columns are printed.
+        Use the -o/--order_by flag to order the results.
         Pass -h/--help flag for parser help."""
         print("Finding records... ")
         if len(args.columns) == 0:
@@ -121,6 +129,7 @@ class DBManager(argshell.ArgShell):
                     args.match_pairs,
                     columns_to_return=args.columns,
                     order_by=args.order_by,
+                    limit=args.limit,
                 )
                 db.close()
                 print(f"{len(results)} matching rows in {table}:")
