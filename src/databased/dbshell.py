@@ -1,32 +1,13 @@
-import databased
-
-# from cmd2 import Cmd2ArgumentParser, with_argparser
-# import cmd2
-import cmd
-import argparse
-import shlex
-from functools import wraps
-from typing import Callable, Any
+import argshell
 from pathier import Pathier
+
+import databased
 
 root = Pathier(__file__).parent
 
 
-def with_argparse(parser: Callable) -> Callable:
-    def decorator(func: Callable) -> Callable:
-        @wraps(func)
-        def inner(self, command: str) -> Any:
-            command = parser(command)
-            return func(self, command)
-
-        return inner
-
-    return decorator
-
-
-def get_args(command: str) -> argparse.Namespace:
-    command = shlex.split(command)
-    parser = argparse.ArgumentParser()
+def get_parser() -> argshell.Namespace:
+    parser = argshell.ArgShellParser()
     parser.add_argument(
         "-t",
         "--tables",
@@ -62,23 +43,24 @@ def get_args(command: str) -> argparse.Namespace:
         all rows from the users table that have the name Bob,
         are from the state Alaska, and last logged in at any date.""",
     )
-    args = parser.parse_args(command)
+    return parser
+
+
+def convert_match_pairs(args: argshell.Namespace) -> argshell.Namespace:
+    """Create a list of tuples from match_pairs."""
     if args.match_pairs:
-        # Create a list of tuples from the pairs
         args.match_pairs = [
-            (column, value)
-            for column, value in zip(args.match_pairs[::2], args.match_pairs[1::2])
+            (col, val)
+            for col, val in zip(args.match_pairs[::2], args.match_pairs[1::2])
         ]
     return args
 
 
-class DbShell(cmd.Cmd):
-    intro = "Cmd shell testing"
-    prompt = "yeet>>>"
-
-    def __init__(self, *args, **kwargs):
-        self.dbname = (root - 2) / "tests/test.db"
-        super().__init__()
+class DBManager(argshell.ArgShell):
+    intro = "Starting dbmanager..."
+    prompt = "based>"
+    root = Pathier(__file__).parent
+    dbname = (root - 2) / "tests/test.db"  # This is for testing
 
     def do_use_db(self, command: str):
         """Set which database file to use."""
@@ -88,9 +70,11 @@ class DbShell(cmd.Cmd):
         """Print the .db file in use."""
         print(self.dbname)
 
-    @with_argparse(get_args)
-    def do_info(self, command: argparse.Namespace):
-        """Print out the names of the database tables, their columns, and the number of rows. Use the -t/--table flag to only show the info for certain tables."""
+    @argshell.with_parser(get_parser, [convert_match_pairs])
+    def do_info(self, command: argshell.Namespace):
+        """Print out the names of the database tables, their columns, and the number of rows.
+        Use the -t/--table flag to only show the info for certain tables.
+        Pass -h/--help flag for parser help."""
         print("Getting database info...")
         with databased.DataBased(self.dbname) as db:
             tables = command.tables or db.get_table_names()
@@ -104,9 +88,12 @@ class DbShell(cmd.Cmd):
             ]
         print(databased.data_to_string(info))
 
-    @with_argparse(get_args)
-    def do_find(self, command: argparse.Namespace):
-        """Find and print rows from the database. Use the -t/--table and -m/--match_pairs flags to limit the search. Use the -c/--columns flag to limit what columns are printed."""
+    @argshell.with_parser(get_parser, [convert_match_pairs])
+    def do_find(self, command: argshell.Namespace):
+        """Find and print rows from the database.
+        Use the -t/--table and -m/--match_pairs flags to limit the search.
+        Use the -c/--columns flag to limit what columns are printed.
+        Pass -h/--help flag for parser help."""
         print("Finding records... ")
         if len(command.columns) == 0:
             command.columns = None
@@ -125,11 +112,9 @@ class DbShell(cmd.Cmd):
                     print(*results, sep="\n")
                 print()
 
-    def do_quit(self, command: str):
-        """Quit shell"""
-        return True
-
     def preloop(self):
+        """Scan the current directory for a .db file to use.
+        If not found, prompt the user for one."""
         if not self.dbname:
             print("Searching for database...")
             dbs = list(Pathier.cwd().glob("*.db"))
@@ -142,4 +127,4 @@ class DbShell(cmd.Cmd):
 
 
 if __name__ == "__main__":
-    DbShell().cmdloop()
+    DBManager().cmdloop()
