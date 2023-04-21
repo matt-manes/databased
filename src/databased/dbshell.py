@@ -43,6 +43,14 @@ def get_parser() -> argshell.Namespace:
         all rows from the users table that have the name Bob,
         are from the state Alaska, and last logged in at any date.""",
     )
+    parser.add_argument(
+        "-o",
+        "--order_by",
+        type=str,
+        default=None,
+        help=""" The name of a column to sort results by.
+        Can include 'desc' as part of the argument.""",
+    )
     return parser
 
 
@@ -79,13 +87,13 @@ class DBManager(argshell.ArgShell):
         print(f"Backup path: {backup_path}")
 
     @argshell.with_parser(get_parser, [convert_match_pairs])
-    def do_info(self, command: argshell.Namespace):
+    def do_info(self, args: argshell.Namespace):
         """Print out the names of the database tables, their columns, and the number of rows.
         Use the -t/--table flag to only show the info for certain tables.
         Pass -h/--help flag for parser help."""
         print("Getting database info...")
         with databased.DataBased(self.dbname) as db:
-            tables = command.tables or db.get_table_names()
+            tables = args.tables or db.get_table_names()
             info = [
                 {
                     "Table Name": table,
@@ -97,19 +105,22 @@ class DBManager(argshell.ArgShell):
         print(databased.data_to_string(info))
 
     @argshell.with_parser(get_parser, [convert_match_pairs])
-    def do_find(self, command: argshell.Namespace):
+    def do_find(self, args: argshell.Namespace):
         """Find and print rows from the database.
         Use the -t/--table and -m/--match_pairs flags to limit the search.
         Use the -c/--columns flag to limit what columns are printed.
         Pass -h/--help flag for parser help."""
         print("Finding records... ")
-        if len(command.columns) == 0:
-            command.columns = None
+        if len(args.columns) == 0:
+            args.columns = None
         with databased.DataBased(self.dbname) as db:
-            tables = command.tables or db.get_table_names()
+            tables = args.tables or db.get_table_names()
             for table in tables:
                 results = db.get_rows(
-                    table, command.match_pairs, columns_to_return=command.columns
+                    table,
+                    args.match_pairs,
+                    columns_to_return=args.columns,
+                    order_by=args.order_by,
                 )
                 db.close()
                 print(f"{len(results)} matching rows in {table}:")
