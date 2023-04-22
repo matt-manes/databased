@@ -69,6 +69,12 @@ def get_parser() -> argshell.Namespace:
     return parser
 
 
+def get_update_parser() -> argshell.ArgShellParser:
+    parser = get_parser()
+    parser.add_argument("new_value", help=""" The new value to update to. """)
+    return parser
+
+
 def convert_match_pairs(args: argshell.Namespace) -> argshell.Namespace:
     """Create a list of tuples from match_pairs."""
     if args.match_pairs:
@@ -122,7 +128,7 @@ class DBManager(argshell.ArgShell):
     @argshell.with_parser(get_parser, [convert_match_pairs])
     def do_find_rows(self, args: argshell.Namespace):
         """Find and print rows from the database.
-        Use the -t/--table, -m/--match_pairs, and -l/--limit flags to limit the search.
+        Use the -t/--tables, -m/--match_pairs, and -l/--limit flags to limit the search.
         Use the -c/--columns flag to limit what columns are printed.
         Use the -o/--order_by flag to order the results.
         Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs
@@ -153,7 +159,7 @@ class DBManager(argshell.ArgShell):
     @argshell.with_parser(get_parser, [convert_match_pairs])
     def do_count(self, args: argshell.Namespace):
         """Print the number of rows in the database.
-        Use the -t/--table flag to limit results to a specific table(s).
+        Use the -t/--tables flag to limit results to a specific table(s).
         Use the -m/--match_pairs flag to limit the results to rows matching these criteria.
         Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs
         Pass -h/--help flag for parser help."""
@@ -174,6 +180,22 @@ class DBManager(argshell.ArgShell):
                 print(*result, sep="|-|")
         except Exception as e:
             print(f"{type(e).__name__}: {e}")
+
+    @argshell.with_parser(get_update_parser, [convert_match_pairs])
+    def do_update(self, args: argshell.Namespace):
+        """Update a column to a new value.
+        The value to update to is a positional arg.
+        Use the -t/--tables flag to specify which tables to update.
+        Use the -c/--columns flag to specify the column to update.
+        Use the -m/--match_pairs flag to specify what rows to update."""
+        print("Updating rows...")
+        with databased.DataBased(self.dbname) as db:
+            tables = args.tables or db.get_table_names()
+            for table in tables:
+                if db.update(table, args.columns[0], args.new_value, args.match_pairs):
+                    print(f"Updating rows in {table} table successful.")
+                else:
+                    print(f"Failed to update rows in {table} table.")
 
     def preloop(self):
         """Scan the current directory for a .db file to use.
