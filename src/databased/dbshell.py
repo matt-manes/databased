@@ -6,7 +6,7 @@ import databased
 root = Pathier(__file__).parent
 
 
-def get_parser() -> argshell.Namespace:
+def get_parser() -> argshell.ArgShellParser:
     parser = argshell.ArgShellParser()
     parser.add_argument(
         "-t",
