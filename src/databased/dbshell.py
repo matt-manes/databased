@@ -164,6 +164,17 @@ class DBManager(argshell.ArgShell):
                 num_rows = db.count(table, args.match_pairs, not args.partial_matching)
                 print(f"{num_rows} matching rows in {table}.")
 
+    def do_query(self, command: str):
+        """Execute a query against the current database."""
+        print(f"Executing {command}")
+        with databased.DataBased(self.dbname) as db:
+            results = db.query(command)
+        try:
+            for result in results:
+                print(*result, sep="|-|")
+        except Exception as e:
+            print(f"{type(e).__name__}: {e}")
+
     def preloop(self):
         """Scan the current directory for a .db file to use.
         If not found, prompt the user for one."""
