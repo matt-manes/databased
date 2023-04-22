@@ -140,6 +140,19 @@ class DBManager(argshell.ArgShell):
                     print(*results, sep="\n")
                 print()
 
+    @argshell.with_parser(get_parser, [convert_match_pairs])
+    def do_count(self, args: argshell.Namespace):
+        """Print the number of rows in the database.
+        Use the -t/--table flag to limit results to a specific table(s).
+        Use the -m/--match_pairs flag to limit the results to rows matching these criteria.
+        Pass -h/--help flag for parser help."""
+        print("Counting rows...")
+        with databased.DataBased(self.dbname) as db:
+            tables = args.tables or db.get_table_names()
+            for table in tables:
+                num_rows = db.count(table, args.match_pairs)
+                print(f"{num_rows} matching rows in {table}.")
+
     def preloop(self):
         """Scan the current directory for a .db file to use.
         If not found, prompt the user for one."""
