@@ -105,15 +105,17 @@ class DBManager(argshell.ArgShell):
     @argshell.with_parser(dbparsers.get_update_parser, [dbparsers.convert_match_pairs])
     def do_update(self, args: argshell.Namespace):
         """Update a column to a new value.
-        The value to update to is a positional arg.
-        Use the -t/--tables flag to specify which tables to update.
-        Use the -c/--columns flag to specify the column to update.
-        Use the -m/--match_pairs flag to specify what rows to update."""
+        Two required positional args: the column to update and the value to update to.
+        Use the -t/--tables flag to limit what tables are updated.
+        Use the -m/--match_pairs flag to specify which rows are updated.
+        >>> based>update username big_chungus -t users -m username lil_chungus
+
+        ^will update the username in table users to big_chungus where the username is currently lil_chungus^"""
         print("Updating rows...")
         with databased.DataBased(self.dbname) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
-                if db.update(table, args.columns[0], args.new_value, args.match_pairs):
+                if db.update(table, args.column, args.new_value, args.match_pairs):
                     print(f"Updating rows in {table} table successful.")
                 else:
                     print(f"Failed to update rows in {table} table.")
