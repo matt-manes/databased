@@ -1,4 +1,5 @@
 import argshell
+import dbparsers
 from pathier import Pathier
 
 import databased
@@ -6,87 +7,8 @@ import databased
 root = Pathier(__file__).parent
 
 
-def get_parser() -> argshell.ArgShellParser:
-    parser = argshell.ArgShellParser()
-    parser.add_argument(
-        "-t",
-        "--tables",
-        type=str,
-        nargs="*",
-        default=[],
-        help="""Limits commands to a specific list of tables.
-        Optional for some commands, required for others.
-        If this is the only arg given (besides -db if not already set),
-        the whole table will be printed to the terminal.""",
-    )
-    parser.add_argument(
-        "-c",
-        "--columns",
-        type=str,
-        nargs="*",
-        default=[],
-        help=""" Limits commands to a specific list of columns.
-        Optional for some commands, required for others.
-        If this and -t are the only args given 
-        (besides -db if not already set), the whole table will be printed
-        to the terminal, but with only the columns provided with this arg.""",
-    )
-    parser.add_argument(
-        "-m",
-        "--match_pairs",
-        type=str,
-        nargs="*",
-        default=[],
-        help=""" Pairs of columns and values to use row operations.
-        Wildcards ("*") supported (will be)
-        i.e. 'find -t users -m name Bob state Alaska last_login *' will print
-        all rows from the users table that have the name Bob,
-        are from the state Alaska, and last logged in at any date.""",
-    )
-    parser.add_argument(
-        "-o",
-        "--order_by",
-        type=str,
-        default=None,
-        help=""" The name of a column to sort results by.
-        Can include 'desc' as part of the argument.""",
-    )
-    parser.add_argument(
-        "-l",
-        "--limit",
-        type=int,
-        default=None,
-        help=""" Only return this many results. """,
-    )
-    parser.add_argument(
-        "-p",
-        "--partial_matching",
-        action="store_true",
-        help=""" When selecting rows using a string, the string can be a substring instead of an exact match.
-        i.e. "-t names -m first theo" only returns rows from names where the first name is exactly 'theo'.
-        "-t names -m first theo -p" would return rows with first names of 'theo', but also rows with names like 'theodore'.  """,
-    )
-    return parser
-
-
-def get_update_parser() -> argshell.ArgShellParser:
-    parser = get_parser()
-    parser.add_argument("new_value", help=""" The new value to update to. """)
-    return parser
-
-
-def convert_match_pairs(args: argshell.Namespace) -> argshell.Namespace:
-    """Create a list of tuples from match_pairs."""
-    if args.match_pairs:
-        args.match_pairs = [
-            (col, val)
-            for col, val in zip(args.match_pairs[::2], args.match_pairs[1::2])
-        ]
-    return args
-
-
 class DBManager(argshell.ArgShell):
-    intro = "Starting dbmanager..."
+    intro = "Starting dbmanager (enter help or ? for command info)..."
     prompt = "based>"
     root = Pathier(__file__).parent
     dbname = (root - 2) / "tests/test.db"  # This is for testing
@@ -124,7 +46,7 @@ class DBManager(argshell.ArgShell):
             ]
         print(databased.data_to_string(info))
 
-    @argshell.with_parser(get_parser, [convert_match_pairs])
+    @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
     def do_find(self, args: argshell.Namespace):
         """Find and print rows from the database.
         Use the -t/--tables, -m/--match_pairs, and -l/--limit flags to limit the search.
@@ -147,7 +69,7 @@ class DBManager(argshell.ArgShell):
                     exact_match=not args.partial_matching,
                 )
                 db.close()
-                print(f"{len(results)} matching rows in {table}:")
+                print(f"{len(results)} matching rows in {table} table:")
                 try:
                     print(databased.data_to_string(results))
                 except Exception as e:
@@ -155,7 +77,7 @@ class DBManager(argshell.ArgShell):
                     print(*results, sep="\n")
                 print()
 
-    @argshell.with_parser(get_parser, [convert_match_pairs])
+    @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
     def do_count(self, args: argshell.Namespace):
         """Print the number of rows in the database.
         Use the -t/--tables flag to limit results to a specific table(s).
@@ -167,7 +89,7 @@ class DBManager(argshell.ArgShell):
             tables = args.tables or db.get_table_names()
             for table in tables:
                 num_rows = db.count(table, args.match_pairs, not args.partial_matching)
-                print(f"{num_rows} matching rows in {table}.")
+                print(f"{num_rows} matching rows in {table} table.")
 
     def do_query(self, command: str):
         """Execute a query against the current database."""
@@ -180,7 +102,7 @@ class DBManager(argshell.ArgShell):
         except Exception as e:
             print(f"{type(e).__name__}: {e}")
 
-    @argshell.with_parser(get_update_parser, [convert_match_pairs])
+    @argshell.with_parser(dbparsers.get_update_parser, [dbparsers.convert_match_pairs])
     def do_update(self, args: argshell.Namespace):
         """Update a column to a new value.
         The value to update to is a positional arg.
