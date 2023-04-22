@@ -107,14 +107,13 @@ class DBManager(argshell.ArgShell):
         print("Creating backup is complete.")
         print(f"Backup path: {backup_path}")
 
-    @argshell.with_parser(get_parser, [convert_match_pairs])
-    def do_info(self, args: argshell.Namespace):
+    def do_info(self, command: str):
         """Print out the names of the database tables, their columns, and the number of rows.
-        Use the -t/--table flag to only show the info for certain tables.
-        Pass -h/--help flag for parser help."""
+        Pass a space-separated list of table names to only print info for those specific tables,
+        otherwise all tables will be printed."""
         print("Getting database info...")
         with databased.DataBased(self.dbname) as db:
-            tables = args.tables or db.get_table_names()
+            tables = command.split() or db.get_table_names()
             info = [
                 {
                     "Table Name": table,
