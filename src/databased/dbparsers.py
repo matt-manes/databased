@@ -81,6 +81,11 @@ def get_update_parser() -> argshell.ArgShellParser:
     return parser
 
 
+def get_delete_parser() -> argshell.ArgShellParser:
+    """Returns a parser for delete function."""
+    return _get_base_parser(True)
+
+
 # ============================================================post parsers============================================================
 def convert_match_pairs(args: argshell.Namespace) -> argshell.Namespace:
     """Create a list of tuples from match_pairs."""
