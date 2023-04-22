@@ -58,6 +58,14 @@ def get_parser() -> argshell.Namespace:
         default=None,
         help=""" Only return this many results. """,
     )
+    parser.add_argument(
+        "-p",
+        "--partial_matching",
+        action="store_true",
+        help=""" When selecting rows using a string, the string can be a substring instead of an exact match.
+        i.e. "-t names -m first theo" only returns rows from names where the first name is exactly 'theo'.
+        "-t names -m first theo -p" would return rows with first names of 'theo', but also rows with names like 'theodore'.  """,
+    )
     return parser
 
 
@@ -117,6 +125,7 @@ class DBManager(argshell.ArgShell):
         Use the -t/--table, -m/--match_pairs, and -l/--limit flags to limit the search.
         Use the -c/--columns flag to limit what columns are printed.
         Use the -o/--order_by flag to order the results.
+        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs
         Pass -h/--help flag for parser help."""
         print("Finding records... ")
         if len(args.columns) == 0:
@@ -130,6 +139,7 @@ class DBManager(argshell.ArgShell):
                     columns_to_return=args.columns,
                     order_by=args.order_by,
                     limit=args.limit,
+                    exact_match=not args.partial_matching,
                 )
                 db.close()
                 print(f"{len(results)} matching rows in {table}:")
@@ -145,12 +155,13 @@ class DBManager(argshell.ArgShell):
         """Print the number of rows in the database.
         Use the -t/--table flag to limit results to a specific table(s).
         Use the -m/--match_pairs flag to limit the results to rows matching these criteria.
+        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs
         Pass -h/--help flag for parser help."""
         print("Counting rows...")
         with databased.DataBased(self.dbname) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
-                num_rows = db.count(table, args.match_pairs)
+                num_rows = db.count(table, args.match_pairs, not args.partial_matching)
                 print(f"{num_rows} matching rows in {table}.")
 
     def preloop(self):
