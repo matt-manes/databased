@@ -69,9 +69,14 @@ def get_lookup_parser() -> argshell.ArgShellParser:
 def get_update_parser() -> argshell.ArgShellParser:
     """Returns a parser for update function."""
     parser = argshell.ArgShellParser(parents=[_get_base_parser()])
-    parser.add_argument("column", type=str, help=""" The column to update. """)
     parser.add_argument(
-        "new_value", type=Any, help=""" The new value to update with. """
+        "-c", "--column", required=True, type=str, help=""" The column to update. """
+    )
+    parser.add_argument(
+        "-v",
+        "--new_value",
+        required=True,
+        help=""" The new value to update with. """,
     )
     return parser
 
