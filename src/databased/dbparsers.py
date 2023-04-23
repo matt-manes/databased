@@ -1,5 +1,4 @@
 import argshell
-from typing import Any
 
 """ Parser building functions for DBShell """
 
