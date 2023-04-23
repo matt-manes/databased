@@ -39,3 +39,5 @@ exclude = [
     ".vscode",
     "tests"
 ]
+[project.scripts]
+dbmanager = "databased.dbmanager:main"
