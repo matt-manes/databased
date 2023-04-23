@@ -195,5 +195,5 @@ class DBManager(argshell.ArgShell):
             raise ValueError(f"{self.dbpath} is not a file.")
 
 
-if __name__ == "__main__":
+def main():
     DBManager().cmdloop()
