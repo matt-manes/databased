@@ -51,7 +51,6 @@ class DataBased:
             encoding=logger_encoding, message_format=logger_message_format
         )
         self.connection_open = False
-        self.create_manager()
 
     def __enter__(self):
         self.open()
@@ -59,14 +58,6 @@ class DataBased:
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
         self.close()
-
-    def create_manager(self):
-        """Create dbmanager.py in the same directory
-        as the database file if it doesn't exist."""
-        manager_path = self.dbpath.parent / "dbmanager.py"
-        if not manager_path.exists():
-            manager_template = (Path(__file__).parent / "dbmanager.py").read_text()
-            manager_path.write_text(manager_template.replace("$dbname", self.dbname))
 
     def open(self):
         """Open connection to db."""
