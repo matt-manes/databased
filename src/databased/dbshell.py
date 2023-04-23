@@ -82,7 +82,7 @@ class DBManager(argshell.ArgShell):
         """Print the number of rows in the database.
         Use the -t/--tables flag to limit results to a specific table(s).
         Use the -m/--match_pairs flag to limit the results to rows matching these criteria.
-        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs
+        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
         Pass -h/--help flag for parser help."""
         print("Counting rows...")
         with databased.DataBased(self.dbname) as db:
@@ -110,7 +110,7 @@ class DBManager(argshell.ArgShell):
         Use the -m/--match_pairs flag to specify which rows are updated.
         >>> based>update username big_chungus -t users -m username lil_chungus
 
-        ^will update the username in table users to big_chungus where the username is currently lil_chungus^"""
+        ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
         print("Updating rows...")
         with databased.DataBased(self.dbname) as db:
             tables = args.tables or db.get_table_names()
@@ -119,6 +119,22 @@ class DBManager(argshell.ArgShell):
                     print(f"Updating rows in {table} table successful.")
                 else:
                     print(f"Failed to update rows in {table} table.")
+
+    @argshell.with_parser(dbparsers.get_delete_parser, [dbparsers.convert_match_pairs])
+    def do_delete(self, args: argshell.Namespace):
+        """Delete rows from the database.
+        Use the -t/--tables flag to limit what tables rows are deleted from.
+        Use the -m/--match_pairs flag to specify which rows are deleted.
+        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
+        >>> based>delete -t users -m username chungus -p
+
+        ^will delete all rows in the 'users' table whose username contains 'chungus'^"""
+        print("Deleting records...")
+        with databased.DataBased(self.dbname) as db:
+            tables = args.tables or db.get_table_names()
+            for table in tables:
+                num_rows = db.delete(table, args.match_pairs, not args.partial_matching)
+                print(f"Deleted {num_rows} rows from {table} table.")
 
     def preloop(self):
         """Scan the current directory for a .db file to use.
