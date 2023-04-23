@@ -8,10 +8,19 @@ import databased
 class DBManager(argshell.ArgShell):
     intro = "Starting dbmanager (enter help or ? for command info)..."
     prompt = "based>"
+    dbname = None
 
     def do_use_db(self, command: str):
         """Set which database file to use."""
-        self.dbname = Pathier(command)
+        dbname = Pathier(command)
+        if not dbname.exists():
+            print(f"{dbname} does not exist.")
+            print(f"Still using {self.dbname}")
+        elif not dbname.is_file():
+            print(f"{dbname} is not a file.")
+            print(f"Still using {self.dbname}")
+        else:
+            self.dbname = dbname
 
     def do_dbname(self, command: str):
         """Print the .db file in use."""
@@ -132,18 +141,58 @@ class DBManager(argshell.ArgShell):
                 num_rows = db.delete(table, args.match_pairs, not args.partial_matching)
                 print(f"Deleted {num_rows} rows from {table} table.")
 
+    def _choose_db(self, options: list[Pathier]) -> Pathier:
+        """Prompt the user to select from a list of files."""
+        cwd = Pathier.cwd()
+        paths = [path.separate(cwd.stem) for path in options]
+        while True:
+            print(
+                f"DB options:\n{' '.join([f'({i}) {path}' for i,path in enumerate(paths,1)])}"
+            )
+            choice = input("Enter the number of the option to use: ")
+            try:
+                index = int(choice)
+                if not 1 <= index <= len(options):
+                    print("Choice out of range.")
+                    continue
+                return options[index - 1]
+            except Exception as e:
+                print(f"{choice} is not a valid option.")
+
     def preloop(self):
         """Scan the current directory for a .db file to use.
-        If not found, prompt the user for one."""
+        If not found, prompt the user for one or to try again recursively."""
         if not self.dbname:
             print("Searching for database...")
-            dbs = list(Pathier.cwd().glob("*.db"))
-            if dbs:
+            cwd = Pathier.cwd()
+            dbs = list(cwd.glob("*.db"))
+            if len(dbs) == 1:
                 self.dbname = dbs[0]
-                print(f"Defaulting to {self.dbname}")
+                print(f"Using database {self.dbname}.")
+            elif dbs:
+                self.dbname = self._choose_db(dbs)
             else:
-                print(f"Could not find a .db file in {Pathier.cwd()}")
-                self.dbname = Pathier(input("Enter path to .db file to use: "))
+                print(f"Could not find a .db file in {cwd}.")
+                path = input(
+                    "Enter path to .db file to use or press enter to search again recursively: "
+                )
+                if path:
+                    self.dbname = Pathier(path)
+                elif not path:
+                    print("Searching recursively...")
+                    dbs = list(cwd.rglob("*.db"))
+                    if len(dbs) == 1:
+                        self.dbname = dbs[0]
+                        print(f"Using database {self.dbname}.")
+                    elif dbs:
+                        self.dbname = self._choose_db(dbs)
+                    else:
+                        print("Could not find a .db file.")
+                        self.dbname = Pathier(input("Enter path to a .db file: "))
+        if not self.dbname.exists():
+            raise FileNotFoundError(f"{self.dbname} does not exist.")
+        if not self.dbname.is_file():
+            raise ValueError(f"{self.dbname} is not a file.")
 
 
 if __name__ == "__main__":
