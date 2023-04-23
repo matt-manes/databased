@@ -2,6 +2,7 @@ import argshell
 from pathier import Pathier
 
 import databased
+
 from databased import dbparsers
 
 
@@ -33,6 +34,10 @@ class DBManager(argshell.ArgShell):
         self.dbpath.copy(backup_path, True)
         print("Creating backup is complete.")
         print(f"Backup path: {backup_path}")
+
+    def do_size(self, command: str):
+        """Display the size of the the current db file."""
+        print(f"{self.dbpath.name} is {self.dbpath.size(True)}.")
 
     def do_info(self, command: str):
         """Print out the names of the database tables, their columns, and the number of rows.
