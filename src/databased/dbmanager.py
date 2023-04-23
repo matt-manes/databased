@@ -8,29 +8,29 @@ import databased
 class DBManager(argshell.ArgShell):
     intro = "Starting dbmanager (enter help or ? for command info)..."
     prompt = "based>"
-    dbname = None
+    dbpath = None
 
     def do_use_db(self, command: str):
         """Set which database file to use."""
-        dbname = Pathier(command)
-        if not dbname.exists():
-            print(f"{dbname} does not exist.")
-            print(f"Still using {self.dbname}")
-        elif not dbname.is_file():
-            print(f"{dbname} is not a file.")
-            print(f"Still using {self.dbname}")
+        dbpath = Pathier(command)
+        if not dbpath.exists():
+            print(f"{dbpath} does not exist.")
+            print(f"Still using {self.dbpath}")
+        elif not dbpath.is_file():
+            print(f"{dbpath} is not a file.")
+            print(f"Still using {self.dbpath}")
         else:
-            self.dbname = dbname
+            self.dbpath = dbpath
 
-    def do_dbname(self, command: str):
+    def do_dbpath(self, command: str):
         """Print the .db file in use."""
-        print(self.dbname)
+        print(self.dbpath)
 
     def do_backup(self, command: str):
         """Create a backup of the current db file."""
-        print(f"Creating a back up for {self.dbname}...")
-        backup_path = self.dbname.with_stem(f"{self.dbname.stem}_bckup")
-        self.dbname.copy(backup_path, True)
+        print(f"Creating a back up for {self.dbpath}...")
+        backup_path = self.dbpath.with_stem(f"{self.dbpath.stem}_bckup")
+        self.dbpath.copy(backup_path, True)
         print("Creating backup is complete.")
         print(f"Backup path: {backup_path}")
 
@@ -39,7 +39,7 @@ class DBManager(argshell.ArgShell):
         Pass a space-separated list of table names to only print info for those specific tables,
         otherwise all tables will be printed."""
         print("Getting database info...")
-        with databased.DataBased(self.dbname) as db:
+        with databased.DataBased(self.dbpath) as db:
             tables = command.split() or db.get_table_names()
             info = [
                 {
@@ -62,7 +62,7 @@ class DBManager(argshell.ArgShell):
         print("Finding records... ")
         if len(args.columns) == 0:
             args.columns = None
-        with databased.DataBased(self.dbname) as db:
+        with databased.DataBased(self.dbpath) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
                 results = db.get_rows(
@@ -90,7 +90,7 @@ class DBManager(argshell.ArgShell):
         Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
         Pass -h/--help flag for parser help."""
         print("Counting rows...")
-        with databased.DataBased(self.dbname) as db:
+        with databased.DataBased(self.dbpath) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
                 num_rows = db.count(table, args.match_pairs, not args.partial_matching)
@@ -99,7 +99,7 @@ class DBManager(argshell.ArgShell):
     def do_query(self, command: str):
         """Execute a query against the current database."""
         print(f"Executing {command}")
-        with databased.DataBased(self.dbname) as db:
+        with databased.DataBased(self.dbpath) as db:
             results = db.query(command)
         try:
             for result in results:
@@ -117,7 +117,7 @@ class DBManager(argshell.ArgShell):
 
         ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
         print("Updating rows...")
-        with databased.DataBased(self.dbname) as db:
+        with databased.DataBased(self.dbpath) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
                 if db.update(table, args.column, args.new_value, args.match_pairs):
@@ -135,7 +135,7 @@ class DBManager(argshell.ArgShell):
 
         ^will delete all rows in the 'users' table whose username contains 'chungus'^"""
         print("Deleting records...")
-        with databased.DataBased(self.dbname) as db:
+        with databased.DataBased(self.dbpath) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
                 num_rows = db.delete(table, args.match_pairs, not args.partial_matching)
@@ -162,37 +162,37 @@ class DBManager(argshell.ArgShell):
     def preloop(self):
         """Scan the current directory for a .db file to use.
         If not found, prompt the user for one or to try again recursively."""
-        if not self.dbname:
+        if not self.dbpath:
             print("Searching for database...")
             cwd = Pathier.cwd()
             dbs = list(cwd.glob("*.db"))
             if len(dbs) == 1:
-                self.dbname = dbs[0]
-                print(f"Using database {self.dbname}.")
+                self.dbpath = dbs[0]
+                print(f"Using database {self.dbpath}.")
             elif dbs:
-                self.dbname = self._choose_db(dbs)
+                self.dbpath = self._choose_db(dbs)
             else:
                 print(f"Could not find a .db file in {cwd}.")
                 path = input(
                     "Enter path to .db file to use or press enter to search again recursively: "
                 )
                 if path:
-                    self.dbname = Pathier(path)
+                    self.dbpath = Pathier(path)
                 elif not path:
                     print("Searching recursively...")
                     dbs = list(cwd.rglob("*.db"))
                     if len(dbs) == 1:
-                        self.dbname = dbs[0]
-                        print(f"Using database {self.dbname}.")
+                        self.dbpath = dbs[0]
+                        print(f"Using database {self.dbpath}.")
                     elif dbs:
-                        self.dbname = self._choose_db(dbs)
+                        self.dbpath = self._choose_db(dbs)
                     else:
                         print("Could not find a .db file.")
-                        self.dbname = Pathier(input("Enter path to a .db file: "))
-        if not self.dbname.exists():
-            raise FileNotFoundError(f"{self.dbname} does not exist.")
-        if not self.dbname.is_file():
-            raise ValueError(f"{self.dbname} is not a file.")
+                        self.dbpath = Pathier(input("Enter path to a .db file: "))
+        if not self.dbpath.exists():
+            raise FileNotFoundError(f"{self.dbpath} does not exist.")
+        if not self.dbpath.is_file():
+            raise ValueError(f"{self.dbpath} is not a file.")
 
 
 if __name__ == "__main__":
