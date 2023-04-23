@@ -1,8 +1,8 @@
 import argshell
-import dbparsers
 from pathier import Pathier
 
 import databased
+from databased import dbparsers
 
 
 class DBManager(argshell.ArgShell):
