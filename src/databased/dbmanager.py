@@ -4,14 +4,10 @@ from pathier import Pathier
 
 import databased
 
-root = Pathier(__file__).parent
-
 
 class DBManager(argshell.ArgShell):
     intro = "Starting dbmanager (enter help or ? for command info)..."
     prompt = "based>"
-    root = Pathier(__file__).parent
-    dbname = (root - 2) / "tests/test.db"  # This is for testing
 
     def do_use_db(self, command: str):
         """Set which database file to use."""
