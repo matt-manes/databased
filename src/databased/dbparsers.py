@@ -83,7 +83,16 @@ def get_update_parser() -> argshell.ArgShellParser:
 
 def get_delete_parser() -> argshell.ArgShellParser:
     """Returns a parser for delete function."""
-    return _get_base_parser(True)
+    parser = argshell.ArgShellParser(parents=[_get_base_parser()])
+    parser.add_argument(
+        "-p",
+        "--partial_matching",
+        action="store_true",
+        help=""" When selecting rows using a string, the string can be a substring instead of an exact match.
+        i.e. "-t names -m first theo" only returns rows from names where the first name is exactly 'theo'.
+        "-t names -m first theo -p" would return rows with first names of 'theo', but also rows with names like 'theodore'.  """,
+    )
+    return parser
 
 
 # ============================================================post parsers============================================================
