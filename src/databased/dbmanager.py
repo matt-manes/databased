@@ -1,286 +1,154 @@
-import argparse
-import shlex
-import sys
-from pathlib import Path
+import argshell
+import dbparsers
+from pathier import Pathier
 
-from databased import DataBased, data_to_string
+import databased
 
-""" A command line tool to interact with a database file.
-Works like a standard argparse based cli
-except it will ask you for arguments indefinitely in a loop
-instead of having to invoke the script with arguments over and over.
-I.e. instead of "python dbManager.py -db database.db -f someString -t someTable",
-just invoke "python dbManager.py" then a repeating "Enter command: " prompt will appear
-and "-db database.db -f someString -t someTable" can be entered.
-Note: a -db arg only needs to be provided once (if there is no default set) unless
-you wish to change databases. So a subsequent command to the above
-can just be entered as "-f someOtherString -t someTable".
-
-This is just a quick template and can be customized by adding arguments and adding/overriding functions
-for specific database projects."""
-
-# Subclassing to prevent program exit when the -h/--help arg is passed.
-class ArgParser(argparse.ArgumentParser):
-    def exit(self, status=0, message=None):
-        if message:
-            self._print_message(message, sys.stderr)
+root = Pathier(__file__).parent
 
 
-def get_args(command: str) -> argparse.Namespace:
-    parser = ArgParser()
+class DBManager(argshell.ArgShell):
+    intro = "Starting dbmanager (enter help or ? for command info)..."
+    prompt = "based>"
+    root = Pathier(__file__).parent
+    dbname = (root - 2) / "tests/test.db"  # This is for testing
 
-    parser.add_argument(
-        "-db",
-        "--dbname",
-        type=str,
-        default=None,
-        help="""Name of database file to use.
-        Required on the first loop if no default is set,
-        but subsequent loops will resuse the same database
-        unless a new one is provided through this arg.""",
-    )
+    def do_use_db(self, command: str):
+        """Set which database file to use."""
+        self.dbname = Pathier(command)
 
-    parser.add_argument(
-        "-i",
-        "--info",
-        action="store_true",
-        help=""" Display table names, their respective columns, and how many records they contain.
-        If a -t/--tables arg is passed, just the columns and row count for those tables will be shown.""",
-    )
+    def do_dbname(self, command: str):
+        """Print the .db file in use."""
+        print(self.dbname)
 
-    parser.add_argument(
-        "-t",
-        "--tables",
-        type=str,
-        nargs="*",
-        default=[],
-        help="""Limits commands to a specific list of tables.
-        Optional for some commands, required for others.
-        If this is the only arg given (besides -db if not already set),
-        the whole table will be printed to the terminal.""",
-    )
+    def do_backup(self, command: str):
+        """Create a backup of the current db file."""
+        print(f"Creating a back up for {self.dbname}...")
+        backup_path = self.dbname.with_stem(f"{self.dbname.stem}_bckup")
+        self.dbname.copy(backup_path, True)
+        print("Creating backup is complete.")
+        print(f"Backup path: {backup_path}")
 
-    parser.add_argument(
-        "-c",
-        "--columns",
-        type=str,
-        nargs="*",
-        default=[],
-        help=""" Limits commands to a specific list of columns.
-        Optional for some commands, required for others.
-        If this and -t are the only args given 
-        (besides -db if not already set), the whole table will be printed
-        to the terminal, but with only the columns provided with this arg.""",
-    )
+    def do_info(self, command: str):
+        """Print out the names of the database tables, their columns, and the number of rows.
+        Pass a space-separated list of table names to only print info for those specific tables,
+        otherwise all tables will be printed."""
+        print("Getting database info...")
+        with databased.DataBased(self.dbname) as db:
+            tables = command.split() or db.get_table_names()
+            info = [
+                {
+                    "Table Name": table,
+                    "Columns": ", ".join(db.get_column_names(table)),
+                    "Number of Rows": db.count(table),
+                }
+                for table in tables
+            ]
+        print(databased.data_to_string(info))
 
-    parser.add_argument(
-        "-f",
-        "--find",
-        type=str,
-        default=None,
-        help=""" A substring to search the database for. 
-        If a -c/--columns arg(s) is not given, the values will be matched against all columns.
-        Similarly, if a -t/--tables arg(s) is not given, the values will be searched for in all tables.""",
-    )
+    @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
+    def do_find(self, args: argshell.Namespace):
+        """Find and print rows from the database.
+        Use the -t/--tables, -m/--match_pairs, and -l/--limit flags to limit the search.
+        Use the -c/--columns flag to limit what columns are printed.
+        Use the -o/--order_by flag to order the results.
+        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs
+        Pass -h/--help flag for parser help."""
+        print("Finding records... ")
+        if len(args.columns) == 0:
+            args.columns = None
+        with databased.DataBased(self.dbname) as db:
+            tables = args.tables or db.get_table_names()
+            for table in tables:
+                results = db.get_rows(
+                    table,
+                    args.match_pairs,
+                    columns_to_return=args.columns,
+                    order_by=args.order_by,
+                    limit=args.limit,
+                    exact_match=not args.partial_matching,
+                )
+                db.close()
+                print(f"{len(results)} matching rows in {table} table:")
+                try:
+                    print(databased.data_to_string(results))
+                except Exception as e:
+                    print("Couldn't fit data into a grid.")
+                    print(*results, sep="\n")
+                print()
 
-    parser.add_argument(
-        "-sco",
-        "--show_count_only",
-        action="store_true",
-        help=""" Show the number of results returned by -f/--find,
-        but don't print the results to the terminal.""",
-    )
+    @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
+    def do_count(self, args: argshell.Namespace):
+        """Print the number of rows in the database.
+        Use the -t/--tables flag to limit results to a specific table(s).
+        Use the -m/--match_pairs flag to limit the results to rows matching these criteria.
+        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
+        Pass -h/--help flag for parser help."""
+        print("Counting rows...")
+        with databased.DataBased(self.dbname) as db:
+            tables = args.tables or db.get_table_names()
+            for table in tables:
+                num_rows = db.count(table, args.match_pairs, not args.partial_matching)
+                print(f"{num_rows} matching rows in {table} table.")
 
-    parser.add_argument(
-        "-d",
-        "--delete",
-        type=str,
-        nargs="*",
-        default=[],
-        help=""" A list of values to be deleted from the database.
-        A -c/--columns arg must be supplied.
-        A -t/--tables arg must be supplied.""",
-    )
+    def do_query(self, command: str):
+        """Execute a query against the current database."""
+        print(f"Executing {command}")
+        with databased.DataBased(self.dbname) as db:
+            results = db.query(command)
+        try:
+            for result in results:
+                print(*result, sep="|-|")
+        except Exception as e:
+            print(f"{type(e).__name__}: {e}")
 
-    parser.add_argument(
-        "-u",
-        "--update",
-        type=str,
-        default=None,
-        nargs="*",
-        help=""" Update a record in the database.
-        Expects the first argument to be the new value and interprets
-        subsequent arguements as pairs of 'column' and 'value' to use
-        when selecting which rows to update. The -c/--columns arg will
-        be the column that is updated with the new value for matching rows.
-        A -c/--columns arg must be supplied.
-        A -t/--tables arg must be supplied.
-        e.g '-t birds -c last_seen -u today name sparrow migratory 0'
-        will update the 'last_seen' column of the 'birds' table to 'today'
-        for all rows that have either/both of their 'name' and 'migratory'
-        columns set to 'sparrow' and '0', respectively.""",
-    )
+    @argshell.with_parser(dbparsers.get_update_parser, [dbparsers.convert_match_pairs])
+    def do_update(self, args: argshell.Namespace):
+        """Update a column to a new value.
+        Two required positional args: the column to update and the value to update to.
+        Use the -t/--tables flag to limit what tables are updated.
+        Use the -m/--match_pairs flag to specify which rows are updated.
+        >>> based>update username big_chungus -t users -m username lil_chungus
 
-    parser.add_argument(
-        "-sb", "--sort_by", type=str, default=None, help="Column to sort results by."
-    )
+        ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
+        print("Updating rows...")
+        with databased.DataBased(self.dbname) as db:
+            tables = args.tables or db.get_table_names()
+            for table in tables:
+                if db.update(table, args.column, args.new_value, args.match_pairs):
+                    print(f"Updating rows in {table} table successful.")
+                else:
+                    print(f"Failed to update rows in {table} table.")
 
-    parser.add_argument(
-        "-q",
-        "--query",
-        type=str,
-        default=None,
-        help=""" Directly execute a query against the database. """,
-    )
+    @argshell.with_parser(dbparsers.get_delete_parser, [dbparsers.convert_match_pairs])
+    def do_delete(self, args: argshell.Namespace):
+        """Delete rows from the database.
+        Use the -t/--tables flag to limit what tables rows are deleted from.
+        Use the -m/--match_pairs flag to specify which rows are deleted.
+        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
+        >>> based>delete -t users -m username chungus -p
 
-    args = parser.parse_args(command)
+        ^will delete all rows in the 'users' table whose username contains 'chungus'^"""
+        print("Deleting records...")
+        with databased.DataBased(self.dbname) as db:
+            tables = args.tables or db.get_table_names()
+            for table in tables:
+                num_rows = db.delete(table, args.match_pairs, not args.partial_matching)
+                print(f"Deleted {num_rows} rows from {table} table.")
 
-    if args.dbname and not Path(args.dbname).exists():
-        raise Exception(f"{args.dbname} does not exist.")
-
-    return args
-
-
-def info():
-    print("Getting database info...")
-    print()
-    if not args.tables:
-        args.tables = db.get_table_names()
-    results = []
-    for table in args.tables:
-        count = db.count(table)
-        columns = db.get_column_names(table)
-        results.append(
-            {
-                "table name": table,
-                "columns": ", ".join(columns),
-                "number of rows": count,
-            }
-        )
-    if args.sort_by and args.sort_by in results[0]:
-        results = sorted(results, key=lambda x: x[args.sort_by])
-    print(data_to_string(results))
-
-
-def find():
-    print("Finding records... ")
-    print()
-    if not args.tables:
-        args.tables = db.get_table_names()
-    for table in args.tables:
-        results = db.find(table, args.find, args.columns)
-        if args.sort_by and args.sort_by in results[0]:
-            results = sorted(results, key=lambda x: x[args.sort_by])
-        if args.columns:
-            print(
-                f"{len(results)} results for '{args.find}' in '{', '.join(args.columns)}' column(s) of '{table}' table:"
-            )
-        else:
-            print(f"{len(results)} results for '{args.find}' in '{table}' table:")
-        if not args.show_count_only:
-            try:
-                print(data_to_string(results))
-            except Exception as e:
-                print("Couldn't fit data into a grid.")
-                print(*results, sep="\n")
-        print()
-
-
-def delete():
-    if not args.tables:
-        raise ValueError("Missing -t/--tables arg for -d/--delete function.")
-    if not args.columns:
-        raise ValueError("Missing -c/--columns arg for -d/--delete function.")
-    print("Deleting records... ")
-    print()
-    num_deleted_records = 0
-    failed_deletions = []
-    for item in args.delete:
-        success = db.delete(args.tables[0], [(args.columns[0], item)])
-        if success:
-            num_deleted_records += success
-        else:
-            failed_deletions.append(item)
-    print(f"Deleted {num_deleted_records} record(s) from '{args.tables[0]}' table.")
-    if len(failed_deletions) > 0:
-        print(
-            f"Failed to delete the following {len(failed_deletions)} record(s) from '{args.tables[0]}' table:"
-        )
-        for fail in failed_deletions:
-            print(f"  {fail}")
-
-
-def update():
-    if not args.tables:
-        raise ValueError("Missing -t/--tables arg for -u/--update function.")
-    if not args.columns:
-        raise ValueError("Missing -c/--columns arg for -u/--update function.")
-    print("Updating record... ")
-    print()
-    new_value = args.update[0]
-    if len(args.update) > 1:
-        args.update = args.update[1:]
-        match_criteria = [
-            (args.update[i], args.update[i + 1]) for i in range(0, len(args.update), 2)
-        ]
-    else:
-        match_criteria = None
-    if db.update(
-        args.tables[0],
-        args.columns[0],
-        new_value,
-        match_criteria,
-    ):
-        print(
-            f"Updated '{args.columns[0]}' column to '{new_value}' in '{args.tables[0]}' table for match_criteria {match_criteria}."
-        )
-    else:
-        print(
-            f"Failed to update '{args.columns[0]}' column to '{new_value}' in '{args.tables[0]}' table for match_criteria {match_criteria}."
-        )
-
-
-def print_table():
-    for table in args.tables:
-        rows = db.get_rows(
-            table, columns_to_return=args.columns, sort_by_column=args.sort_by
-        )
-        print(f"{table} table:")
-        print(data_to_string(rows))
-
-
-def query():
-    results = db.query(args.query)
-    try:
-        for result in results:
-            print(*result, sep=" * ")
-    except Exception as e:
-        print(f"Couldn't display results of '{args.query}'.")
+    def preloop(self):
+        """Scan the current directory for a .db file to use.
+        If not found, prompt the user for one."""
+        if not self.dbname:
+            print("Searching for database...")
+            dbs = list(Pathier.cwd().glob("*.db"))
+            if dbs:
+                self.dbname = dbs[0]
+                print(f"Defaulting to {self.dbname}")
+            else:
+                print(f"Could not find a .db file in {Pathier.cwd()}")
+                self.dbname = Pathier(input("Enter path to .db file to use: "))
 
 
 if __name__ == "__main__":
-    sys.tracebacklimit = 0
-    dbname = "$dbname"
-    while True:
-        try:
-            command = shlex.split(input("Enter command: "))
-            args = get_args(command)
-            if args.dbname:
-                dbname = args.dbname
-            with DataBased(dbpath=dbname) as db:
-                if args.info:
-                    info()
-                elif args.find:
-                    find()
-                elif args.delete:
-                    delete()
-                elif args.update:
-                    update()
-                elif args.query:
-                    query()
-                else:
-                    print_table()
-        except KeyboardInterrupt:
-            break
-        except Exception as e:
-            print(e)
+    DBManager().cmdloop()
