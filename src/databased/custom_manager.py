@@ -1,4 +1,4 @@
-from databased import DBManager, dbparsers
+from databased import DataBased, DBManager, dbparsers
 
 
 class CustomManager(DBManager):
