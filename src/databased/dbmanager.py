@@ -1,8 +1,7 @@
 import argshell
 from pathier import Pathier
 
-import databased
-from databased import dbparsers
+from databased import dbparsers, DataBased
 
 
 class DBManager(argshell.ArgShell):
@@ -43,7 +42,7 @@ class DBManager(argshell.ArgShell):
         Pass a space-separated list of table names to only print info for those specific tables,
         otherwise all tables will be printed."""
         print("Getting database info...")
-        with databased.DataBased(self.dbpath) as db:
+        with DataBased(self.dbpath) as db:
             tables = command.split() or db.get_table_names()
             info = [
                 {
@@ -53,7 +52,7 @@ class DBManager(argshell.ArgShell):
                 }
                 for table in tables
             ]
-        print(databased.data_to_string(info))
+        print(DataBased.data_to_string(info))
 
     @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
     def do_find(self, args: argshell.Namespace):
@@ -66,7 +65,7 @@ class DBManager(argshell.ArgShell):
         print("Finding records... ")
         if len(args.columns) == 0:
             args.columns = None
-        with databased.DataBased(self.dbpath) as db:
+        with DataBased(self.dbpath) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
                 results = db.get_rows(
@@ -80,7 +79,7 @@ class DBManager(argshell.ArgShell):
                 db.close()
                 print(f"{len(results)} matching rows in {table} table:")
                 try:
-                    print(databased.data_to_string(results))
+                    print(DataBased.data_to_string(results))
                 except Exception as e:
                     print("Couldn't fit data into a grid.")
                     print(*results, sep="\n")
@@ -94,7 +93,7 @@ class DBManager(argshell.ArgShell):
         Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
         Pass -h/--help flag for parser help."""
         print("Counting rows...")
-        with databased.DataBased(self.dbpath) as db:
+        with DataBased(self.dbpath) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
                 num_rows = db.count(table, args.match_pairs, not args.partial_matching)
@@ -103,7 +102,7 @@ class DBManager(argshell.ArgShell):
     def do_query(self, command: str):
         """Execute a query against the current database."""
         print(f"Executing {command}")
-        with databased.DataBased(self.dbpath) as db:
+        with DataBased(self.dbpath) as db:
             results = db.query(command)
         try:
             for result in results:
@@ -121,7 +120,7 @@ class DBManager(argshell.ArgShell):
 
         ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
         print("Updating rows...")
-        with databased.DataBased(self.dbpath) as db:
+        with DataBased(self.dbpath) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
                 if db.update(table, args.column, args.new_value, args.match_pairs):
@@ -139,7 +138,7 @@ class DBManager(argshell.ArgShell):
 
         ^will delete all rows in the 'users' table whose username contains 'chungus'^"""
         print("Deleting records...")
-        with databased.DataBased(self.dbpath) as db:
+        with DataBased(self.dbpath) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
                 num_rows = db.delete(table, args.match_pairs, not args.partial_matching)
