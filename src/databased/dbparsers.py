@@ -47,8 +47,16 @@ def get_search_parser() -> argshell.ArgShellParser:
         "--tables",
         type=str,
         nargs="*",
-        default=[],
-        help="""Limits command to a specific list of tables""",
+        default=None,
+        help="""Limits search to a specific list of tables""",
+    )
+    parser.add_argument(
+        "-c",
+        "--columns",
+        type=str,
+        nargs="*",
+        default=None,
+        help=""" Limits search to these columns. """,
     )
     return parser
 
