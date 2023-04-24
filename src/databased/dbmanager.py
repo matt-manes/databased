@@ -85,6 +85,24 @@ class DBManager(argshell.ArgShell):
                     print(*results, sep="\n")
                 print()
 
+    @argshell.with_parser(dbparsers.get_search_parser)
+    def do_search(self, args: argshell.Namespace):
+        """Search and return any rows containg the searched substring in any of its columns.
+        Use the -t/--tables flag to limit the search to a specific table(s).
+        Use the -c/--columns flag to limit the search to a specific column(s)."""
+        print(f"Searching for {args.search_string}...")
+        with DataBased(self.dbpath) as db:
+            tables = args.tables or db.get_table_names()
+            for table in tables:
+                columns = args.columns or db.get_column_names(table)
+                matcher = " OR ".join(
+                    f'{column} LIKE "%{args.search_string}%"' for column in columns
+                )
+                results = db.query(f"SELECT * FROM {table} WHERE {matcher};")
+                results = db._get_dict(table, results)
+                print(f"Found {len(results)} results in {table} table.")
+                print(db.data_to_string(results))
+
     @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
     def do_count(self, args: argshell.Namespace):
         """Print the number of rows in the database.
