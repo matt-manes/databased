@@ -130,7 +130,7 @@ class DBManager(argshell.ArgShell):
                 else:
                     print(f"Failed to update rows in {table} table.")
 
-    @argshell.with_parser(dbparsers.get_delete_parser, [dbparsers.convert_match_pairs])
+    @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
     def do_delete(self, args: argshell.Namespace):
         """Delete rows from the database.
         Use the -t/--tables flag to limit what tables rows are deleted from.
