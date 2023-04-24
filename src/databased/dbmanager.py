@@ -183,7 +183,7 @@ class DBManager(argshell.ArgShell):
         If not found, prompt the user for one or to try again recursively."""
         if self.dbpath:
             self.dbpath = Pathier(self.dbpath)
-            print(f"Defaulting to database {self.dbpath.separate(Pathier.cwd().stem)}")
+            print(f"Defaulting to database {self.dbpath}")
         else:
             print("Searching for database...")
             cwd = Pathier.cwd()
