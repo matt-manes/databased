@@ -36,6 +36,23 @@ def _get_base_parser(add_help: bool = False) -> argshell.ArgShellParser:
     return parser
 
 
+def get_search_parser() -> argshell.ArgShellParser:
+    """Returns a search parser."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument(
+        "search_string", type=str, help=""" Search all columns for this substring. """
+    )
+    parser.add_argument(
+        "-t",
+        "--tables",
+        type=str,
+        nargs="*",
+        default=[],
+        help="""Limits command to a specific list of tables""",
+    )
+    return parser
+
+
 def get_lookup_parser() -> argshell.ArgShellParser:
     """Returns a parser for row lookup functions."""
     parser = argshell.ArgShellParser(parents=[_get_base_parser()])
