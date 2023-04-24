@@ -146,6 +146,18 @@ class DBManager(argshell.ArgShell):
                 num_rows = db.delete(table, args.match_pairs, not args.partial_matching)
                 print(f"Deleted {num_rows} rows from {table} table.")
 
+    def do_customize(self, command: str):
+        """Generate a template file in the current working directory for creating a custom DBManager class.
+        Expects one argument: the name of the custom dbmanager.
+        This will be used to name the generated file as well as several components in the file content."""
+        custom_file = (Pathier.cwd() / command).with_suffix(".py")
+        variable_name = "_".join(word for word in command.lower().split())
+        class_name = "".join(word.capitalize() for word in command.split())
+        content = (Pathier(__file__).parent / "custom_manager.py").read_text()
+        content = content.replace("CustomManager", class_name)
+        content = content.replace("custommanager", variable_name)
+        custom_file.write_text(content)
+
     def _choose_db(self, options: list[Pathier]) -> Pathier:
         """Prompt the user to select from a list of files."""
         cwd = Pathier.cwd()
