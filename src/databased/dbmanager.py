@@ -1,7 +1,7 @@
 import argshell
 from pathier import Pathier
 
-from databased import dbparsers, DataBased
+from databased import DataBased, dbparsers
 
 
 class DBManager(argshell.ArgShell):
@@ -98,10 +98,11 @@ class DBManager(argshell.ArgShell):
                 matcher = " OR ".join(
                     f'{column} LIKE "%{args.search_string}%"' for column in columns
                 )
-                results = db.query(f"SELECT * FROM {table} WHERE {matcher};")
-                results = db._get_dict(table, results)
+                query = f"SELECT * FROM {table} WHERE {matcher};"
+                results = db.query(query)
+                results = [db._get_dict(table, result) for result in results]
                 print(f"Found {len(results)} results in {table} table.")
-                print(db.data_to_string(results))
+                print(DataBased.data_to_string(results))
 
     @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
     def do_count(self, args: argshell.Namespace):
