@@ -167,7 +167,10 @@ class DBManager(argshell.ArgShell):
     def preloop(self):
         """Scan the current directory for a .db file to use.
         If not found, prompt the user for one or to try again recursively."""
-        if not self.dbpath:
+        if self.dbpath:
+            self.dbpath = Pathier(self.dbpath)
+            print(f"Defaulting to database {self.dbpath.separate(Pathier.cwd().stem)}")
+        else:
             print("Searching for database...")
             cwd = Pathier.cwd()
             dbs = list(cwd.glob("*.db"))
