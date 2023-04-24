@@ -12,7 +12,7 @@ def _get_base_parser(add_help: bool = False) -> argshell.ArgShellParser:
         type=str,
         nargs="*",
         default=[],
-        help="""Limits commands to a specific list of tables""",
+        help="""Limits command to a specific list of tables""",
     )
     parser.add_argument(
         "-m",
@@ -20,10 +20,18 @@ def _get_base_parser(add_help: bool = False) -> argshell.ArgShellParser:
         type=str,
         nargs="*",
         default=[],
-        help=""" Pairs of columns and values to use row operations.
+        help=""" Pairs of columns and values to use for narrowing the scope of row operations.
         i.e. 'find -t users -m name Bob state Alaska last_login *' will print
         all rows from the users table that have the name Bob,
         are from the state Alaska, and last logged in at any date.""",
+    )
+    parser.add_argument(
+        "-p",
+        "--partial_matching",
+        action="store_true",
+        help=""" When selecting rows using a string, the string can be a substring instead of an exact match.
+        i.e. "-t names -m first theo" only returns rows from names where the first name is exactly 'theo'.
+        "-t names -m first theo -p" would return rows with first names of 'theo', but also rows with names like 'theodore'.  """,
     )
     return parser
 
@@ -54,14 +62,6 @@ def get_lookup_parser() -> argshell.ArgShellParser:
         default=None,
         help=""" Only return this many results. """,
     )
-    parser.add_argument(
-        "-p",
-        "--partial_matching",
-        action="store_true",
-        help=""" When selecting rows using a string, the string can be a substring instead of an exact match.
-        i.e. "-t names -m first theo" only returns rows from names where the first name is exactly 'theo'.
-        "-t names -m first theo -p" would return rows with first names of 'theo', but also rows with names like 'theodore'.  """,
-    )
     return parser
 
 
@@ -76,20 +76,6 @@ def get_update_parser() -> argshell.ArgShellParser:
         "--new_value",
         required=True,
         help=""" The new value to update with. """,
-    )
-    return parser
-
-
-def get_delete_parser() -> argshell.ArgShellParser:
-    """Returns a parser for delete function."""
-    parser = argshell.ArgShellParser(parents=[_get_base_parser()])
-    parser.add_argument(
-        "-p",
-        "--partial_matching",
-        action="store_true",
-        help=""" When selecting rows using a string, the string can be a substring instead of an exact match.
-        i.e. "-t names -m first theo" only returns rows from names where the first name is exactly 'theo'.
-        "-t names -m first theo -p" would return rows with first names of 'theo', but also rows with names like 'theodore'.  """,
     )
     return parser
 
