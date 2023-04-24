@@ -149,7 +149,7 @@ class DBManager(argshell.ArgShell):
         """Generate a template file in the current working directory for creating a custom DBManager class.
         Expects one argument: the name of the custom dbmanager.
         This will be used to name the generated file as well as several components in the file content."""
-        custom_file = (Pathier.cwd() / command).with_suffix(".py")
+        custom_file = (Pathier.cwd() / command.replace(" ", "_")).with_suffix(".py")
         if custom_file.exists():
             print(f"Error: {custom_file.name} already exists in this location.")
         else:
