@@ -145,6 +145,15 @@ class DBManager(argshell.ArgShell):
                 num_rows = db.delete(table, args.match_pairs, not args.partial_matching)
                 print(f"Deleted {num_rows} rows from {table} table.")
 
+    def do_flush_log(self, arg: str):
+        """Clear the log file for this database."""
+        log_path = self.dbpath.with_name(self.dbpath.stem + "db.log")
+        if not log_path.exists():
+            print(f"No log file at path {log_path}")
+        else:
+            print(f"Flushing log...")
+            log_path.write_text("")
+
     def do_customize(self, command: str):
         """Generate a template file in the current working directory for creating a custom DBManager class.
         Expects one argument: the name of the custom dbmanager.
