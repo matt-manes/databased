@@ -43,6 +43,11 @@ class DBManager(argshell.ArgShell):
         with DataBased(self.dbpath) as db:
             db.create_table(args.table, args.columns)
 
+    def do_drop_table(self, arg: str):
+        """Drop the specified table."""
+        with DataBased(self.dbpath) as db:
+            db.drop_table(arg)
+
     def do_info(self, arg: str):
         """Print out the names of the database tables, their columns, and the number of rows.
         Pass a space-separated list of table names to only print info for those specific tables,
