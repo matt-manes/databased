@@ -41,7 +41,7 @@ class DBManager(argshell.ArgShell):
     def do_create_table(self, args: argshell.Namespace):
         """Create a table."""
         with DataBased(self.dbpath) as db:
-            db.create_table(args.table, args.columns)
+            db.create_table(args.table_name, args.columns)
 
     def do_drop_table(self, arg: str):
         """Drop the specified table."""
