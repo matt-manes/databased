@@ -36,6 +36,23 @@ def _get_base_parser(add_help: bool = False) -> argshell.ArgShellParser:
     return parser
 
 
+def get_create_table_parser() -> argshell.ArgShellParser:
+    """Returns a parser for adding a table to the database."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument(
+        "table_name", type=str, help=""" The name of the table to add. """
+    )
+    parser.add_argument(
+        "-c",
+        "--columns",
+        type=str,
+        nargs="*",
+        help=""" A list of column definitions for the table.
+        i.e. 'mytable -c "username text unique" "date_registered timestamp" "email_verified int default 0"'""",
+    )
+    return parser
+
+
 def get_search_parser() -> argshell.ArgShellParser:
     """Returns a search parser."""
     parser = argshell.ArgShellParser()
