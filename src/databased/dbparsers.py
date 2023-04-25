@@ -36,9 +36,9 @@ def _get_base_parser(add_help: bool = False) -> argshell.ArgShellParser:
     return parser
 
 
-def get_create_table_parser() -> argshell.ArgShellParser:
+def get_create_table_parser(add_help: bool = True) -> argshell.ArgShellParser:
     """Returns a parser for adding a table to the database."""
-    parser = argshell.ArgShellParser()
+    parser = argshell.ArgShellParser(add_help=add_help)
     parser.add_argument(
         "table_name", type=str, help=""" The name of the table to add. """
     )
@@ -47,8 +47,24 @@ def get_create_table_parser() -> argshell.ArgShellParser:
         "--columns",
         type=str,
         nargs="*",
+        default=[],
         help=""" A list of column definitions for the table.
         i.e. 'mytable -c "username text unique" "date_registered timestamp" "email_verified int default 0"'""",
+    )
+    return parser
+
+
+def get_add_row_parser() -> argshell.ArgShellParser:
+    """Returns a parser for adding a row to a table."""
+    parser = argshell.ArgShellParser(parents=get_create_table_parser(False))
+    parser.add_argument(
+        "-v",
+        "--values",
+        type=str,
+        nargs="*",
+        default=[],
+        help=""" If -c/--columns is supplied, it and this flag must have the same number of elements.
+        If -c/--columns is not supplied, an element must be supplied to this flag for every column in the table. """,
     )
     return parser
 
@@ -130,4 +146,14 @@ def convert_match_pairs(args: argshell.Namespace) -> argshell.Namespace:
             (col, val)
             for col, val in zip(args.match_pairs[::2], args.match_pairs[1::2])
         ]
+    return args
+
+
+def verify_matching_length(args: argshell.Namespace) -> argshell.Namespace:
+    """Raise an error if -c/--columns is greater than zero and has
+    a different number of elements than -v/--values."""
+    if args.columns and len(args.columns) != len(args.values):
+        raise ValueError(
+            f"Column/Value length mismatch: {len(args.columns)} columns and {len(args.values)} values provided."
+        )
     return args
