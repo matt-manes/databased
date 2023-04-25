@@ -56,11 +56,10 @@ def get_create_table_parser(add_help: bool = True) -> argshell.ArgShellParser:
 
 def get_add_row_parser() -> argshell.ArgShellParser:
     """Returns a parser for adding a row to a table."""
-    parser = argshell.ArgShellParser(parents=get_create_table_parser(False))
+    parser = argshell.ArgShellParser(parents=[get_create_table_parser(False)])
     parser.add_argument(
         "-v",
         "--values",
-        type=str,
         nargs="*",
         default=[],
         help=""" If -c/--columns is supplied, it and this flag must have the same number of elements.
