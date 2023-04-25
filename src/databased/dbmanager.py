@@ -48,6 +48,14 @@ class DBManager(argshell.ArgShell):
         with DataBased(self.dbpath) as db:
             db.drop_table(arg)
 
+    @argshell.with_parser(
+        dbparsers.get_add_row_parser, [dbparsers.verify_matching_length]
+    )
+    def do_add_row(self, args: argshell.Namespace):
+        """Add a row to a table."""
+        with DataBased(self.dbpath) as db:
+            db.add_row(args.table_name, args.values, args.columns or None)
+
     def do_info(self, arg: str):
         """Print out the names of the database tables, their columns, and the number of rows.
         Pass a space-separated list of table names to only print info for those specific tables,
