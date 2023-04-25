@@ -151,10 +151,10 @@ class DBManager(argshell.ArgShell):
     @argshell.with_parser(dbparsers.get_update_parser, [dbparsers.convert_match_pairs])
     def do_update(self, args: argshell.Namespace):
         """Update a column to a new value.
-        Two required positional args: the column to update and the value to update to.
+        Two required args: the column (-c/--column) to update and the value (-v/--value) to update to.
         Use the -t/--tables flag to limit what tables are updated.
         Use the -m/--match_pairs flag to specify which rows are updated.
-        >>> based>update username big_chungus -t users -m username lil_chungus
+        >>> based>update -c username -v big_chungus -t users -m username lil_chungus
 
         ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
         print("Updating rows...")
