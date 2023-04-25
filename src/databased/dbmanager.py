@@ -5,13 +5,13 @@ from databased import DataBased, dbparsers
 
 
 class DBManager(argshell.ArgShell):
-    intro = "Starting dbmanager (enter help or ? for command info)..."
+    intro = "Starting dbmanager (enter help or ? for arg info)..."
     prompt = "based>"
     dbpath = None
 
-    def do_use_db(self, command: str):
+    def do_use_db(self, arg: str):
         """Set which database file to use."""
-        dbpath = Pathier(command)
+        dbpath = Pathier(arg)
         if not dbpath.exists():
             print(f"{dbpath} does not exist.")
             print(f"Still using {self.dbpath}")
@@ -21,11 +21,11 @@ class DBManager(argshell.ArgShell):
         else:
             self.dbpath = dbpath
 
-    def do_dbpath(self, command: str):
+    def do_dbpath(self, arg: str):
         """Print the .db file in use."""
         print(self.dbpath)
 
-    def do_backup(self, command: str):
+    def do_backup(self, arg: str):
         """Create a backup of the current db file."""
         print(f"Creating a back up for {self.dbpath}...")
         backup_path = self.dbpath.with_stem(f"{self.dbpath.stem}_bckup")
@@ -33,17 +33,23 @@ class DBManager(argshell.ArgShell):
         print("Creating backup is complete.")
         print(f"Backup path: {backup_path}")
 
-    def do_size(self, command: str):
+    def do_size(self, arg: str):
         """Display the size of the the current db file."""
         print(f"{self.dbpath.name} is {self.dbpath.size(True)}.")
 
-    def do_info(self, command: str):
+    @argshell.with_parser(dbparsers.get_create_table_parser)
+    def do_create_table(self, args: argshell.Namespace):
+        """Create a table."""
+        with DataBased(self.dbpath) as db:
+            db.create_table(args.table, args.columns)
+
+    def do_info(self, arg: str):
         """Print out the names of the database tables, their columns, and the number of rows.
         Pass a space-separated list of table names to only print info for those specific tables,
         otherwise all tables will be printed."""
         print("Getting database info...")
         with DataBased(self.dbpath) as db:
-            tables = command.split() or db.get_table_names()
+            tables = arg.split() or db.get_table_names()
             info = [
                 {
                     "Table Name": table,
@@ -118,11 +124,11 @@ class DBManager(argshell.ArgShell):
                 num_rows = db.count(table, args.match_pairs, not args.partial_matching)
                 print(f"{num_rows} matching rows in {table} table.")
 
-    def do_query(self, command: str):
+    def do_query(self, arg: str):
         """Execute a query against the current database."""
-        print(f"Executing {command}")
+        print(f"Executing {arg}")
         with DataBased(self.dbpath) as db:
-            results = db.query(command)
+            results = db.query(arg)
         try:
             for result in results:
                 print(*result, sep="|-|")
@@ -172,16 +178,16 @@ class DBManager(argshell.ArgShell):
             print(f"Flushing log...")
             log_path.write_text("")
 
-    def do_customize(self, command: str):
+    def do_customize(self, arg: str):
         """Generate a template file in the current working directory for creating a custom DBManager class.
         Expects one argument: the name of the custom dbmanager.
         This will be used to name the generated file as well as several components in the file content."""
-        custom_file = (Pathier.cwd() / command.replace(" ", "_")).with_suffix(".py")
+        custom_file = (Pathier.cwd() / arg.replace(" ", "_")).with_suffix(".py")
         if custom_file.exists():
             print(f"Error: {custom_file.name} already exists in this location.")
         else:
-            variable_name = "_".join(word for word in command.lower().split())
-            class_name = "".join(word.capitalize() for word in command.split())
+            variable_name = "_".join(word for word in arg.lower().split())
+            class_name = "".join(word.capitalize() for word in arg.split())
             content = (Pathier(__file__).parent / "custom_manager.py").read_text()
             content = content.replace("CustomManager", class_name)
             content = content.replace("custommanager", variable_name)
