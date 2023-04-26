@@ -1,6 +1,9 @@
 from argshell import ArgShellParser, Namespace, with_parser
+from pathier import Pathier
 
 from databased import DataBased, DBManager, dbparsers
+
+root = Pathier(__file__).parent
 
 
 class CustomManager(DBManager):
