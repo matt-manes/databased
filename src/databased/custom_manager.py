@@ -1,4 +1,4 @@
-from argshell import ArgshellParser, Namespace, with_parser
+from argshell import ArgShellParser, Namespace, with_parser
 
 from databased import DataBased, DBManager, dbparsers
 
