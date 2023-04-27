@@ -1,12 +1,13 @@
+# type: ignore
 from datetime import datetime
-from pathlib import Path
+from pathier import Pathier
 
 import pandas
 import pytest
 
 import databased
 
-root = Path(__file__).parent
+root = Pathier(__file__).parent
 dbpath = root / "dummy" / "db.db"
 
 
