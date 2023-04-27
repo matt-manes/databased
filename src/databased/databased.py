@@ -3,10 +3,10 @@ import os
 import sqlite3
 from datetime import datetime
 from functools import wraps
-from pathier import Pathier
 from typing import Any
 
 import pandas
+from pathier import Pathier
 from tabulate import tabulate
 
 

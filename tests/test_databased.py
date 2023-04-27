@@ -1,9 +1,9 @@
 # type: ignore
 from datetime import datetime
-from pathier import Pathier
 
 import pandas
 import pytest
+from pathier import Pathier
 
 import databased
 
