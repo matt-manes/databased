@@ -7,7 +7,7 @@ from databased import DataBased, dbparsers
 class DBManager(argshell.ArgShell):
     intro = "Starting dbmanager (enter help or ? for arg info)..."
     prompt = "based>"
-    dbpath = None
+    dbpath: Pathier = None  # type: ignore
 
     def do_use_db(self, arg: str):
         """Set which database file to use."""
@@ -98,7 +98,7 @@ class DBManager(argshell.ArgShell):
                 db.close()
                 print(f"{len(results)} matching rows in {table} table:")
                 try:
-                    print(DataBased.data_to_string(results))
+                    print(DataBased.data_to_string(results))  # type: ignore
                 except Exception as e:
                     print("Couldn't fit data into a grid.")
                     print(*results, sep="\n")

@@ -3,7 +3,7 @@ import os
 import sqlite3
 from datetime import datetime
 from functools import wraps
-from pathlib import Path
+from pathier import Pathier
 from typing import Any
 
 import pandas
@@ -32,7 +32,7 @@ class DataBased:
 
     def __init__(
         self,
-        dbpath: str | Path,
+        dbpath: str | Pathier,
         logger_encoding: str = "utf-8",
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
     ):
@@ -44,8 +44,8 @@ class DataBased:
 
         :param logger_message_format: '{' style format string
         for the logger object."""
-        self.dbpath = Path(dbpath)
-        self.dbname = Path(dbpath).name
+        self.dbpath = Pathier(dbpath)
+        self.dbname = Pathier(dbpath).name
         self.dbpath.parent.mkdir(parents=True, exist_ok=True)
         self._logger_init(
             encoding=logger_encoding, message_format=logger_message_format
@@ -100,7 +100,7 @@ class DataBased:
             self.logger.setLevel(logging.INFO)
 
     def _get_dict(
-        self, table: str, values: list, columns_to_return: list[str] = None
+        self, table: str, values: list, columns_to_return: list[str] | None = None
     ) -> dict:
         """Converts the values of a row into a dictionary with column names as keys.
 
@@ -199,7 +199,7 @@ class DataBased:
     def count(
         self,
         table: str,
-        match_criteria: list[tuple] | dict = None,
+        match_criteria: list[tuple] | dict | None = None,
         exact_match: bool = True,
     ) -> int:
         """Return number of items in table.
@@ -226,7 +226,9 @@ class DataBased:
             return 0
 
     @_connect
-    def add_row(self, table: str, values: tuple[any], columns: tuple[str] = None):
+    def add_row(
+        self, table: str, values: tuple[Any], columns: tuple[str] | None = None
+    ):
         """Add row of values to table.
 
         :param table: The table to insert into.
@@ -240,9 +242,10 @@ class DataBased:
         logger_values = ", ".join(str(value) for value in values)
         try:
             if columns:
-                columns = ", ".join(column for column in columns)
+                columns_query = ", ".join(column for column in columns)
                 self.cursor.execute(
-                    f"insert into {table} ({columns}) values({parameterizer})", values
+                    f"insert into {table} ({columns_query}) values({parameterizer})",
+                    values,
                 )
             else:
                 self.cursor.execute(
@@ -261,14 +264,14 @@ class DataBased:
     def get_rows(
         self,
         table: str,
-        match_criteria: list[tuple] | dict = None,
+        match_criteria: list[tuple] | dict | None = None,
         exact_match: bool = True,
-        sort_by_column: str = None,
-        columns_to_return: list[str] = None,
+        sort_by_column: str | None = None,
+        columns_to_return: list[str] | None = None,
         return_as_dataframe: bool = False,
         values_only: bool = False,
-        order_by: str = None,
-        limit: str | int = None,
+        order_by: str | None = None,
+        limit: str | int | None = None,
     ) -> list[dict] | list[tuple] | pandas.DataFrame:
         """Returns rows from table as a list of dictionaries
         where the key-value pairs of the dictionaries are
@@ -330,8 +333,8 @@ class DataBased:
 
     @_connect
     def find(
-        self, table: str, query_string: str, columns: list[str] = None
-    ) -> tuple[dict]:
+        self, table: str, query_string: str, columns: list[str] | None = None
+    ) -> list[dict]:
         """Search for rows that contain query_string as a substring
         of any column.
 
@@ -392,7 +395,7 @@ class DataBased:
         table: str,
         column_to_update: str,
         new_value: Any,
-        match_criteria: list[tuple] | dict = None,
+        match_criteria: list[tuple] | dict | None = None,
     ) -> bool:
         """Update row value for entry matched with match_criteria.
 
@@ -407,6 +410,7 @@ class DataBased:
 
         Returns True if successful, False if not."""
         query = f"update {table} set {column_to_update} = ?"
+        conditions = ""
         if match_criteria:
             if self.count(table, match_criteria) == 0:
                 self.logger.info(
@@ -426,14 +430,6 @@ class DataBased:
                 f'Updated "{column_to_update}" in "{table}" table to "{new_value}" where {conditions}'
             )
             return True
-        except UnboundLocalError:
-            table_filter_string = "\n".join(
-                table_filter for table_filter in match_criteria
-            )
-            self.logger.error(
-                f"No records found matching filters: {table_filter_string}"
-            )
-            return False
         except Exception as e:
             self.logger.error(
                 f'Failed to update "{column_to_update}" in "{table}" table to "{new_value}" where {conditions}"\n{e}'
@@ -448,13 +444,15 @@ class DataBased:
         try:
             self.cursor.execute(f"drop Table {table}")
             self.logger.info(f'Dropped table "{table}"')
+            return True
         except Exception as e:
             print(e)
             self.logger.error(f'Failed to drop table "{table}"')
+            return False
 
     @_connect
     def add_column(
-        self, table: str, column: str, _type: str, default_value: str = None
+        self, table: str, column: str, _type: str, default_value: str | None = None
     ):
         """Add a new column to table.
 
@@ -476,7 +474,7 @@ class DataBased:
 
     @staticmethod
     def data_to_string(
-        data: list[dict], sort_key: str = None, wrap_to_terminal: bool = True
+        data: list[dict], sort_key: str | None = None, wrap_to_terminal: bool = True
     ) -> str:
         """Uses tabulate to produce pretty string output
         from a list of dictionaries.
@@ -492,7 +490,7 @@ class DataBased:
 
 
 def data_to_string(
-    data: list[dict], sort_key: str = None, wrap_to_terminal: bool = True
+    data: list[dict], sort_key: str | None = None, wrap_to_terminal: bool = True
 ) -> str:
     """Use tabulate to produce grid output from a list of dictionaries.
 

@@ -9,7 +9,7 @@ root = Pathier(__file__).parent
 class CustomManager(DBManager):
     intro = "Starting custommanager (enter help or ? for command info)..."
     prompt = "custommanager>"
-    dbpath = None  # Replace None with a path to a .db file to set a default database
+    dbpath: Pathier = None  # Replace None with a path to a .db file to set a default database # type: ignore
 
 
 # For help with adding custom functionality see:
