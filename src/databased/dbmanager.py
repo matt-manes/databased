@@ -199,6 +199,18 @@ class DBManager(argshell.ArgShell):
             print(f"Flushing log...")
             log_path.write_text("")
 
+    def do_scan_dbs(self, arg: str):
+        """Scan the current working directory for `*.db` files and display them.
+
+        If the command is entered as `based>scan_dbs r`, the scan will be performed recursively."""
+        cwd = Pathier.cwd()
+        if arg.strip() == "r":
+            dbs = cwd.rglob("*.db")
+        else:
+            dbs = cwd.glob("*.db")
+        for db in dbs:
+            print(db.separate(cwd.stem))
+
     def do_customize(self, arg: str):
         """Generate a template file in the current working directory for creating a custom DBManager class.
         Expects one argument: the name of the custom dbmanager.
