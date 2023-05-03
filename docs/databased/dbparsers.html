@@ -46,6 +46,9 @@
                     <a class="function" href="#get_update_parser">get_update_parser</a>
             </li>
             <li>
+                    <a class="function" href="#get_add_column_parser">get_add_column_parser</a>
+            </li>
+            <li>
                     <a class="function" href="#convert_match_pairs">convert_match_pairs</a>
             </li>
             <li>
@@ -211,25 +214,52 @@
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="k">return</span> <span class="n">parser</span>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>
 </span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="c1"># ============================================================post parsers============================================================</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="k">def</span> <span class="nf">convert_match_pairs</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>    <span class="sd">&quot;&quot;&quot;Create a list of tuples from match_pairs.&quot;&quot;&quot;</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">:</span>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>        <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>            <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="p">]</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>    <span class="k">return</span> <span class="n">args</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a><span class="k">def</span> <span class="nf">verify_matching_length</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>    <span class="sd">&quot;&quot;&quot;Raise an error if -c/--columns is greater than zero and has</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a><span class="sd">    a different number of elements than -v/--values.&quot;&quot;&quot;</span>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>            <span class="sa">f</span><span class="s2">&quot;Column/Value length mismatch: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2"> columns and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2"> values provided.&quot;</span>
-</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>        <span class="p">)</span>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>    <span class="k">return</span> <span class="n">args</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="k">def</span> <span class="nf">get_add_column_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">:</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>    <span class="sd">&quot;&quot;&quot;Returns a parser for the add column function.&quot;&quot;&quot;</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">()</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>        <span class="s2">&quot;column_name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The name of the column to add. &quot;&quot;&quot;</span>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>    <span class="p">)</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The data type of the column to add. &quot;&quot;&quot;</span>
+</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>    <span class="p">)</span>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>        <span class="s2">&quot;-t&quot;</span><span class="p">,</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>        <span class="s2">&quot;--tables&quot;</span><span class="p">,</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>        <span class="n">default</span><span class="o">=</span><span class="p">[],</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Table(s) to add the column to.</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a><span class="s2">        If not specified, the column will be added to every table in the database.&quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>    <span class="p">)</span>
+</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>        <span class="s2">&quot;--default_value&quot;</span><span class="p">,</span>
+</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; Default value for the new column. &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>    <span class="p">)</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="k">return</span> <span class="n">parser</span>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a><span class="c1"># ============================================================post parsers============================================================</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a><span class="k">def</span> <span class="nf">convert_match_pairs</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>    <span class="sd">&quot;&quot;&quot;Create a list of tuples from match_pairs.&quot;&quot;&quot;</span>
+</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">:</span>
+</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>        <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>            <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>        <span class="p">]</span>
+</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>    <span class="k">return</span> <span class="n">args</span>
+</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>
+</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>
+</span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a><span class="k">def</span> <span class="nf">verify_matching_length</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
+</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>    <span class="sd">&quot;&quot;&quot;Raise an error if -c/--columns is greater than zero and has</span>
+</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a><span class="sd">    a different number of elements than -v/--values.&quot;&quot;&quot;</span>
+</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>            <span class="sa">f</span><span class="s2">&quot;Column/Value length mismatch: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2"> columns and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2"> values provided.&quot;</span>
+</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>        <span class="p">)</span>
+</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>    <span class="k">return</span> <span class="n">args</span>
 </span></pre></div>
 
 
@@ -420,6 +450,50 @@
 
 
                 </section>
+                <section id="get_add_column_parser">
+                            <input id="get_add_column_parser-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_add_column_parser</span><span class="signature pdoc-code condensed">(<span class="return-annotation">) -> <span class="n">argshell</span><span class="o">.</span><span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span>:</span></span>
+
+                <label class="view-source-button" for="get_add_column_parser-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#get_add_column_parser"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_add_column_parser-141"><a href="#get_add_column_parser-141"><span class="linenos">141</span></a><span class="k">def</span> <span class="nf">get_add_column_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">:</span>
+</span><span id="get_add_column_parser-142"><a href="#get_add_column_parser-142"><span class="linenos">142</span></a>    <span class="sd">&quot;&quot;&quot;Returns a parser for the add column function.&quot;&quot;&quot;</span>
+</span><span id="get_add_column_parser-143"><a href="#get_add_column_parser-143"><span class="linenos">143</span></a>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">()</span>
+</span><span id="get_add_column_parser-144"><a href="#get_add_column_parser-144"><span class="linenos">144</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="get_add_column_parser-145"><a href="#get_add_column_parser-145"><span class="linenos">145</span></a>        <span class="s2">&quot;column_name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The name of the column to add. &quot;&quot;&quot;</span>
+</span><span id="get_add_column_parser-146"><a href="#get_add_column_parser-146"><span class="linenos">146</span></a>    <span class="p">)</span>
+</span><span id="get_add_column_parser-147"><a href="#get_add_column_parser-147"><span class="linenos">147</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="get_add_column_parser-148"><a href="#get_add_column_parser-148"><span class="linenos">148</span></a>        <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The data type of the column to add. &quot;&quot;&quot;</span>
+</span><span id="get_add_column_parser-149"><a href="#get_add_column_parser-149"><span class="linenos">149</span></a>    <span class="p">)</span>
+</span><span id="get_add_column_parser-150"><a href="#get_add_column_parser-150"><span class="linenos">150</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="get_add_column_parser-151"><a href="#get_add_column_parser-151"><span class="linenos">151</span></a>        <span class="s2">&quot;-t&quot;</span><span class="p">,</span>
+</span><span id="get_add_column_parser-152"><a href="#get_add_column_parser-152"><span class="linenos">152</span></a>        <span class="s2">&quot;--tables&quot;</span><span class="p">,</span>
+</span><span id="get_add_column_parser-153"><a href="#get_add_column_parser-153"><span class="linenos">153</span></a>        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+</span><span id="get_add_column_parser-154"><a href="#get_add_column_parser-154"><span class="linenos">154</span></a>        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+</span><span id="get_add_column_parser-155"><a href="#get_add_column_parser-155"><span class="linenos">155</span></a>        <span class="n">default</span><span class="o">=</span><span class="p">[],</span>
+</span><span id="get_add_column_parser-156"><a href="#get_add_column_parser-156"><span class="linenos">156</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Table(s) to add the column to.</span>
+</span><span id="get_add_column_parser-157"><a href="#get_add_column_parser-157"><span class="linenos">157</span></a><span class="s2">        If not specified, the column will be added to every table in the database.&quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="get_add_column_parser-158"><a href="#get_add_column_parser-158"><span class="linenos">158</span></a>    <span class="p">)</span>
+</span><span id="get_add_column_parser-159"><a href="#get_add_column_parser-159"><span class="linenos">159</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="get_add_column_parser-160"><a href="#get_add_column_parser-160"><span class="linenos">160</span></a>        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+</span><span id="get_add_column_parser-161"><a href="#get_add_column_parser-161"><span class="linenos">161</span></a>        <span class="s2">&quot;--default_value&quot;</span><span class="p">,</span>
+</span><span id="get_add_column_parser-162"><a href="#get_add_column_parser-162"><span class="linenos">162</span></a>        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+</span><span id="get_add_column_parser-163"><a href="#get_add_column_parser-163"><span class="linenos">163</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; Default value for the new column. &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="get_add_column_parser-164"><a href="#get_add_column_parser-164"><span class="linenos">164</span></a>    <span class="p">)</span>
+</span><span id="get_add_column_parser-165"><a href="#get_add_column_parser-165"><span class="linenos">165</span></a>    <span class="k">return</span> <span class="n">parser</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Returns a parser for the add column function.</p>
+</div>
+
+
+                </section>
                 <section id="convert_match_pairs">
                             <input id="convert_match_pairs-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -431,14 +505,14 @@
 
     </div>
     <a class="headerlink" href="#convert_match_pairs"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="convert_match_pairs-142"><a href="#convert_match_pairs-142"><span class="linenos">142</span></a><span class="k">def</span> <span class="nf">convert_match_pairs</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
-</span><span id="convert_match_pairs-143"><a href="#convert_match_pairs-143"><span class="linenos">143</span></a>    <span class="sd">&quot;&quot;&quot;Create a list of tuples from match_pairs.&quot;&quot;&quot;</span>
-</span><span id="convert_match_pairs-144"><a href="#convert_match_pairs-144"><span class="linenos">144</span></a>    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">:</span>
-</span><span id="convert_match_pairs-145"><a href="#convert_match_pairs-145"><span class="linenos">145</span></a>        <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="convert_match_pairs-146"><a href="#convert_match_pairs-146"><span class="linenos">146</span></a>            <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-</span><span id="convert_match_pairs-147"><a href="#convert_match_pairs-147"><span class="linenos">147</span></a>            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
-</span><span id="convert_match_pairs-148"><a href="#convert_match_pairs-148"><span class="linenos">148</span></a>        <span class="p">]</span>
-</span><span id="convert_match_pairs-149"><a href="#convert_match_pairs-149"><span class="linenos">149</span></a>    <span class="k">return</span> <span class="n">args</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="convert_match_pairs-169"><a href="#convert_match_pairs-169"><span class="linenos">169</span></a><span class="k">def</span> <span class="nf">convert_match_pairs</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
+</span><span id="convert_match_pairs-170"><a href="#convert_match_pairs-170"><span class="linenos">170</span></a>    <span class="sd">&quot;&quot;&quot;Create a list of tuples from match_pairs.&quot;&quot;&quot;</span>
+</span><span id="convert_match_pairs-171"><a href="#convert_match_pairs-171"><span class="linenos">171</span></a>    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">:</span>
+</span><span id="convert_match_pairs-172"><a href="#convert_match_pairs-172"><span class="linenos">172</span></a>        <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="convert_match_pairs-173"><a href="#convert_match_pairs-173"><span class="linenos">173</span></a>            <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+</span><span id="convert_match_pairs-174"><a href="#convert_match_pairs-174"><span class="linenos">174</span></a>            <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">args</span><span class="o">.</span><span class="n">match_pairs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+</span><span id="convert_match_pairs-175"><a href="#convert_match_pairs-175"><span class="linenos">175</span></a>        <span class="p">]</span>
+</span><span id="convert_match_pairs-176"><a href="#convert_match_pairs-176"><span class="linenos">176</span></a>    <span class="k">return</span> <span class="n">args</span>
 </span></pre></div>
 
 
@@ -458,14 +532,14 @@
 
     </div>
     <a class="headerlink" href="#verify_matching_length"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="verify_matching_length-152"><a href="#verify_matching_length-152"><span class="linenos">152</span></a><span class="k">def</span> <span class="nf">verify_matching_length</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
-</span><span id="verify_matching_length-153"><a href="#verify_matching_length-153"><span class="linenos">153</span></a>    <span class="sd">&quot;&quot;&quot;Raise an error if -c/--columns is greater than zero and has</span>
-</span><span id="verify_matching_length-154"><a href="#verify_matching_length-154"><span class="linenos">154</span></a><span class="sd">    a different number of elements than -v/--values.&quot;&quot;&quot;</span>
-</span><span id="verify_matching_length-155"><a href="#verify_matching_length-155"><span class="linenos">155</span></a>    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
-</span><span id="verify_matching_length-156"><a href="#verify_matching_length-156"><span class="linenos">156</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span id="verify_matching_length-157"><a href="#verify_matching_length-157"><span class="linenos">157</span></a>            <span class="sa">f</span><span class="s2">&quot;Column/Value length mismatch: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2"> columns and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2"> values provided.&quot;</span>
-</span><span id="verify_matching_length-158"><a href="#verify_matching_length-158"><span class="linenos">158</span></a>        <span class="p">)</span>
-</span><span id="verify_matching_length-159"><a href="#verify_matching_length-159"><span class="linenos">159</span></a>    <span class="k">return</span> <span class="n">args</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="verify_matching_length-179"><a href="#verify_matching_length-179"><span class="linenos">179</span></a><span class="k">def</span> <span class="nf">verify_matching_length</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
+</span><span id="verify_matching_length-180"><a href="#verify_matching_length-180"><span class="linenos">180</span></a>    <span class="sd">&quot;&quot;&quot;Raise an error if -c/--columns is greater than zero and has</span>
+</span><span id="verify_matching_length-181"><a href="#verify_matching_length-181"><span class="linenos">181</span></a><span class="sd">    a different number of elements than -v/--values.&quot;&quot;&quot;</span>
+</span><span id="verify_matching_length-182"><a href="#verify_matching_length-182"><span class="linenos">182</span></a>    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+</span><span id="verify_matching_length-183"><a href="#verify_matching_length-183"><span class="linenos">183</span></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="verify_matching_length-184"><a href="#verify_matching_length-184"><span class="linenos">184</span></a>            <span class="sa">f</span><span class="s2">&quot;Column/Value length mismatch: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2"> columns and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2"> values provided.&quot;</span>
+</span><span id="verify_matching_length-185"><a href="#verify_matching_length-185"><span class="linenos">185</span></a>        <span class="p">)</span>
+</span><span id="verify_matching_length-186"><a href="#verify_matching_length-186"><span class="linenos">186</span></a>    <span class="k">return</span> <span class="n">args</span>
 </span></pre></div>
 
 
