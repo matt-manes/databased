@@ -38,8 +38,8 @@ class DBManager(argshell.ArgShell):
         print(f"{self.dbpath.name} is {self.dbpath.size(True)}.")
 
     @argshell.with_parser(dbparsers.get_create_table_parser)
-    def do_create_table(self, args: argshell.Namespace):
-        """Create a table."""
+    def do_add_table(self, args: argshell.Namespace):
+        """Add a new table to the database."""
         with DataBased(self.dbpath) as db:
             db.create_table(args.table_name, args.columns)
 

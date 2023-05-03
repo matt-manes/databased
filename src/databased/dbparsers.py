@@ -157,7 +157,7 @@ def get_add_column_parser() -> argshell.ArgShellParser:
     )
     parser.add_argument(
         "-d",
-        "--default_val",
+        "--default_value",
         default=None,
         help=""" Default value for the new column. """,
     )
