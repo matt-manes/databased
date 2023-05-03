@@ -37,13 +37,14 @@ class DataBased:
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
     ):
         """
-        :param dbpath: String or Path object to database file.
+        #### :params:
+
+        `dbpath`: String or Path object to database file.
         If a relative path is given, it will be relative to the
         current working directory. The log file will be saved to the
         same directory.
 
-        :param logger_message_format: '{' style format string
-        for the logger object."""
+        `logger_message_format`: '{' style format string for the logger object."""
         self.dbpath = Pathier(dbpath)
         self.dbname = Pathier(dbpath).name
         self.dbpath.parent.mkdir(parents=True, exist_ok=True)
@@ -85,7 +86,7 @@ class DataBased:
         message_format: str = "{levelname}|-|{asctime}|-|{message}",
         encoding: str = "utf-8",
     ):
-        """:param message_format: '{' style format string"""
+        """:param `message_format`: '{' style format string"""
         self.logger = logging.getLogger(self.dbname)
         if not self.logger.hasHandlers():
             handler = logging.FileHandler(
@@ -104,12 +105,14 @@ class DataBased:
     ) -> dict:
         """Converts the values of a row into a dictionary with column names as keys.
 
-        :param table: The table that values were pulled from.
+        #### :params:
 
-        :param values: List of values expected to be the same quantity
+        `table`: The table that values were pulled from.
+
+        `values`: List of values expected to be the same quantity
         and in the same order as the column names of table.
 
-        :param columns_to_return: An optional list of column names.
+        `columns_to_return`: An optional list of column names.
         If given, only these columns will be included in the returned dictionary.
         Otherwise all columns and values are returned."""
         return {
@@ -123,16 +126,18 @@ class DataBased:
     ) -> str:
         """Builds and returns the conditional portion of a query.
 
-        :param match_criteria: Can be a list of 2-tuples where each
-        tuple is (columnName, rowValue) or a dictionary where
+        #### :params:
+
+        `match_criteria`: Can be a list of 2-tuples where each
+        tuple is `(columnName, rowValue)` or a dictionary where
         keys are column names and values are row values.
 
-        :param exact_match: If False, the rowValue for a give column
+        `exact_match`: If `False`, the row value for a given column
         will be matched as a substring.
 
         Usage e.g.:
 
-        self.cursor.execute(f'select * from {table} where {conditions}')"""
+        >>> self.cursor.execute(f'select * from {table} where {conditions};')"""
         if type(match_criteria) == dict:
             match_criteria = [(k, v) for k, v in match_criteria.items()]
         if exact_match:
@@ -149,20 +154,18 @@ class DataBased:
 
     @_connect
     def query(self, query_) -> list[Any]:
-        """Execute an arbitrary query and
-        return the results."""
+        """Execute an arbitrary query and return the results."""
         self.cursor.execute(query_)
         return self.cursor.fetchall()
 
     @_connect
-    def create_tables(self, table_querys: list[str] = []):
+    def create_tables(self, table_defs: list[str] = []):
         """Create tables if they don't exist.
 
-        :param table_querys: Each query should be
-        in the form 'tableName(columnDefinitions)'"""
-        if len(table_querys) > 0:
+        :param `table_defs`: Each definition should be in the form `table_name(column_definitions)`"""
+        if len(table_defs) > 0:
             table_names = self.get_table_names()
-            for table in table_querys:
+            for table in table_defs:
                 if table.split("(")[0].strip() not in table_names:
                     self.cursor.execute(f"create table {table}")
                     self.logger.info(f'{table.split("(")[0]} table created.')
@@ -171,11 +174,12 @@ class DataBased:
     def create_table(self, table: str, column_defs: list[str]):
         """Create a table if it doesn't exist.
 
-        :param table: Name of the table to create.
+        #### :params:
 
-        :param column_defs: List of column definitions in
-        proper Sqlite3 sytax.
-        i.e. "columnName text unique" or "columnName int primary key" etc."""
+        `table`: Name of the table to create.
+
+        `column_defs`: List of column definitions in proper Sqlite3 sytax.
+        i.e. `"column_name text unique"` or `"column_name int primary key"` etc."""
         if table not in self.get_table_names():
             query = f"create table {table}({', '.join(column_defs)})"
             self.cursor.execute(query)
@@ -183,7 +187,7 @@ class DataBased:
 
     @_connect
     def get_table_names(self) -> list[str]:
-        """Returns a list of table names from database."""
+        """Returns a list of table names from the database."""
         self.cursor.execute(
             'select name from sqlite_Schema where type = "table" and name not like "sqlite_%"'
         )
@@ -202,16 +206,18 @@ class DataBased:
         match_criteria: list[tuple] | dict | None = None,
         exact_match: bool = True,
     ) -> int:
-        """Return number of items in table.
+        """Return number of items in `table`.
 
-        :param match_criteria: Can be a list of 2-tuples where each
-        tuple is (columnName, rowValue) or a dictionary where
+        #### :params:
+
+        `match_criteria`: Can be a list of 2-tuples where each
+        tuple is `(columnName, rowValue)` or a dictionary where
         keys are column names and values are row values.
-        If None, all rows from the table will be counted.
+        If `None`, all rows from the table will be counted.
 
-        :param exact_match: If False, the row value for a give column
-        in match_criteria will be matched as a substring. Has no effect if
-        match_criteria is None.
+        `exact_match`: If `False`, the row value for a given column
+        in `match_criteria` will be matched as a substring.
+        Has no effect if `match_criteria` is `None`.
         """
         query = f"select count(_rowid_) from {table}"
         try:
@@ -229,15 +235,16 @@ class DataBased:
     def add_row(
         self, table: str, values: tuple[Any], columns: tuple[str] | None = None
     ):
-        """Add row of values to table.
+        """Add a row of values to a table.
 
-        :param table: The table to insert into.
+        #### :params:
 
-        :param values: A tuple of values to be inserted into the table.
+        `table`: The table to insert values into.
 
-        :param columns: If None, values param is expected to supply
-        a value for every column in the table. If columns is
-        provided, it should contain the same number of elements as values."""
+        `values`: A tuple of values to be inserted into the table.
+
+        `columns`: If `None`, `values` is expected to supply a value for every column in the table.
+        If `columns` is provided, it should contain the same number of elements as `values`."""
         parameterizer = ", ".join("?" for _ in values)
         logger_values = ", ".join(str(value) for value in values)
         try:
@@ -273,39 +280,34 @@ class DataBased:
         order_by: str | None = None,
         limit: str | int | None = None,
     ) -> list[dict] | list[tuple] | pandas.DataFrame:
-        """Returns rows from table as a list of dictionaries
-        where the key-value pairs of the dictionaries are
-        column name: row value.
+        """Return matching rows from `table`.
 
-        :param match_criteria: Can be a list of 2-tuples where each
-        tuple is (columnName, rowValue) or a dictionary where
+        By default, rows will be returned as a list of dictionaries of the form `[{"column_name": value, ...}, ...]`
+
+
+        #### :params:
+
+        `match_criteria`: Can be a list of 2-tuples where each
+        tuple is `(columnName, rowValue)` or a dictionary where
         keys are column names and values are row values.
 
-        :param exact_match: If False, the rowValue for a give column
-        will be matched as a substring.
+        `exact_match`: If `False`, the row value for a given column will be matched as a substring.
 
-        :param sort_by_column: A column name to sort the results by.
+        `sort_by_column`: A column name to sort the results by.
         This will sort results in Python after retrieving them from the db.
         Use the 'order_by' param to use SQLite engine for ordering.
 
-        :param columns_to_return: Optional list of column names.
-        If provided, the elements returned by get_rows() will
-        only contain the provided columns. Otherwise every column
-        in the row is returned.
+        `columns_to_return`: Optional list of column names.
+        If provided, the elements returned by this function will only contain the provided columns.
+        Otherwise every column in the row is returned.
 
-        :param return_as_dataframe: If True,
-        the results will be returned as a pandas.DataFrame object.
+        `return_as_dataframe`: Return the results as a `pandas.DataFrame` object.
 
-        :param values_only: Return the results as a list of tuples
-        instead of a list of dictionaries that have column names as keys.
-        The results will still be sorted according to sort_by_column if
-        one is provided.
+        `values_only`: Return the results as a list of tuples.
 
-        :param order_by: If given, a 'order by {order_by}' clause
-        will be added to the select query.
+        `order_by`: If given, a `order by {order_by}` clause will be added to the select query.
 
-        :param limit: If given, a 'limit {limit}' clause will be
-        added to the select query.
+        `limit`: If given, a `limit {limit}` clause will be added to the select query.
         """
 
         if type(columns_to_return) is str:
@@ -335,14 +337,15 @@ class DataBased:
     def find(
         self, table: str, query_string: str, columns: list[str] | None = None
     ) -> list[dict]:
-        """Search for rows that contain query_string as a substring
-        of any column.
+        """Search for rows that contain `query_string` as a substring of any column.
 
-        :param table: The table to search.
+        #### :params:
 
-        :param query_string: The substring to search for in all columns.
+        `table`: The table to search.
 
-        :param columns: A list of columns to search for query_string.
+        `query_string`: The substring to search for in all columns.
+
+        `columns`: A list of columns to search for query_string.
         If None, all columns in the table will be searched.
         """
         if type(columns) is str:
@@ -366,16 +369,16 @@ class DataBased:
     def delete(
         self, table: str, match_criteria: list[tuple] | dict, exact_match: bool = True
     ) -> int:
-        """Delete records from table.
+        """Delete records from `table`.
 
-        Returns number of deleted records.
+        Returns the number of deleted records.
 
-        :param match_criteria: Can be a list of 2-tuples where each
-        tuple is (columnName, rowValue) or a dictionary where
-        keys are column names and values are row values.
+        #### :params:
 
-        :param exact_match: If False, the rowValue for a give column
-        will be matched as a substring.
+        `match_criteria`: Can be a list of 2-tuples where each tuple is `(column_name, value)`
+        or a dictionary where keys are column names and values are corresponding values.
+
+        `exact_match`: If `False`, the value for a given column will be matched as a substring.
         """
         num_matches = self.count(table, match_criteria, exact_match)
         conditions = self._get_conditions(match_criteria, exact_match)
@@ -397,18 +400,21 @@ class DataBased:
         new_value: Any,
         match_criteria: list[tuple] | dict | None = None,
     ) -> bool:
-        """Update row value for entry matched with match_criteria.
+        """Update the value in `column_to_update` to `new_value` for rows matched with `match_criteria`.
 
-        :param column_to_update: The column to be updated in the matched row.
+        #### :params:
 
-        :param new_value: The new value to insert.
+        `table`: The table to update rows in.
 
-        :param match_criteria: Can be a list of 2-tuples where each
-        tuple is (columnName, rowValue) or a dictionary where
-        keys are column names and values are row values.
-        If None, every row will be updated.
+        `column_to_update`: The column to be updated in the matched rows.
 
-        Returns True if successful, False if not."""
+        `new_value`: The new value to insert.
+
+        `match_criteria`: Can be a list of 2-tuples where each tuple is `(columnName, rowValue)`
+        or a dictionary where keys are column names and values are corresponding values.
+        If `None`, every row in `table` will be updated.
+
+        Returns `True` if successful, `False` if not."""
         query = f"update {table} set {column_to_update} = ?"
         conditions = ""
         if match_criteria:
@@ -438,9 +444,9 @@ class DataBased:
 
     @_connect
     def drop_table(self, table: str) -> bool:
-        """Drop a table from the database.
+        """Drop `table` from the database.
 
-        Returns True if successful, False if not."""
+        Returns `True` if successful, `False` if not."""
         try:
             self.cursor.execute(f"drop Table {table}")
             self.logger.info(f'Dropped table "{table}"')
@@ -454,13 +460,15 @@ class DataBased:
     def add_column(
         self, table: str, column: str, _type: str, default_value: str | None = None
     ):
-        """Add a new column to table.
+        """Add a new column to `table`.
 
-        :param column: Name of the column to add.
+        #### :params:
 
-        :param _type: The data type of the new column.
+        `column`: Name of the column to add.
 
-        :param default_value: Optional default value for the column."""
+        `_type`: The data type of the new column.
+
+        `default_value`: Optional default value for the column."""
         try:
             if default_value:
                 self.cursor.execute(
@@ -476,31 +484,34 @@ class DataBased:
     def data_to_string(
         data: list[dict], sort_key: str | None = None, wrap_to_terminal: bool = True
     ) -> str:
-        """Uses tabulate to produce pretty string output
-        from a list of dictionaries.
+        """Uses tabulate to produce pretty string output from a list of dictionaries.
 
-        :param data: Assumes all dictionaries in list have the same set of keys.
+        #### :params:
 
-        :param sort_key: Optional dictionary key to sort data with.
+        `data`: The list of dictionaries to create a grid from.
+        Assumes all dictionaries in list have the same set of keys.
 
-        :param wrap_to_terminal: If True, the table width will be wrapped
-        to fit within the current terminal window. Set to False
-        if the output is going into something like a txt file."""
+        `sort_key`: Optional dictionary key to sort data with.
+
+        `wrap_to_terminal`: If `True`, the table width will be wrapped to fit within the current terminal window.
+        Pass as `False` if the output is going into something like a `.txt` file."""
         return data_to_string(data, sort_key, wrap_to_terminal)
 
 
 def data_to_string(
     data: list[dict], sort_key: str | None = None, wrap_to_terminal: bool = True
 ) -> str:
-    """Use tabulate to produce grid output from a list of dictionaries.
+    """Uses tabulate to produce pretty string output from a list of dictionaries.
 
-    :param data: Assumes all dictionaries in list have the same set of keys.
+    #### :params:
 
-    :param sort_key: Optional dictionary key to sort data with.
+    `data`: The list of dictionaries to create a grid from.
+    Assumes all dictionaries in list have the same set of keys.
 
-    :param wrap_to_terminal: If True, the column widths will be reduced so the grid fits
-    within the current terminal window without wrapping. If the column widths have reduced to 1
-    and the grid is still too wide, str(data) will be returned."""
+    `sort_key`: Optional dictionary key to sort data with.
+
+    `wrap_to_terminal`: If `True`, the table width will be wrapped to fit within the current terminal window.
+    Pass as `False` if the output is going into something like a `.txt` file."""
     if len(data) == 0:
         return ""
     if sort_key:
