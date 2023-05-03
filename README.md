@@ -84,11 +84,11 @@ Enter the number of the option to use: 1
 Starting dbmanager (enter help or ? for arg info)...
 based>help
 
-Documented commands (type help <topic>):
+Documented commands (type help {topic}):
 ========================================
-add_row  create_table  delete      flush_log  query   size
-backup   customize     drop_table  help       quit    update
-count    dbpath        find        info       search  use_db
+add_column  backup     dbpath      flush_log  query     search  sys
+add_row     count      delete      help       quit      show    update
+add_table   customize  drop_table  info       scan_dbs  size    use_db
 
 >based help update
 Update a column to a new value.
@@ -118,7 +118,7 @@ options:
 based>
 </pre>
 The `customize` command can be used to generate a template file in the current directory that subclasses `DBManager`.<br>
-This allows for project specific modification/extension of available commands.
+This allows for project specific additional commands as well as modifications of available commands.
 
 
 
