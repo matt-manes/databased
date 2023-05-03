@@ -182,6 +182,14 @@ class DBManager(argshell.ArgShell):
                 num_rows = db.delete(table, args.match_pairs, not args.partial_matching)
                 print(f"Deleted {num_rows} rows from {table} table.")
 
+    @argshell.with_parser(dbparsers.get_add_column_parser)
+    def do_add_column(self, args: argshell.Namespace):
+        """Add a new column to the specified tables."""
+        with DataBased(self.dbpath) as db:
+            tables = args.tables or db.get_table_names()
+            for table in tables:
+                db.add_column(table, args.column_name, args.type, args.default_value)
+
     def do_flush_log(self, arg: str):
         """Clear the log file for this database."""
         log_path = self.dbpath.with_name(self.dbpath.stem + "db.log")

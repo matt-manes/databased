@@ -137,6 +137,33 @@ def get_update_parser() -> argshell.ArgShellParser:
     return parser
 
 
+def get_add_column_parser() -> argshell.ArgShellParser:
+    """Returns a parser for the add column function."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument(
+        "column_name", type=str, help=""" The name of the column to add. """
+    )
+    parser.add_argument(
+        "type", type=str, help=""" The data type of the column to add. """
+    )
+    parser.add_argument(
+        "-t",
+        "--tables",
+        type=str,
+        nargs="*",
+        default=[],
+        help="""Table(s) to add the column to.
+        If not specified, the column will be added to every table in the database.""",
+    )
+    parser.add_argument(
+        "-d",
+        "--default_val",
+        default=None,
+        help=""" Default value for the new column. """,
+    )
+    return parser
+
+
 # ============================================================post parsers============================================================
 def convert_match_pairs(args: argshell.Namespace) -> argshell.Namespace:
     """Create a list of tuples from match_pairs."""
