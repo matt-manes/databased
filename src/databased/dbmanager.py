@@ -74,7 +74,7 @@ class DBManager(argshell.ArgShell):
         print(DataBased.data_to_string(info))
 
     @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
-    def do_find(self, args: argshell.Namespace):
+    def do_show(self, args: argshell.Namespace):
         """Find and print rows from the database.
         Use the -t/--tables, -m/--match_pairs, and -l/--limit flags to limit the search.
         Use the -c/--columns flag to limit what columns are printed.
