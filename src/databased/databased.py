@@ -475,6 +475,7 @@ class DataBased:
                 self.cursor.execute(
                     f"alter table {table} add column {column} {_type} default {default_value};"
                 )
+                self.update(table, column, default_value)
             else:
                 self.cursor.execute(f"alter table {table} add column {column} {_type};")
             self.logger.info(f'Added column "{column}" to "{table}" table.')
