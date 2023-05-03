@@ -1,10 +1,23 @@
 # Changelog
 
-## 1.5.0 (2023-04-27)
+## 1.5.1 (2023-05-02)
+
+#### Fixes
+
+* fix add_column() not updating existing rows to default value, if given
+* fix data_to_string hanging in an infinite loop when current_width==terminal_width
+#### Refactorings
+
+* change do_find command to do_show
+#### Docs
+
+* update formatting and fix typos
+
+
+## v1.5.0 (2023-04-27)
 
 #### New Features
 
-##### dbmanager
 * add do_add_row()
 * add functionality to add a row to database
 * add do_drop_table()
@@ -24,17 +37,64 @@
 * add limit arg to parser
 * add order_by arg to parser
 * add do_backup
+#### Fixes
 
+* correct capitalization
+* fix not passing parent parsers as a list
+* fix Namespace member reference
+* fix _get_dict() usage
+* fix error when printing default database file path
+* add missing main()
+* fix dbparsers import
+#### Performance improvements
+
+* add -c/--columns to search_parser
+* add overwrite protection to do_customize()
+* increase preloop db scanning robustness
 #### Refactorings
 
+* add root object to custom_manager template
+* modify import statement
+* add DataBased to imports
+* alter custom manager file name formatting
+* replace get_delete_parser with get_lookup_parser
+* add partial_matching argument to base parser and remove get_delete_parser()
+* cast default dbpath to Pathier object in case it's a string
+* renamed to dbmanager.py
+* rename dbname to dbpath
 * delete create_manager()
+* update imports
 * replace dbmanager content with argshell version
+* add partial matching arg to get_delete_parser()
+* alter get_update_parser() argument definitions
+* move parser generators and post parser functions to separate file
+* do_info() takes a string argument instead of an argshell namespace
+* rename do_find() to do_find_rows()
 * implement usage of argshell package
 #### Docs
 
+* prune changelog
 * improve type annotations
 * update readme
 * fix doc string
+#### Others
+
+* test build
+* build v1.5.0
+* add imports to custom_manager.py
+* update imports
+* update imports
+* add dbmanager to project.scripts
+* cleanup testing lines
+* remove unused import
+* update ignores
+* add dbshell import statement
+* update ignores
+* revert changing do_find() to do_find_rows()
+* update doc string
+* correct return type annotation
+
+
 ## v1.4.5 (2023-04-03)
 
 #### Fixes
