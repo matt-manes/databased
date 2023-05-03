@@ -525,11 +525,11 @@ def data_to_string(
     if current_width < terminal_width:
         too_wide = False
     if wrap_to_terminal and too_wide:
-        print("Resizing grid to fit within the terminal...")
+        print("Resizing grid to fit within the terminal...\n")
         previous_col_widths = max_col_widths
         acceptable_width = terminal_width - 10
         while too_wide and max_col_widths > 1:
-            if current_width > terminal_width:
+            if current_width >= terminal_width:
                 previous_col_widths = max_col_widths
                 max_col_widths = int(max_col_widths * 0.5)
             elif current_width < terminal_width:
