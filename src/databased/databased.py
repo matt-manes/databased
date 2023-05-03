@@ -67,7 +67,7 @@ class DataBased:
             detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
             timeout=10,
         )
-        self.connection.execute("pragma foreign_keys = 1")
+        self.connection.execute("pragma foreign_keys = 1;")
         self.cursor = self.connection.cursor()
         self.connection_open = True
 
@@ -167,7 +167,7 @@ class DataBased:
             table_names = self.get_table_names()
             for table in table_defs:
                 if table.split("(")[0].strip() not in table_names:
-                    self.cursor.execute(f"create table {table}")
+                    self.cursor.execute(f"create table {table};")
                     self.logger.info(f'{table.split("(")[0]} table created.')
 
     @_connect
@@ -181,7 +181,7 @@ class DataBased:
         `column_defs`: List of column definitions in proper Sqlite3 sytax.
         i.e. `"column_name text unique"` or `"column_name int primary key"` etc."""
         if table not in self.get_table_names():
-            query = f"create table {table}({', '.join(column_defs)})"
+            query = f"create table {table}({', '.join(column_defs)});"
             self.cursor.execute(query)
             self.logger.info(f"'{table}' table created.")
 
@@ -189,7 +189,7 @@ class DataBased:
     def get_table_names(self) -> list[str]:
         """Returns a list of table names from the database."""
         self.cursor.execute(
-            'select name from sqlite_Schema where type = "table" and name not like "sqlite_%"'
+            'select name from sqlite_Schema where type = "table" and name not like "sqlite_%";'
         )
         return [result[0] for result in self.cursor.fetchall()]
 
@@ -223,7 +223,7 @@ class DataBased:
         try:
             if match_criteria:
                 self.cursor.execute(
-                    f"{query} where {self._get_conditions(match_criteria, exact_match)}"
+                    f"{query} where {self._get_conditions(match_criteria, exact_match)};"
                 )
             else:
                 self.cursor.execute(f"{query}")
@@ -251,12 +251,12 @@ class DataBased:
             if columns:
                 columns_query = ", ".join(column for column in columns)
                 self.cursor.execute(
-                    f"insert into {table} ({columns_query}) values({parameterizer})",
+                    f"insert into {table} ({columns_query}) values({parameterizer});",
                     values,
                 )
             else:
                 self.cursor.execute(
-                    f"insert into {table} values({parameterizer})", values
+                    f"insert into {table} values({parameterizer});", values
                 )
             self.logger.info(f'Added "{logger_values}" to {table} table.')
         except Exception as e:
@@ -383,7 +383,7 @@ class DataBased:
         num_matches = self.count(table, match_criteria, exact_match)
         conditions = self._get_conditions(match_criteria, exact_match)
         try:
-            self.cursor.execute(f"delete from {table} where {conditions}")
+            self.cursor.execute(f"delete from {table} where {conditions};")
             self.logger.info(
                 f'Deleted {num_matches} from "{table}" where {conditions}".'
             )
@@ -427,6 +427,7 @@ class DataBased:
             query += f" where {conditions}"
         else:
             conditions = None
+        query += ";"
         try:
             self.cursor.execute(
                 query,
@@ -448,7 +449,7 @@ class DataBased:
 
         Returns `True` if successful, `False` if not."""
         try:
-            self.cursor.execute(f"drop Table {table}")
+            self.cursor.execute(f"drop Table {table};")
             self.logger.info(f'Dropped table "{table}"')
             return True
         except Exception as e:
@@ -472,10 +473,10 @@ class DataBased:
         try:
             if default_value:
                 self.cursor.execute(
-                    f"alter table {table} add column {column} {_type} default {default_value}"
+                    f"alter table {table} add column {column} {_type} default {default_value};"
                 )
             else:
-                self.cursor.execute(f"alter table {table} add column {column} {_type}")
+                self.cursor.execute(f"alter table {table} add column {column} {_type};")
             self.logger.info(f'Added column "{column}" to "{table}" table.')
         except Exception as e:
             self.logger.error(f'Failed to add column "{column}" to "{table}" table.')
