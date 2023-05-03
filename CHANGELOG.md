@@ -1,10 +1,25 @@
 # Changelog
 
-## 1.5.1 (2023-05-02)
+## 1.6.0 (2023-05-03)
+
+#### New Features
+
+* add do_scan_dbs()
+* add new column functionality to dbmanager
+#### Refactorings
+
+* change do_create_table to do_add_table in dbmanager for consistency
+#### Docs
+
+* update readme
+
+
+## v1.5.1 (2023-05-02)
 
 #### Fixes
 
 * fix add_column() not updating existing rows to default value, if given
+* add missing semicolons to queries
 * fix data_to_string hanging in an infinite loop when current_width==terminal_width
 #### Refactorings
 
@@ -12,6 +27,10 @@
 #### Docs
 
 * update formatting and fix typos
+#### Others
+
+* build v1.5.1
+* update changelog
 
 
 ## v1.5.0 (2023-04-27)
