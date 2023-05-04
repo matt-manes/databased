@@ -4,8 +4,8 @@ from pathier import Pathier
 from databased import DataBased, dbparsers
 
 
-class DBManager(argshell.ArgShell):
-    intro = "Starting dbmanager (enter help or ? for arg info)..."
+class DBShell(argshell.ArgShell):
+    intro = "Starting dbshell (enter help or ? for arg info)..."
     prompt = "based>"
     dbpath: Pathier = None  # type: ignore
 
@@ -157,6 +157,7 @@ class DBManager(argshell.ArgShell):
         Two required args: the column (-c/--column) to update and the value (-v/--value) to update to.
         Use the -t/--tables flag to limit what tables are updated.
         Use the -m/--match_pairs flag to specify which rows are updated.
+        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
         >>> based>update -c username -v big_chungus -t users -m username lil_chungus
 
         ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
@@ -219,8 +220,8 @@ class DBManager(argshell.ArgShell):
             print(db.separate(cwd.stem))
 
     def do_customize(self, arg: str):
-        """Generate a template file in the current working directory for creating a custom DBManager class.
-        Expects one argument: the name of the custom dbmanager.
+        """Generate a template file in the current working directory for creating a custom DBShell class.
+        Expects one argument: the name of the custom dbshell.
         This will be used to name the generated file as well as several components in the file content."""
         custom_file = (Pathier.cwd() / arg.replace(" ", "_")).with_suffix(".py")
         if custom_file.exists():
@@ -228,9 +229,9 @@ class DBManager(argshell.ArgShell):
         else:
             variable_name = "_".join(word for word in arg.lower().split())
             class_name = "".join(word.capitalize() for word in arg.split())
-            content = (Pathier(__file__).parent / "custom_manager.py").read_text()
-            content = content.replace("CustomManager", class_name)
-            content = content.replace("custommanager", variable_name)
+            content = (Pathier(__file__).parent / "customshell.py").read_text()
+            content = content.replace("CustomShell", class_name)
+            content = content.replace("customshell", variable_name)
             custom_file.write_text(content)
 
     def _choose_db(self, options: list[Pathier]) -> Pathier:
@@ -291,4 +292,4 @@ class DBManager(argshell.ArgShell):
 
 
 def main():
-    DBManager().cmdloop()
+    DBShell().cmdloop()

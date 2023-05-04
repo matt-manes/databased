@@ -73,15 +73,15 @@ and the final `print()` call on `data_to_string()` produces:
 +------------+----------------+-----------+-----------------------------+
 </pre>
 
-`databased` also comes with an interactive shell called `dbmanager`, which is built from the [argshell](https://github.com/matt-manes/argshell) package.<br>
-It can be launched from the terminal by entering `dbmanager`
+`databased` also comes with an interactive shell called `dbshell`, which is built from the [argshell](https://github.com/matt-manes/argshell) package.<br>
+It can be launched from the terminal by entering `dbshell`
 <pre>
-databased\tests>dbmanager
+databased\tests>dbshell
 Searching for database...
 DB options:
 (1) test.db (2) test_bckup.db
 Enter the number of the option to use: 1
-Starting dbmanager (enter help or ? for arg info)...
+Starting dbshell (enter help or ? for arg info)...
 based>help
 
 Documented commands (type help {topic}):
@@ -92,14 +92,15 @@ add_table   customize  drop_table  info       scan_dbs  size    use_db
 
 >based help update
 Update a column to a new value.
-        Two required positional args: the column to update and the value to update to.
+        Two required args: the column (-c/--column) to update and the value (-v/--value) to update to.
         Use the -t/--tables flag to limit what tables are updated.
         Use the -m/--match_pairs flag to specify which rows are updated.
-        >>> based>update username big_chungus -t users -m username lil_chungus
+        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
+        >>> based>update -c username -v big_chungus -t users -m username lil_chungus
 
         ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^
 Parser help for update:
-usage: dbmanager [-h] [-t [TABLES ...]] [-m [MATCH_PAIRS ...]] [-p] -c COLUMN -v NEW_VALUE
+usage: dbshell [-h] [-t [TABLES ...]] [-m [MATCH_PAIRS ...]] [-p] -c COLUMN -v NEW_VALUE
 
 options:
   -h, --help            show this help message and exit

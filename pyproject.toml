@@ -40,4 +40,4 @@ exclude = [
     "tests"
 ]
 [project.scripts]
-dbshell = "databased.dbmanager:main"
+dbshell = "databased.dbshell:main"

@@ -1,4 +1,4 @@
 from databased import dbparsers
 
 from .databased import DataBased, _connect, data_to_string
-from .dbmanager import DBManager
+from .dbshell import DBShell
