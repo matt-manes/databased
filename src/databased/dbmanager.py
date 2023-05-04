@@ -162,10 +162,10 @@ class DBManager(argshell.ArgShell):
         with DataBased(self.dbpath) as db:
             tables = args.tables or db.get_table_names()
             for table in tables:
-                if db.update(table, args.column, args.new_value, args.match_pairs):
-                    print(f"Updating rows in {table} table successful.")
-                else:
-                    print(f"Failed to update rows in {table} table.")
+                num_updates = db.update(
+                    table, args.column, args.new_value, args.match_pairs
+                )
+                print(f"Updated {num_updates} rows in table {table}.")
 
     @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
     def do_delete(self, args: argshell.Namespace):
