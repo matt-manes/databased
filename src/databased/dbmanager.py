@@ -59,18 +59,17 @@ class DBManager(argshell.ArgShell):
             else:
                 print(f"Failed to add row to {args.table_name} table.")
 
-    def do_info(self, arg: str):
-        """Print out the names of the database tables, their columns, and the number of rows.
-        Pass a space-separated list of table names to only print info for those specific tables,
-        otherwise all tables will be printed."""
+    @argshell.with_parser(dbparsers.get_info_parser)
+    def do_info(self, args: argshell.Namespace):
+        """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
         print("Getting database info...")
         with DataBased(self.dbpath) as db:
-            tables = arg.split() or db.get_table_names()
+            tables = args.tables or db.get_table_names()
             info = [
                 {
                     "Table Name": table,
                     "Columns": ", ".join(db.get_column_names(table)),
-                    "Number of Rows": db.count(table),
+                    "Number of Rows": db.count(table) if args.rowcount else "n/a",
                 }
                 for table in tables
             ]

@@ -36,6 +36,26 @@ def _get_base_parser(add_help: bool = False) -> argshell.ArgShellParser:
     return parser
 
 
+def get_info_parser() -> argshell.ArgShellParser:
+    """Returns info parser."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument(
+        "-t",
+        "--tables",
+        type=str,
+        nargs="*",
+        default=[],
+        help=""" Only display info for this table(s). """,
+    )
+    parser.add_argument(
+        "-rc",
+        "--rowcount",
+        action="store_true",
+        help=""" Count and display the number of rows for each table. """,
+    )
+    return parser
+
+
 def get_create_table_parser(add_help: bool = True) -> argshell.ArgShellParser:
     """Returns a parser for adding a table to the database."""
     parser = argshell.ArgShellParser(add_help=add_help)
