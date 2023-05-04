@@ -145,6 +145,7 @@ class DBManager(argshell.ArgShell):
         try:
             for result in results:
                 print(*result, sep="|-|")
+            print(f"{db.cursor.rowcount} affected rows")
         except Exception as e:
             print(f"{type(e).__name__}: {e}")
 
