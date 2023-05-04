@@ -268,6 +268,24 @@ class DataBased:
                 self.logger.debug(str(e))
 
     @_connect
+    def add_rows(
+        self, table: str, values: list[tuple[Any]], columns: tuple[str] | None = None
+    ):
+        """Add multiple rows of values to a table.
+
+        #### :params:
+
+        `table`: The table to insert values into.
+
+        `values`: A list of tuples of values to be inserted into the table.
+        Each tuple constitutes a single row to be inserted
+
+        `columns`: If `None`, `values` is expected to supply a value for every column in the table.
+        If `columns` is provided, it should contain the same number of elements as `values`."""
+        for row in values:
+            self.add_row(table, row, columns)
+
+    @_connect
     def get_rows(
         self,
         table: str,
