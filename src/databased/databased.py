@@ -234,8 +234,10 @@ class DataBased:
     @_connect
     def add_row(
         self, table: str, values: tuple[Any], columns: tuple[str] | None = None
-    ):
+    ) -> bool:
         """Add a row of values to a table.
+
+        Returns whether the insertion was successful or not.
 
         #### :params:
 
@@ -259,6 +261,7 @@ class DataBased:
                     f"insert into {table} values({parameterizer});", values
                 )
             self.logger.info(f'Added "{logger_values}" to {table} table.')
+            return True
         except Exception as e:
             if "constraint" not in str(e).lower():
                 self.logger.exception(
@@ -266,6 +269,7 @@ class DataBased:
                 )
             else:
                 self.logger.debug(str(e))
+            return False
 
     @_connect
     def add_rows(
