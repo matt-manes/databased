@@ -171,7 +171,7 @@ class DBManager(argshell.ArgShell):
                     args.match_pairs,
                     not args.partial_matching,
                 )
-                print(f"Updated {num_updates} rows in table {table}.")
+                print(f"Updated {num_updates} rows in {table} table.")
 
     @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
     def do_delete(self, args: argshell.Namespace):
