@@ -54,7 +54,10 @@ class DBManager(argshell.ArgShell):
     def do_add_row(self, args: argshell.Namespace):
         """Add a row to a table."""
         with DataBased(self.dbpath) as db:
-            db.add_row(args.table_name, args.values, args.columns or None)
+            if db.add_row(args.table_name, args.values, args.columns or None):
+                print(f"Added row to {args.table_name} table successfully.")
+            else:
+                print(f"Failed to add row to {args.table_name} table.")
 
     def do_info(self, arg: str):
         """Print out the names of the database tables, their columns, and the number of rows.
