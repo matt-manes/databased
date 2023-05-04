@@ -401,7 +401,7 @@ class DataBased:
         column_to_update: str,
         new_value: Any,
         match_criteria: list[tuple] | dict | None = None,
-    ) -> bool:
+    ) -> int:
         """Update the value in `column_to_update` to `new_value` for rows matched with `match_criteria`.
 
         #### :params:
@@ -416,7 +416,7 @@ class DataBased:
         or a dictionary where keys are column names and values are corresponding values.
         If `None`, every row in `table` will be updated.
 
-        Returns `True` if successful, `False` if not."""
+        Returns the number of updated rows."""
         query = f"update {table} set {column_to_update} = ?"
         conditions = ""
         if match_criteria:
@@ -424,7 +424,7 @@ class DataBased:
                 self.logger.info(
                     f"Couldn't find matching records in {table} table to update to '{new_value}'"
                 )
-                return False
+                return 0
             conditions = self._get_conditions(match_criteria)
             query += f" where {conditions}"
         else:
@@ -435,15 +435,16 @@ class DataBased:
                 query,
                 (new_value,),
             )
+            num_updates = self.cursor.rowcount
             self.logger.info(
-                f'Updated "{column_to_update}" in "{table}" table to "{new_value}" where {conditions}'
+                f'In {num_updates} rows, updated "{column_to_update}" in "{table}" table to "{new_value}" where {conditions}'
             )
-            return True
+            return num_updates
         except Exception as e:
             self.logger.error(
                 f'Failed to update "{column_to_update}" in "{table}" table to "{new_value}" where {conditions}"\n{e}'
             )
-            return False
+            return 0
 
     @_connect
     def drop_table(self, table: str) -> bool:
