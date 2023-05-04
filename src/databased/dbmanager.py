@@ -163,7 +163,11 @@ class DBManager(argshell.ArgShell):
             tables = args.tables or db.get_table_names()
             for table in tables:
                 num_updates = db.update(
-                    table, args.column, args.new_value, args.match_pairs
+                    table,
+                    args.column,
+                    args.new_value,
+                    args.match_pairs,
+                    not args.partial_matching,
                 )
                 print(f"Updated {num_updates} rows in table {table}.")
 

@@ -401,6 +401,7 @@ class DataBased:
         column_to_update: str,
         new_value: Any,
         match_criteria: list[tuple] | dict | None = None,
+        exact_match: bool = True,
     ) -> int:
         """Update the value in `column_to_update` to `new_value` for rows matched with `match_criteria`.
 
@@ -416,16 +417,13 @@ class DataBased:
         or a dictionary where keys are column names and values are corresponding values.
         If `None`, every row in `table` will be updated.
 
+        `exact_match`: If `False`, `match_criteria` values will be treated as substrings.
+
         Returns the number of updated rows."""
         query = f"update {table} set {column_to_update} = ?"
         conditions = ""
         if match_criteria:
-            if self.count(table, match_criteria) == 0:
-                self.logger.info(
-                    f"Couldn't find matching records in {table} table to update to '{new_value}'"
-                )
-                return 0
-            conditions = self._get_conditions(match_criteria)
+            conditions = self._get_conditions(match_criteria, exact_match)
             query += f" where {conditions}"
         else:
             conditions = None
