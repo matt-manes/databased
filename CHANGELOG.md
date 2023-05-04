@@ -1,11 +1,18 @@
 # Changelog
 
-## 1.7.0 (2023-05-04)
+## 2.0.0 (2023-05-04)
+
+#### Refactorings
+
+* change dbmanager names to dbshell (Breaking)
+
+
+## v1.7.0 (2023-05-04)
 
 #### New Features
 
 * add add_rows()
-* update() supports exact_match param
+* update supports exact_match param
 * do_update prints number of updated rows
 * do_query prints number of affected rows
 #### Performance improvements
@@ -17,6 +24,10 @@
 #### Refactorings
 
 * update() returns number of affected rows
+#### Others
+
+* build v1.7.0
+* update changelog
 
 
 ## v1.6.0 (2023-05-03)
