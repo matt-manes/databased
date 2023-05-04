@@ -1,6 +1,25 @@
 # Changelog
 
-## 1.6.0 (2023-05-03)
+## 1.7.0 (2023-05-04)
+
+#### New Features
+
+* add add_rows()
+* update() supports exact_match param
+* do_update prints number of updated rows
+* do_query prints number of affected rows
+#### Performance improvements
+
+* make counting rows optional for do_info()
+* do_add_row() prints addition success status
+* add_row() returns whether the addition was successful
+* delete() returns number of deleted rows via cursor.rowcount
+#### Refactorings
+
+* update() returns number of affected rows
+
+
+## v1.6.0 (2023-05-03)
 
 #### New Features
 
@@ -12,6 +31,10 @@
 #### Docs
 
 * update readme
+#### Others
+
+* build v1.6.0
+* update changelog
 
 
 ## v1.5.1 (2023-05-02)
