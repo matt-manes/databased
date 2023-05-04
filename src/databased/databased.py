@@ -237,7 +237,7 @@ class DataBased:
     ) -> bool:
         """Add a row of values to a table.
 
-        Returns whether the insertion was successful or not.
+        Returns whether the addition was successful or not.
 
         #### :params:
 
@@ -274,8 +274,10 @@ class DataBased:
     @_connect
     def add_rows(
         self, table: str, values: list[tuple[Any]], columns: tuple[str] | None = None
-    ):
+    ) -> tuple[int, int]:
         """Add multiple rows of values to a table.
+
+        Returns a tuple containing the number of successful additions and the number of failed additions.
 
         #### :params:
 
@@ -286,8 +288,14 @@ class DataBased:
 
         `columns`: If `None`, `values` is expected to supply a value for every column in the table.
         If `columns` is provided, it should contain the same number of elements as `values`."""
+        successes = 0
+        failures = 0
         for row in values:
-            self.add_row(table, row, columns)
+            if self.add_row(table, row, columns):
+                successes += 1
+            else:
+                failures += 1
+        return (successes, failures)
 
     @_connect
     def get_rows(
