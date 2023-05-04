@@ -53,26 +53,28 @@ def test__databased__add_row():
             ("John Smith", 31, datetime.now()),
             ("Amy Gonzalez", 276, datetime.now()),
             ("Bobby Tables", 627, datetime.now()),
+            ("Mark Smith", 31, datetime.now()),
         ]:
             db.add_row("dummy", row)
         for row in [
             ("John Smith", 111, datetime.now()),
             ("Deshawn Sanders", 99, datetime.now()),
             ("Marsha Wallander", 31, datetime.now()),
+            ("Jan Smith", 87, datetime.now()),
         ]:
             db.add_row("dummy2", row)
 
 
 def test__databased__count():
     with databased.DataBased(dbpath) as db:
-        assert db.count("dummy") == 3
+        assert db.count("dummy") == 4
         assert db.count("dummy2", [("name", "Deshawn Sanders")]) == 1
 
 
 def test__databased__get_rows():
     with databased.DataBased(dbpath) as db:
         rows = db.get_rows("dummy")
-        assert len(rows) == 3
+        assert len(rows) == 4
         assert all(col in rows[0] for col in ["name", "favorite_int", "date_added"])
         row = rows[0]
         assert type(row["name"]) == str
@@ -114,12 +116,16 @@ def test__databased__find():
     ...
 
 
-def test__databased__delete():
-    ...
-
-
 def test__databased__update():
-    ...
+    with databased.DataBased(dbpath) as db:
+        assert db.update("dummy", "favorite_int", 12345, {"favorite_int": 31}) == 2
+        assert db.update("dummy2", "favorite_int", 1, {"name": "Jan Smith"}) == 1
+
+
+def test__databased__delete():
+    with databased.DataBased(dbpath) as db:
+        assert db.delete("dummy", {"name": "Smith"}, False) == 2
+        assert db.delete("dummy2", {"name": "Jan Smith"}) == 1
 
 
 def test__databased__drop_table():
