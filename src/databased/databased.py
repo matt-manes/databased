@@ -380,16 +380,18 @@ class DataBased:
 
         `exact_match`: If `False`, the value for a given column will be matched as a substring.
         """
-        num_matches = self.count(table, match_criteria, exact_match)
         conditions = self._get_conditions(match_criteria, exact_match)
         try:
             self.cursor.execute(f"delete from {table} where {conditions};")
+            num_deletions = self.cursor.rowcount
             self.logger.info(
-                f'Deleted {num_matches} from "{table}" where {conditions}".'
+                f'Deleted {num_deletions} rows from "{table}" where {conditions}".'
             )
-            return num_matches
+            return num_deletions
         except Exception as e:
-            self.logger.debug(f'Error deleting from "{table}" where {conditions}.\n{e}')
+            self.logger.debug(
+                f'Error deleting rows from "{table}" where {conditions}.\n{e}'
+            )
             return 0
 
     @_connect
