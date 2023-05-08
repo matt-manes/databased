@@ -35,16 +35,19 @@ class DataBased:
         dbpath: str | Pathier,
         logger_encoding: str = "utf-8",
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
+        connection_timeout: float = 10,
     ):
         """
         #### :params:
 
-        `dbpath`: String or Path object to database file.
+        * `dbpath`: String or Path object to database file.
         If a relative path is given, it will be relative to the
         current working directory. The log file will be saved to the
         same directory.
 
-        `logger_message_format`: '{' style format string for the logger object."""
+        * `logger_message_format`: `{` style format string for the logger object.
+
+        * `connection_timeout`: The number of seconds to wait when trying to connect to the database before throwing an error."""
         self.dbpath = Pathier(dbpath)
         self.dbname = Pathier(dbpath).name
         self.dbpath.parent.mkdir(parents=True, exist_ok=True)
@@ -52,6 +55,7 @@ class DataBased:
             encoding=logger_encoding, message_format=logger_message_format
         )
         self.connection_open = False
+        self.connection_timeout = connection_timeout
 
     def __enter__(self):
         self.open()
@@ -60,12 +64,20 @@ class DataBased:
     def __exit__(self, exception_type, exception_value, exception_traceback):
         self.close()
 
+    @property
+    def connection_timeout(self) -> float:
+        return self._connection_timeout
+
+    @connection_timeout.setter
+    def connection_timeout(self, num_seconds: float):
+        self._connection_timeout = num_seconds
+
     def open(self):
         """Open connection to db."""
         self.connection = sqlite3.connect(
             self.dbpath,
             detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
-            timeout=10,
+            timeout=self.connection_timeout,
         )
         self.connection.execute("pragma foreign_keys = 1;")
         self.cursor = self.connection.cursor()

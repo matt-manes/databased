@@ -123,7 +123,7 @@ def test__databased__update():
 
 
 def test__databased__delete():
-    with databased.DataBased(dbpath) as db:
+    with databased.DataBased(dbpath, connection_timeout=30.13) as db:
         assert db.delete("dummy", {"name": "Smith"}, False) == 2
         assert db.delete("dummy2", {"name": "Jan Smith"}) == 1
 
