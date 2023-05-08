@@ -23,6 +23,24 @@ def _connect(func):
     return inner
 
 
+def _disconnect(func):
+    """Decorator to commit and close db connection.
+
+    Primarily intended for when `DataBased` is subclassed and the inhereting class
+    has functions that call parent class functions that are decorated with `_connect`.
+    Decorating the child class function with `_disconnect` avoids having to manually close
+    the connection or use a context manager in an application."""
+
+    @wraps(func)
+    def inner(self, *args, **kwargs):
+        result = func(self, *args, **kwargs)
+        if self.connection_open:
+            self.close()
+        return result
+
+    return inner
+
+
 class DataBased:
     """Sqli wrapper so queries don't need to be written except table definitions.
 
@@ -71,6 +89,9 @@ class DataBased:
     @connection_timeout.setter
     def connection_timeout(self, num_seconds: float):
         self._connection_timeout = num_seconds
+        if self.connection_open:
+            self.close()
+            self.open()
 
     def open(self):
         """Open connection to db."""
