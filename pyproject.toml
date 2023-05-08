@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "databased"
 authors = [{name="Matt Manes"}]
 description = "Wrapper for the standard library Sqlite3 module to make setting up and using a database quicker and easier."
-version = "2.1.0"
+version = "2.2.0"
 requires-python = ">=3.10"
 dependencies = ["pandas", "tabulate", "pytest", "argshell", "pathier"]
 readme = "README.md"
