@@ -1,12 +1,22 @@
 # Changelog
 
-## 2.1.0 (2023-05-08)
+## 2.2.0 (2023-05-08)
+
+#### New Features
+
+* add timestamp option to dbshell backup command
+
+## v2.1.0 (2023-05-08)
 
 #### New Features
 
 * add _disconnect decorator
 * add vacuum()
 * add connection_timeout property
+#### Others
+
+* build v2.1.0
+* update changelog
 
 
 ## v2.0.1 (2023-05-07)
