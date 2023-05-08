@@ -234,6 +234,14 @@ class DBShell(argshell.ArgShell):
             content = content.replace("customshell", variable_name)
             custom_file.write_text(content)
 
+    def do_vacuum(self, arg: str):
+        """Reduce database disk memory."""
+        starting_size = self.dbpath.size()
+        print(f"Database size before vacuuming: {self.dbpath.size(True)}")
+        print("Vacuuming database...")
+        print(f"Database size after vacuuming: {self.dbpath.size(True)}")
+        print(f"Freed up {Pathier.format_size(starting_size - self.dbpath.size())} of disk space.")  # type: ignore
+
     def _choose_db(self, options: list[Pathier]) -> Pathier:
         """Prompt the user to select from a list of files."""
         cwd = Pathier.cwd()
