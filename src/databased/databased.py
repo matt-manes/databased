@@ -167,7 +167,7 @@ class DataBased:
             table_names = self.get_table_names()
             for table in table_defs:
                 if table.split("(")[0].strip() not in table_names:
-                    self.cursor.execute(f"create table {table};")
+                    self.cursor.execute(f"create table [{table}];")
                     self.logger.info(f'{table.split("(")[0]} table created.')
 
     @_connect
@@ -181,7 +181,7 @@ class DataBased:
         `column_defs`: List of column definitions in proper Sqlite3 sytax.
         i.e. `"column_name text unique"` or `"column_name int primary key"` etc."""
         if table not in self.get_table_names():
-            query = f"create table {table}({', '.join(column_defs)});"
+            query = f"create table [{table}]({', '.join(column_defs)});"
             self.cursor.execute(query)
             self.logger.info(f"'{table}' table created.")
 
@@ -196,7 +196,7 @@ class DataBased:
     @_connect
     def get_column_names(self, table: str) -> list[str]:
         """Return a list of column names from a table."""
-        self.cursor.execute(f"select * from {table} where 1=0")
+        self.cursor.execute(f"select * from [{table}] where 1=0;")
         return [description[0] for description in self.cursor.description]
 
     @_connect
@@ -219,7 +219,7 @@ class DataBased:
         in `match_criteria` will be matched as a substring.
         Has no effect if `match_criteria` is `None`.
         """
-        query = f"select count(_rowid_) from {table}"
+        query = f"select count(_rowid_) from [{table}]"
         try:
             if match_criteria:
                 self.cursor.execute(
@@ -253,12 +253,12 @@ class DataBased:
             if columns:
                 columns_query = ", ".join(column for column in columns)
                 self.cursor.execute(
-                    f"insert into {table} ({columns_query}) values({parameterizer});",
+                    f"insert into [{table}] ({columns_query}) values({parameterizer});",
                     values,
                 )
             else:
                 self.cursor.execute(
-                    f"insert into {table} values({parameterizer});", values
+                    f"insert into [{table}] values({parameterizer});", values
                 )
             self.logger.info(f'Added "{logger_values}" to {table} table.')
             return True
@@ -342,7 +342,7 @@ class DataBased:
 
         if type(columns_to_return) is str:
             columns_to_return = [columns_to_return]
-        query = f"select * from {table}"
+        query = f"select * from [{table}]"
         matches = []
         if match_criteria:
             query += f" where {self._get_conditions(match_criteria, exact_match)}"
@@ -412,7 +412,7 @@ class DataBased:
         """
         conditions = self._get_conditions(match_criteria, exact_match)
         try:
-            self.cursor.execute(f"delete from {table} where {conditions};")
+            self.cursor.execute(f"delete from [{table}] where {conditions};")
             num_deletions = self.cursor.rowcount
             self.logger.info(
                 f'Deleted {num_deletions} rows from "{table}" where {conditions}".'
@@ -450,7 +450,7 @@ class DataBased:
         `exact_match`: If `False`, `match_criteria` values will be treated as substrings.
 
         Returns the number of updated rows."""
-        query = f"update {table} set {column_to_update} = ?"
+        query = f"update [{table}] set {column_to_update} = ?"
         conditions = ""
         if match_criteria:
             conditions = self._get_conditions(match_criteria, exact_match)
@@ -480,7 +480,7 @@ class DataBased:
 
         Returns `True` if successful, `False` if not."""
         try:
-            self.cursor.execute(f"drop Table {table};")
+            self.cursor.execute(f"drop Table [{table}];")
             self.logger.info(f'Dropped table "{table}"')
             return True
         except Exception as e:
@@ -504,11 +504,13 @@ class DataBased:
         try:
             if default_value:
                 self.cursor.execute(
-                    f"alter table {table} add column {column} {_type} default {default_value};"
+                    f"alter table [{table}] add column {column} {_type} default {default_value};"
                 )
                 self.update(table, column, default_value)
             else:
-                self.cursor.execute(f"alter table {table} add column {column} {_type};")
+                self.cursor.execute(
+                    f"alter table [{table}] add column {column} {_type};"
+                )
             self.logger.info(f'Added column "{column}" to "{table}" table.')
         except Exception as e:
             self.logger.error(f'Failed to add column "{column}" to "{table}" table.')
