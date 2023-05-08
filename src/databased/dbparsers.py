@@ -184,6 +184,18 @@ def get_add_column_parser() -> argshell.ArgShellParser:
     return parser
 
 
+def get_backup_parser() -> argshell.ArgShellParser:
+    """Returns a parser for the backup command."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument(
+        "-t",
+        "--timestamp",
+        action="store_true",
+        help=""" Add a timestamp to the backup file name to prevent overwriting previous backups. """,
+    )
+    return parser
+
+
 # ============================================================post parsers============================================================
 def convert_match_pairs(args: argshell.Namespace) -> argshell.Namespace:
     """Create a list of tuples from match_pairs."""
