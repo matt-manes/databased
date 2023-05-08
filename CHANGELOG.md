@@ -1,10 +1,22 @@
 # Changelog
 
-## 2.0.0 (2023-05-04)
+## 2.0.1 (2023-05-07)
+
+#### Fixes
+
+* wrap table names in query statements in [] so things like colons don't trigger syntax errors
+
+
+## v2.0.0 (2023-05-04)
 
 #### Refactorings
 
-* change dbmanager names to dbshell (Breaking)
+* change dbmanager names to dbshell
+* rename dbmanager cli script to dbshell
+#### Others
+
+* build v2.0.0
+* update changelog
 
 
 ## v1.7.0 (2023-05-04)
@@ -19,6 +31,7 @@
 
 * make counting rows optional for do_info()
 * do_add_row() prints addition success status
+* add_rows() returns number of successes and number of failures
 * add_row() returns whether the addition was successful
 * delete() returns number of deleted rows via cursor.rowcount
 #### Refactorings
