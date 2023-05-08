@@ -25,11 +25,11 @@ class DBShell(argshell.ArgShell):
         """Print the .db file in use."""
         print(self.dbpath)
 
-    def do_backup(self, arg: str):
+    @argshell.with_parser(dbparsers.get_backup_parser)
+    def do_backup(self, args: argshell.Namespace):
         """Create a backup of the current db file."""
         print(f"Creating a back up for {self.dbpath}...")
-        backup_path = self.dbpath.with_stem(f"{self.dbpath.stem}_bckup")
-        self.dbpath.copy(backup_path, True)
+        backup_path = self.dbpath.backup(args.timestamp)
         print("Creating backup is complete.")
         print(f"Backup path: {backup_path}")
 
