@@ -1,10 +1,23 @@
 # Changelog
 
-## 2.0.1 (2023-05-07)
+## 2.1.0 (2023-05-08)
+
+#### New Features
+
+* add _disconnect decorator
+* add vacuum()
+* add connection_timeout property
+
+
+## v2.0.1 (2023-05-07)
 
 #### Fixes
 
 * wrap table names in query statements in [] so things like colons don't trigger syntax errors
+#### Others
+
+* build v2.0.1
+* update changelog
 
 
 ## v2.0.0 (2023-05-04)
