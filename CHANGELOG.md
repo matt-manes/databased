@@ -1,10 +1,22 @@
 # Changelog
 
-## 2.2.0 (2023-05-08)
+## 2.2.1 (2023-05-08)
+
+#### Fixes
+
+* do_vacuum actually calls vacuum function now
+
+
+## v2.2.0 (2023-05-08)
 
 #### New Features
 
 * add timestamp option to dbshell backup command
+#### Others
+
+* build v2.2.0
+* update changelog
+
 
 ## v2.1.0 (2023-05-08)
 
