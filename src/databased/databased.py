@@ -187,7 +187,7 @@ class DataBased:
 
     def vacuum(self):
         """Reduce disk size of the database with a `VACUUM` query."""
-        self.query("VACUUM")
+        self.query("VACUUM;")
 
     @_connect
     def query(self, query_) -> list[Any]:

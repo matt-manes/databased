@@ -239,6 +239,8 @@ class DBShell(argshell.ArgShell):
         starting_size = self.dbpath.size()
         print(f"Database size before vacuuming: {self.dbpath.size(True)}")
         print("Vacuuming database...")
+        with DataBased(self.dbpath) as db:
+            db.vacuum()
         print(f"Database size after vacuuming: {self.dbpath.size(True)}")
         print(f"Freed up {Pathier.format_size(starting_size - self.dbpath.size())} of disk space.")  # type: ignore
 
