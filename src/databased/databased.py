@@ -6,6 +6,7 @@ from functools import wraps
 from typing import Any
 
 import pandas
+from griddle import griddy
 from pathier import Pathier
 from tabulate import tabulate
 
@@ -592,47 +593,9 @@ def data_to_string(
         for k in d:
             data[i][k] = str(data[i][k])
 
-    too_wide = True
-    terminal_width = os.get_terminal_size().columns
-    max_col_widths = terminal_width
-    # Make an output with effectively unrestricted column widths
-    # to see if shrinking is necessary
-    output = tabulate(
-        data,
-        headers="keys",
-        disable_numparse=True,
-        tablefmt="grid",
-        maxcolwidths=max_col_widths,
-    )
-    current_width = output.index("\n")
-    if current_width < terminal_width:
-        too_wide = False
-    if wrap_to_terminal and too_wide:
+    try:
         print("Resizing grid to fit within the terminal...\n")
-        previous_col_widths = max_col_widths
-        acceptable_width = terminal_width - 10
-        while too_wide and max_col_widths > 1:
-            if current_width >= terminal_width:
-                previous_col_widths = max_col_widths
-                max_col_widths = int(max_col_widths * 0.5)
-            elif current_width < terminal_width:
-                # Without lowering acceptable_width, this condition will cause infinite loop
-                if max_col_widths == previous_col_widths - 1:
-                    acceptable_width -= 10
-                max_col_widths = int(
-                    max_col_widths + (0.5 * (previous_col_widths - max_col_widths))
-                )
-            output = tabulate(
-                data,
-                headers="keys",
-                disable_numparse=True,
-                tablefmt="grid",
-                maxcolwidths=max_col_widths,
-            )
-            current_width = output.index("\n")
-            if acceptable_width < current_width < terminal_width:
-                too_wide = False
-        if too_wide:
-            print("Couldn't resize grid to fit within the terminal.")
-            return str(data)
-    return output
+        return griddy(data, "keys", wrap_to_terminal)
+    except RuntimeError as e:
+        print(e)
+        return str(data)
