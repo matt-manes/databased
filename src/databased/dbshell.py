@@ -1,5 +1,6 @@
 import argshell
 from pathier import Pathier
+from griddle import griddy
 
 from databased import DataBased, dbparsers
 
@@ -145,11 +146,14 @@ class DBShell(argshell.ArgShell):
         with DataBased(self.dbpath) as db:
             results = db.query(arg)
         try:
-            for result in results:
-                print(*result, sep="|-|")
-            print(f"{db.cursor.rowcount} affected rows")
+            try:
+                print(griddy(results))
+            except Exception as e:
+                for result in results:
+                    print(*result, sep="|-|")
         except Exception as e:
             print(f"{type(e).__name__}: {e}")
+        print(f"{db.cursor.rowcount} affected rows")
 
     @argshell.with_parser(dbparsers.get_update_parser, [dbparsers.convert_match_pairs])
     def do_update(self, args: argshell.Namespace):
