@@ -1,6 +1,6 @@
 import argshell
-from pathier import Pathier
 from griddle import griddy
+from pathier import Pathier
 
 from databased import DataBased, dbparsers
 
