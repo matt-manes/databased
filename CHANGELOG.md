@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.4.0 (2023-05-21)
+
+#### Refactorings
+
+* do_query() will attempt to use griddy to display results
+#### Others
+
+* add missing tag prefix
+
+
 ## v2.3.0 (2023-05-13)
 
 #### Refactorings
@@ -12,10 +22,6 @@
 #### Fixes
 
 * do_vacuum actually calls vacuum function now smh
-#### Others
-
-* build v2.2.1
-* update changelog
 
 
 ## v2.2.0 (2023-05-08)
@@ -26,10 +32,6 @@
 #### Refactorings
 
 * add timestamp option to dbshell backup command
-#### Others
-
-* build v2.2.0
-* update changelog
 
 
 ## v2.1.0 (2023-05-08)
@@ -39,10 +41,6 @@
 * add _disconnect decorator
 * add vacuum()
 * add connection_timeout property
-#### Others
-
-* build v2.1.0
-* update changelog
 
 
 ## v2.0.1 (2023-05-07)
@@ -50,10 +48,6 @@
 #### Fixes
 
 * wrap table names in query statements in [] so things like colons don't trigger syntax errors
-#### Others
-
-* build v2.0.1
-* update changelog
 
 
 ## v2.0.0 (2023-05-04)
@@ -62,10 +56,6 @@
 
 * change dbmanager names to dbshell
 * rename dbmanager cli script to dbshell
-#### Others
-
-* build v2.0.0
-* update changelog
 
 
 ## v1.7.0 (2023-05-04)
@@ -86,10 +76,6 @@
 #### Refactorings
 
 * update() returns number of affected rows
-#### Others
-
-* build v1.7.0
-* update changelog
 
 
 ## v1.6.0 (2023-05-03)
@@ -104,10 +90,6 @@
 #### Docs
 
 * update readme
-#### Others
-
-* build v1.6.0
-* update changelog
 
 
 ## v1.5.1 (2023-05-02)
@@ -123,10 +105,6 @@
 #### Docs
 
 * update formatting and fix typos
-#### Others
-
-* build v1.5.1
-* update changelog
 
 
 ## v1.5.0 (2023-04-27)
@@ -194,11 +172,7 @@
 * fix doc string
 #### Others
 
-* test build
-* build v1.5.0
 * add imports to custom_manager.py
-* update imports
-* update imports
 * add dbmanager to project.scripts
 * cleanup testing lines
 * remove unused import
@@ -219,10 +193,6 @@
 
 * add print statements to data_to_string
 * remove uneeded lambda in data_to_string
-#### Others
-
-* build v1.4.5
-* update changelog
 
 
 ## v1.4.4 (2023-04-02)
@@ -230,10 +200,6 @@
 #### Fixes
 
 * return statement was indented one level too many
-#### Others
-
-* build v1.4.4
-* update changelog
 
 
 ## v1.4.3 (2023-04-02)
@@ -241,10 +207,6 @@
 #### Performance improvements
 
 * rewrite data_to_string() with a different resizing algo
-#### Others
-
-* build v1.4.3
-* update changelog
 
 
 ## v1.4.2 (2023-03-31)
@@ -252,17 +214,9 @@
 #### Fixes
 
 * fix dbmanager switching back to default dbname after user sets it with -db/--dbname switch
-#### Others
-
-* build v1.4.2
-* update changelog
 
 
 ## v1.4.1 (2023-03-22)
-
-#### Others
-
-* build v1.4.1
 
 
 ## v1.4.0 (2023-03-17)
@@ -273,10 +227,6 @@
 #### Fixes
 
 * print results directly in dbmanager find() func when results are too wide for tabulator
-#### Others
-
-* build v1.4.0
-* update changelog
 
 
 ## v1.3.0 (2023-03-13)
@@ -286,8 +236,6 @@
 * add option to return a pandas.DataFrame from get_rows()
 #### Others
 
-* build v1.3.0
-* update changelog
 * update test for get_rows
 * remove duplicate dependency
 
@@ -297,11 +245,6 @@
 #### New Features
 
 * add query switch
-#### Others
-
-* build v1.2.0
-* update changelog
-
 
 ## v1.1.0 (2023-03-11)
 
@@ -325,8 +268,6 @@
 * move connection decorator outside of DataBased
 #### Others
 
-* build v1.1.0
-* update changelog
 * add tests
 
 
@@ -337,8 +278,6 @@
 * change return type to list
 #### Others
 
-* build v1.0.6
-* update changelog
 * update readme
 
 
@@ -346,5 +285,4 @@
 
 #### Others
 
-* update to build v1.0.5
 * add files
