@@ -99,12 +99,13 @@ class DBShell(argshell.ArgShell):
                     exact_match=not args.partial_matching,
                 )
                 db.close()
-                print(f"{len(results)} matching rows in {table} table:")
+                print(f"{len(results)} matching rows in {table} table.")
                 try:
                     print(DataBased.data_to_string(results))  # type: ignore
                 except Exception as e:
                     print("Couldn't fit data into a grid.")
                     print(*results, sep="\n")
+                print(f"{len(results)} matching rows in {table} table.")
                 print()
 
     @argshell.with_parser(dbparsers.get_search_parser)
