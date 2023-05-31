@@ -48,7 +48,7 @@ def get_info_parser() -> argshell.ArgShellParser:
         help=""" Only display info for this table(s). """,
     )
     parser.add_argument(
-        "-rc",
+        "-c",
         "--rowcount",
         action="store_true",
         help=""" Count and display the number of rows for each table. """,
