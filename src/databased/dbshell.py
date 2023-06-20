@@ -105,7 +105,8 @@ class DBShell(argshell.ArgShell):
                 except Exception as e:
                     print("Couldn't fit data into a grid.")
                     print(*results, sep="\n")
-                print(f"{len(results)} matching rows in {table} table.")
+                if results:
+                    print(f"{len(results)} matching rows in {table} table.")
                 print()
 
     @argshell.with_parser(dbparsers.get_search_parser)
