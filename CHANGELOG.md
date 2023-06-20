@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.4.1 (2023-06-19)
+
+#### Fixes
+
+* only reprint number of matching rows in do_show if there are any
+#### Performance improvements
+
+* reprint number of results after grid in do_show
+#### Refactorings
+
+* change abbreviated flag in get_info_parser from '-rc' to '-c'
+
 ## v2.4.0 (2023-05-21)
 
 #### Refactorings
