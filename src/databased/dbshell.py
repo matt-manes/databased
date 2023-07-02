@@ -2,7 +2,7 @@ import argshell
 from griddle import griddy
 from pathier import Pathier
 
-from databased import DataBased, dbparsers, create_shell
+from databased import DataBased, create_shell, dbparsers
 
 
 class DBShell(argshell.ArgShell):

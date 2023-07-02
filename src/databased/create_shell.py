@@ -1,4 +1,5 @@
 import argparse
+
 from pathier import Pathier
 
 root = Pathier(__file__).parent

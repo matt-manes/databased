@@ -4,41 +4,30 @@ build-backend = "hatchling.build"
 
 [project]
 name = "databased"
-authors = [{name="Matt Manes"}]
 description = "Wrapper for the standard library Sqlite3 module to make setting up and using a database quicker and easier."
-version = "2.4.1"
+version = "2.5.0"
 requires-python = ">=3.10"
 dependencies = ["pandas", "tabulate", "pytest", "argshell", "pathier", "griddle"]
 readme = "README.md"
-keywords = [
-    "database",
-    "sqlite",
-    "sqlite3"
-]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
+keywords = ["database", "sqlite", "sqlite3"]
+classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]
+
+[[project.authors]]
+name = "Matt Manes"
 
 [project.urls]
-"Homepage" = "https://github.com/matt-manes/databased"
-"Documentation" = "https://github.com/matt-manes/databased/tree/main/docs"
+Homepage = "https://github.com/matt-manes/databased"
+Documentation = "https://github.com/matt-manes/databased/tree/main/docs"
 "Source code" = "https://github.com/matt-manes/databased/tree/main/src/databased"
 
-[tool.pytest.ini_options]
-addopts = [
-    "--import-mode=importlib",
-]
-pythonpath = "src"
-
-[tool.hatch.build.targets.sdist]
-exclude = [
-    ".coverage",
-    ".pytest_cache",
-    ".vscode",
-    "tests"
-]
 [project.scripts]
 dbshell = "databased.dbshell:main"
 createshell = "databased.create_shell:main"
+
+[tool]
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+pythonpath = "src"
+
+[tool.hatch.build.targets.sdist]
+exclude = [".coverage", ".pytest_cache", ".vscode", "tests"]
