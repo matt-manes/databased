@@ -2,7 +2,7 @@ import argshell
 from griddle import griddy
 from pathier import Pathier
 
-from databased import DataBased, dbparsers
+from databased import DataBased, dbparsers, create_shell
 
 
 class DBShell(argshell.ArgShell):
@@ -229,16 +229,10 @@ class DBShell(argshell.ArgShell):
         """Generate a template file in the current working directory for creating a custom DBShell class.
         Expects one argument: the name of the custom dbshell.
         This will be used to name the generated file as well as several components in the file content."""
-        custom_file = (Pathier.cwd() / arg.replace(" ", "_")).with_suffix(".py")
-        if custom_file.exists():
-            print(f"Error: {custom_file.name} already exists in this location.")
-        else:
-            variable_name = "_".join(word for word in arg.lower().split())
-            class_name = "".join(word.capitalize() for word in arg.split())
-            content = (Pathier(__file__).parent / "customshell.py").read_text()
-            content = content.replace("CustomShell", class_name)
-            content = content.replace("customshell", variable_name)
-            custom_file.write_text(content)
+        try:
+            create_shell(arg)
+        except Exception as e:
+            print(f"{type(e).__name__}: {e}")
 
     def do_vacuum(self, arg: str):
         """Reduce database disk memory."""
@@ -248,7 +242,7 @@ class DBShell(argshell.ArgShell):
         with DataBased(self.dbpath) as db:
             db.vacuum()
         print(f"Database size after vacuuming: {self.dbpath.formatted_size}")
-        print(f"Freed up {Pathier.format_size(starting_size - self.dbpath.size} of disk space.")  # type: ignore
+        print(f"Freed up {Pathier.format_bytes(starting_size - self.dbpath.size)} of disk space.")  # type: ignore
 
     def _choose_db(self, options: list[Pathier]) -> Pathier:
         """Prompt the user to select from a list of files."""

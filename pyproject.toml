@@ -41,3 +41,4 @@ exclude = [
 ]
 [project.scripts]
 dbshell = "databased.dbshell:main"
+createshell = "databased.create_shell:main"
