@@ -36,7 +36,7 @@ class DBShell(argshell.ArgShell):
 
     def do_size(self, arg: str):
         """Display the size of the the current db file."""
-        print(f"{self.dbpath.name} is {self.dbpath.size(True)}.")
+        print(f"{self.dbpath.name} is {self.dbpath.formatted_size}.")
 
     @argshell.with_parser(dbparsers.get_create_table_parser)
     def do_add_table(self, args: argshell.Namespace):
@@ -242,13 +242,13 @@ class DBShell(argshell.ArgShell):
 
     def do_vacuum(self, arg: str):
         """Reduce database disk memory."""
-        starting_size = self.dbpath.size()
-        print(f"Database size before vacuuming: {self.dbpath.size(True)}")
+        starting_size = self.dbpath.size
+        print(f"Database size before vacuuming: {self.dbpath.formatted_size}")
         print("Vacuuming database...")
         with DataBased(self.dbpath) as db:
             db.vacuum()
-        print(f"Database size after vacuuming: {self.dbpath.size(True)}")
-        print(f"Freed up {Pathier.format_size(starting_size - self.dbpath.size())} of disk space.")  # type: ignore
+        print(f"Database size after vacuuming: {self.dbpath.formatted_size}")
+        print(f"Freed up {Pathier.format_size(starting_size - self.dbpath.size} of disk space.")  # type: ignore
 
     def _choose_db(self, options: list[Pathier]) -> Pathier:
         """Prompt the user to select from a list of files."""
