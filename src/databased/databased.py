@@ -186,9 +186,13 @@ class DataBased:
             )
         return f"({conditions})"
 
-    def vacuum(self):
-        """Reduce disk size of the database with a `VACUUM` query."""
+    def vacuum(self) -> int:
+        """Reduce disk size of the database with a `VACUUM` query.
+
+        Returns space freed up in bytes."""
+        size = self.dbpath.size
         self.query("VACUUM;")
+        return size - self.dbpath.size
 
     @_connect
     def query(self, query_) -> list[Any]:
