@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.5.0 (2023-07-02)
+
+#### New Features
+
+* extract create custom shell functionality and make accessible as a standalone cli
+#### Performance improvements
+
+* `vacuum()` returns the size, in bytes, of the freed space
+#### Refactorings
+
+* use return value from db.vacuum()
+#### Others
+
+* update pathier usage
+
+
 ## v2.4.1 (2023-06-19)
 
 #### Fixes
