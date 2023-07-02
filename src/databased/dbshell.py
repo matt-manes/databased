@@ -240,9 +240,9 @@ class DBShell(argshell.ArgShell):
         print(f"Database size before vacuuming: {self.dbpath.formatted_size}")
         print("Vacuuming database...")
         with DataBased(self.dbpath) as db:
-            db.vacuum()
+            freedspace = db.vacuum()
         print(f"Database size after vacuuming: {self.dbpath.formatted_size}")
-        print(f"Freed up {Pathier.format_bytes(starting_size - self.dbpath.size)} of disk space.")  # type: ignore
+        print(f"Freed up {Pathier.format_bytes(freedspace)} of disk space.")
 
     def _choose_db(self, options: list[Pathier]) -> Pathier:
         """Prompt the user to select from a list of files."""
