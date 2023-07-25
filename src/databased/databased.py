@@ -123,15 +123,15 @@ class Databased:
         self.cursor.execute(query_)
         return self.cursor.fetchall()
 
-    def create_table(self, table: str, column_defs: list[str]):
+    def create_table(self, table: str, *column_defs: str):
         """Create a table if it doesn't exist.
 
         #### :params:
 
         `table`: Name of the table to create.
 
-        `column_defs`: List of column names and their definitions in proper Sqlite3 sytax.
-        i.e. `"column_name text unique"` or `"column_name int primary key"` etc."""
+        `column_defs`: Any number of column names and their definitions in proper Sqlite3 sytax.
+        i.e. `"column_name TEXT UNIQUE"` or `"column_name INTEGER PRIMARY KEY"` etc."""
         columns = ", ".join(column_defs)
         result = self.query(f"CREATE TABLE IF NOT EXISTS {table} ({columns});")
         self.logger.info(f"'{table}' table created.")
