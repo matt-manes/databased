@@ -46,5 +46,16 @@ def test__connection():
 
 def test__query():
     db = Databased(dbpath)
-    print(db.query("SELECT * FROM sqlite_Schema;"))
+    db.query("SELECT * FROM sqlite_Schema;")
     db.disconnect()
+
+
+def test__create_table():
+    with Databased(dbpath) as db:
+        db.create_table(
+            "cereals",
+            "id INTEGER PRIMARY KEY AUTOINCREMENT",
+            "name TEXT NOT NULL",
+            "brand TEXT",
+            "date_added TIMESTAMP",
+        )
