@@ -1,7 +1,7 @@
 import logging
 import sqlite3
 from functools import wraps
-from typing import Any
+from typing import Any, Type
 
 import pandas
 from griddle import griddy
@@ -106,3 +106,11 @@ class Databased:
             )
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
+
+    def query(self, query_: str) -> list[sqlite3.Row]:
+        if not self.connected:
+            self.connect()
+        assert self.connection
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(query_)
+        return self.cursor.fetchall()
