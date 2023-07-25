@@ -8,6 +8,11 @@ from griddle import griddy
 from pathier import Pathier, Pathish
 
 
+def dict_factory(cursor: sqlite3.Cursor, row: tuple) -> dict:
+    fields = [column[0] for column in cursor.description]
+    return {column: value for column, value in zip(fields, row)}
+
+
 class Databased:
     """SQLite3 wrapper."""
 
@@ -61,7 +66,7 @@ class Databased:
     def connection_timeout(self, timeout: float):
         self._connection_timeout = timeout
 
-    def connect(self, row_factory: Any = sqlite3.Row):
+    def connect(self):
         """Connect to the database."""
         self.connection = sqlite3.connect(
             self.path,
@@ -69,7 +74,7 @@ class Databased:
             timeout=self.connection_timeout,
         )
         self.connection.execute("pragma foreign_keys = 1;")
-        self.connection.row_factory = row_factory
+        self.connection.row_factory = dict_factory
 
     def disconnect(self):
         """Disconnect from the database."""
@@ -107,7 +112,7 @@ class Databased:
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
 
-    def query(self, query_: str) -> list[sqlite3.Row]:
+    def query(self, query_: str) -> list[dict]:
         """Execute an SQL query and return the results.
 
         The cursor used to execute the query will be available through `self.cursor` until the next time `self.query()` is called."""
@@ -130,4 +135,3 @@ class Databased:
         columns = ", ".join(column_defs)
         result = self.query(f"CREATE TABLE IF NOT EXISTS {table} ({columns});")
         self.logger.info(f"'{table}' table created.")
-        return result
