@@ -41,7 +41,7 @@ class Databased:
         """If `new_path` doesn't exist, it will be created (including parent folders)."""
         self._path = Pathier(new_path)
         if not self.path.exists():
-            self.path.mkdir()
+            self.path.touch()
 
     @property
     def name(self) -> str:
@@ -108,9 +108,26 @@ class Databased:
             self.logger.setLevel(logging.INFO)
 
     def query(self, query_: str) -> list[sqlite3.Row]:
+        """Execute an SQL query and return the results.
+
+        The cursor used to execute the query will be available through `self.cursor` until the next time `self.query()` is called."""
         if not self.connected:
             self.connect()
         assert self.connection
         self.cursor = self.connection.cursor()
         self.cursor.execute(query_)
         return self.cursor.fetchall()
+
+    def create_table(self, table: str, column_defs: list[str]):
+        """Create a table if it doesn't exist.
+
+        #### :params:
+
+        `table`: Name of the table to create.
+
+        `column_defs`: List of column names and their definitions in proper Sqlite3 sytax.
+        i.e. `"column_name text unique"` or `"column_name int primary key"` etc."""
+        columns = ", ".join(column_defs)
+        result = self.query(f"CREATE TABLE IF NOT EXISTS {table} ({columns});")
+        self.logger.info(f"'{table}' table created.")
+        return result
