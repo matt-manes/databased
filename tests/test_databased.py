@@ -61,3 +61,8 @@ def test__create_table():
             "brand TEXT",
             "date_added TIMESTAMP",
         )
+
+
+def test__tables():
+    with DB() as db:
+        assert db.tables == ["cereals"]
