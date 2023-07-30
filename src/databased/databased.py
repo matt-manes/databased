@@ -145,3 +145,9 @@ class Databased:
                 "SELECT name FROM sqlite_Schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';"
             )
         ]
+
+    def columns(self, table: str) -> list[str]:
+        """Returns a list of column names in `table`."""
+        return [
+            column["name"] for column in self.query(f"pragma table_info('{table}');")
+        ]
