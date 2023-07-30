@@ -115,6 +115,8 @@ class Databased:
     def query(self, query_: str) -> list[dict]:
         """Execute an SQL query and return the results.
 
+        Ensures that the database connection is opened before executing the command.
+
         The cursor used to execute the query will be available through `self.cursor` until the next time `self.query()` is called."""
         if not self.connected:
             self.connect()
