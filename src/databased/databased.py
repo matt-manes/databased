@@ -98,7 +98,7 @@ class Databased:
         self.disconnect()
 
     def _logger_init(self, message_format: str, encoding: str):
-        """:param `message_format`: '{' style format string"""
+        """:param: `message_format`: `{` style format string."""
         self.logger = logging.getLogger(self.name)
         if not self.logger.hasHandlers():
             handler = logging.FileHandler(
@@ -135,3 +135,13 @@ class Databased:
         columns = ", ".join(column_defs)
         result = self.query(f"CREATE TABLE IF NOT EXISTS {table} ({columns});")
         self.logger.info(f"'{table}' table created.")
+
+    @property
+    def tables(self) -> list[str]:
+        """List of table names for this database."""
+        return [
+            table["name"]
+            for table in self.query(
+                "SELECT name FROM sqlite_Schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';"
+            )
+        ]
