@@ -66,3 +66,8 @@ def test__create_table():
 def test__tables():
     with DB() as db:
         assert db.tables == ["cereals"]
+
+
+def test__columns():
+    with DB() as db:
+        assert db.columns("cereals") == ["id", "name", "brand", "date_added"]
