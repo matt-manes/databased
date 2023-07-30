@@ -157,3 +157,11 @@ class Databased:
     def describe(self, table: str) -> list[dict]:
         """Returns information about `table`."""
         return self.query(f"pragma table_info('{table}');")
+
+    def vacuum(self) -> int:
+        """Reduce disk size of database after row/table deletion.
+
+        Returns space freed up in bytes."""
+        size = self.path.size
+        self.query("VACUUM;")
+        return size - self.path.size
