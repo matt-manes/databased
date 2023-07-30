@@ -151,3 +151,7 @@ class Databased:
         return [
             column["name"] for column in self.query(f"pragma table_info('{table}');")
         ]
+
+    def describe(self, table: str) -> list[dict]:
+        """Returns information about `table`."""
+        return self.query(f"pragma table_info('{table}');")
