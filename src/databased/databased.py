@@ -112,7 +112,7 @@ class Databased:
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
 
-    def query(self, query_: str) -> list[dict]:
+    def query(self, query_: str, parameters: tuple[Any] = tuple()) -> list[dict]:
         """Execute an SQL query and return the results.
 
         Ensures that the database connection is opened before executing the command.
@@ -122,7 +122,7 @@ class Databased:
             self.connect()
         assert self.connection
         self.cursor = self.connection.cursor()
-        self.cursor.execute(query_)
+        self.cursor.execute(query_, parameters)
         return self.cursor.fetchall()
 
     def create_table(self, table: str, *column_defs: str):
