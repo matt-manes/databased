@@ -19,6 +19,7 @@ def setup_module():
 
 
 def teardown_module():
+    """ """
     dummy_path.delete()
 
 
@@ -59,7 +60,7 @@ def test__create_table():
             "id INTEGER PRIMARY KEY AUTOINCREMENT",
             "name TEXT NOT NULL",
             "brand TEXT",
-            "date_added TIMESTAMP",
+            "date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
         )
 
 
@@ -71,3 +72,8 @@ def test__tables():
 def test__columns():
     with DB() as db:
         assert db.columns("cereals") == ["id", "name", "brand", "date_added"]
+
+
+def test__insert():
+    with DB() as db:
+        db.insert("cereals", ("name", "brand"), ("Sugar Berries", "Super Health"))
