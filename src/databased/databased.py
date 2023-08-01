@@ -121,8 +121,7 @@ class Databased:
         if not self.connected:
             self.connect()
         assert self.connection
-        self.cursor = self.connection.cursor()
-        self.cursor.execute(query_, parameters)
+        self.cursor = self.connection.execute(query_, parameters)
         return self.cursor.fetchall()
 
     def create_table(self, table: str, *column_defs: str):
@@ -137,6 +136,7 @@ class Databased:
         columns = ", ".join(column_defs)
         result = self.query(f"CREATE TABLE IF NOT EXISTS {table} ({columns});")
         self.logger.info(f"'{table}' table created.")
+        return result
 
     @property
     def tables(self) -> list[str]:
@@ -187,3 +187,7 @@ class Databased:
                 f"Error adding '{logger_values}' into '{column_list}' columns of '{table}' table."
             )
             raise e
+
+    """ def insert_many(self, table:str, columns:tuple[str], values:list[tuple[Any]])->list[dict] | None:
+        for value_set in values:
+             """
