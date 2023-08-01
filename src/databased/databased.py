@@ -165,3 +165,25 @@ class Databased:
         size = self.path.size
         self.query("VACUUM;")
         return size - self.path.size
+
+    def insert(
+        self, table: str, columns: tuple[str], values: tuple[Any]
+    ) -> list[dict] | None:
+        """Insert `values` into `columns` of `table`."""
+        placeholder = ", ".join("?" for _ in values)
+        logger_values = ", ".join(str(value) for value in values)
+        column_list = ", ".join(columns)
+        try:
+            result = self.query(
+                f"INSERT INTO {table}({column_list}) VALUES({placeholder})",
+                values,
+            )
+            self.logger.info(
+                f"Added '{logger_values}' into '{column_list}' columns of '{table}' table."
+            )
+            return result
+        except Exception as e:
+            self.logger.exception(
+                f"Error adding '{logger_values}' into '{column_list}' columns of '{table}' table."
+            )
+            raise e
