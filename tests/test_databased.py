@@ -9,7 +9,7 @@ from databased import Databased
 
 root = Pathier(__file__).parent
 dummy_path = root / "dummy"
-dbpath = dummy_path / "dummy.db"
+dbpath = dummy_path / "dummy.sqlite3"
 
 DB = partial(Databased, dbpath)
 
