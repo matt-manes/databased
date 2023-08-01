@@ -121,7 +121,8 @@ class Databased:
         if not self.connected:
             self.connect()
         assert self.connection
-        self.cursor = self.connection.execute(query_, parameters)
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(query_, parameters)
         return self.cursor.fetchall()
 
     def create_table(self, table: str, *column_defs: str):
@@ -166,22 +167,20 @@ class Databased:
         self.query("VACUUM;")
         return size - self.path.size
 
-    def insert(
-        self, table: str, columns: tuple[str], values: tuple[Any]
-    ) -> list[dict] | None:
+    def insert(self, table: str, columns: tuple[str], values: tuple[Any]) -> int:
         """Insert `values` into `columns` of `table`."""
         placeholder = ", ".join("?" for _ in values)
         logger_values = ", ".join(str(value) for value in values)
         column_list = ", ".join(columns)
         try:
-            result = self.query(
+            self.query(
                 f"INSERT INTO {table}({column_list}) VALUES({placeholder})",
                 values,
             )
             self.logger.info(
                 f"Added '{logger_values}' into '{column_list}' columns of '{table}' table."
             )
-            return result
+            return self.cursor.rowcount
         except Exception as e:
             self.logger.exception(
                 f"Error adding '{logger_values}' into '{column_list}' columns of '{table}' table."
@@ -189,5 +188,4 @@ class Databased:
             raise e
 
     """ def insert_many(self, table:str, columns:tuple[str], values:list[tuple[Any]])->list[dict] | None:
-        for value_set in values:
-             """
+        for value_set in values: """
