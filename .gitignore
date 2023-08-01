@@ -6,3 +6,4 @@ TODO.txt
 *.db
 *.log
 tests/dbmanager.py
+*notes*
