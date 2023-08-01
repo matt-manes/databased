@@ -18,7 +18,7 @@ class Databased:
 
     def __init__(
         self,
-        dbpath: Pathish,
+        dbpath: Pathish = "db.sqlite3",
         connection_timeout: float = 10,
         logger_encoding: str = "utf-8",
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
