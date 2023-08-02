@@ -90,3 +90,15 @@ def test__insert_many():
                 ("Soggy Crisps", "Wet Willys Wonders"),
             ],
         )
+
+
+def test__select():
+    with DB() as db:
+        rows = db.select("cereals")
+        print(rows)
+        assert len(rows) == 4
+        assert len(rows[0]) == 4
+        rows = db.select("cereals", columns="name, brand", where="name LIKE 's%'")
+        print(rows)
+        assert len(rows) == 3
+        assert len(rows[0]) == 2
