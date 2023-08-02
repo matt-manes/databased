@@ -169,23 +169,50 @@ class Databased:
 
     def insert(self, table: str, columns: tuple[str], values: tuple[Any]) -> int:
         """Insert `values` into `columns` of `table`."""
-        placeholder = ", ".join("?" for _ in values)
-        logger_values = ", ".join(str(value) for value in values)
-        column_list = ", ".join(columns)
+        placeholder = "(" + ", ".join("?" for _ in values) + ")"
+        logger_values = "(" + ", ".join(str(value) for value in values) + ")"
+        column_list = "(" + ", ".join(columns) + ")"
         try:
             self.query(
-                f"INSERT INTO {table}({column_list}) VALUES({placeholder})",
+                f"INSERT INTO {table} {column_list} VALUES {placeholder};",
                 values,
             )
             self.logger.info(
-                f"Added '{logger_values}' into '{column_list}' columns of '{table}' table."
+                f"Inserted '{logger_values}' into '{column_list}' columns of '{table}' table."
             )
             return self.cursor.rowcount
         except Exception as e:
             self.logger.exception(
-                f"Error adding '{logger_values}' into '{column_list}' columns of '{table}' table."
+                f"Error inserting '{logger_values}' into '{column_list}' columns of '{table}' table."
             )
             raise e
 
-    """ def insert_many(self, table:str, columns:tuple[str], values:list[tuple[Any]])->list[dict] | None:
-        for value_set in values: """
+    def insert_many(
+        self, table: str, columns: tuple[str], values: list[tuple[Any]]
+    ) -> int:
+        """Insert multiple rows of `values` into `columns` of `table`."""
+        placeholder = (
+            "("
+            + "),(".join(", ".join("?" for _ in value_set) for value_set in values)
+            + ")"
+        )
+        logger_values = "\n".join(
+            "'(" + ", ".join(str(value) for value in value_set) + ")'"
+            for value_set in values
+        )
+        column_list = "(" + ", ".join(columns) + ")"
+        flattened_values = tuple(value for value_set in values for value in value_set)
+        try:
+            self.query(
+                f"INSERT INTO {table} {column_list} VALUES {placeholder};",
+                flattened_values,
+            )
+            self.logger.info(
+                f"Inserted into '{column_list}' columns of '{table}' table values \n{logger_values}."
+            )
+            return self.cursor.rowcount
+        except Exception as e:
+            self.logger.exception(
+                f"Error inserting into '{column_list}' columns of '{table}' table values \n{logger_values}."
+            )
+            raise e
