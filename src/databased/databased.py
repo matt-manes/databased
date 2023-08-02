@@ -216,3 +216,61 @@ class Databased:
                 f"Error inserting into '{column_list}' columns of '{table}' table values \n{logger_values}."
             )
             raise e
+
+    def select(
+        self,
+        table: str,
+        columns: str = "*",
+        joins: str | None = None,
+        where: str | None = None,
+        group_by: str | None = None,
+        having: str | None = None,
+        order_by: str | None = None,
+        desc: bool = False,
+        limit: int | None = None,
+    ) -> list[dict]:
+        """Return rows for given criteria.
+
+        For complex queries, use the `databased.query()` method.
+
+        Parameters `where`, `group_by`, `having`, `order_by`, and `limit` should not have
+        their corresponding key word in their string, but should otherwise be valid SQL.
+
+        `joins` should contain their key word (`INNER JOIN`, `LEFT JOIN`) in addition to the rest of the sub-statement.
+
+        >>> Databased().select(
+            "bike_rides",
+            "id, date, distance, moving_time, AVG(distance/moving_time) as average_speed",
+            where="distance > 20",
+            order_by="distance",
+            desc=True,
+            limit=10
+            )
+        executes the query:
+        >>> SELECT
+                id, date, distance, moving_time, AVG(distance/moving_time) as average_speed
+            FROM
+                bike_rides
+            WHERE
+                distance > 20
+            ORDER BY
+                distance DESC
+            Limit 10;"""
+        query = f"SELECT {columns} FROM {table}"
+        if joins:
+            query += f" {joins}"
+        if where:
+            query += f" WHERE {where}"
+        if group_by:
+            query += f" GROUP BY {group_by}"
+        if having:
+            query += f" HAVING {having}"
+        if order_by:
+            query += f" ORDER BY {order_by}"
+            if desc:
+                query += " DESC"
+        if limit:
+            query += f" LIMIT {limit}"
+        query += ";"
+        rows = self.query(query)
+        return rows
