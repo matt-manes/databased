@@ -77,3 +77,16 @@ def test__columns():
 def test__insert():
     with DB() as db:
         db.insert("cereals", ("name", "brand"), ("Sugar Berries", "Super Health"))
+
+
+def test__insert_many():
+    with DB() as db:
+        db.insert_many(
+            "cereals",
+            ("name", "brand"),
+            [
+                ("Shreddy Bois", "Dr. Wheat"),
+                ("Chungus Os", "Chompers"),
+                ("Soggy Crisps", "Wet Willys Wonders"),
+            ],
+        )
