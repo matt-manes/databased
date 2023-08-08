@@ -139,6 +139,19 @@ class Databased:
         self.logger.info(f"'{table}' table created.")
         return result
 
+    def drop_table(self, table: str) -> bool:
+        """Drop `table` from the database.
+
+        Returns `True` if successful, `False` if not."""
+        try:
+            self.query(f"DROP TABLE {table};")
+            self.logger.info(f"Dropped table '{table}'.")
+            return True
+        except Exception as e:
+            print(f"{type(e).__name__}: {e}")
+            self.logger.error(f"Failed to drop table '{table}'.")
+            return False
+
     @property
     def tables(self) -> list[str]:
         """List of table names for this database."""
