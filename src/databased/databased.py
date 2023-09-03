@@ -23,6 +23,7 @@ class Databased:
         logger_encoding: str = "utf-8",
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
         detect_types: bool = True,
+        commit_on_close: bool = True,
     ):
         """ """
         self.path = dbpath
@@ -30,13 +31,13 @@ class Databased:
         self.connection = None
         self._logger_init(logger_message_format, logger_encoding)
         self.detect_types = detect_types
+        self.commit_on_close = commit_on_close
 
     def __enter__(self):
         self.connect()
         return self
 
     def __exit__(self, *args, **kwargs):
-        self.commit()
         self.close()
 
     @property
@@ -59,6 +60,15 @@ class Databased:
     @detect_types.setter
     def detect_types(self, should_detect: bool):
         self._detect_types = should_detect
+
+    @property
+    def commit_on_close(self) -> bool:
+        """Should commit database before closing connection when `self.close()` is called."""
+        return self._commit_on_close
+
+    @commit_on_close.setter
+    def commit_on_close(self, should_commit_on_close: bool):
+        self._commit_on_close = should_commit_on_close
 
     @property
     def name(self) -> str:
@@ -91,8 +101,12 @@ class Databased:
         self.connection.row_factory = dict_factory
 
     def close(self):
-        """Disconnect from the database. Does not call `commit()` for you."""
+        """Disconnect from the database.
+
+        Does not call `commit()` for you unless the `commit_on_close` property is set to `True`."""
         if self.connection:
+            if self.commit_on_close:
+                self.commit()
             self.connection.close()
             self.connection = None
 
