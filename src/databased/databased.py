@@ -217,31 +217,33 @@ class Databased:
         self, table: str, columns: tuple[str], values: list[tuple[Any]]
     ) -> int:
         """Insert multiple rows of `values` into `columns` of `table`."""
-        placeholder = (
-            "("
-            + "),(".join(", ".join("?" for _ in value_set) for value_set in values)
-            + ")"
-        )
-        logger_values = "\n".join(
-            "'(" + ", ".join(str(value) for value in value_set) + ")'"
-            for value_set in values
-        )
+        chunk_size = 900
         column_list = "(" + ", ".join(columns) + ")"
-        flattened_values = tuple(value for value_set in values for value in value_set)
-        try:
-            self.query(
-                f"INSERT INTO {table} {column_list} VALUES {placeholder};",
-                flattened_values,
+        row_count = 0
+        for i in range(0, len(values), chunk_size):
+            chunk = values[i : i + chunk_size]
+            placeholder = (
+                "(" + "),(".join(", ".join("?" for _ in row) for row in chunk) + ")"
             )
-            self.logger.info(
-                f"Inserted into '{column_list}' columns of '{table}' table values \n{logger_values}."
+            logger_values = "\n".join(
+                "'(" + ", ".join(str(value) for value in row) + ")'" for row in chunk
             )
-            return self.cursor.rowcount
-        except Exception as e:
-            self.logger.exception(
-                f"Error inserting into '{column_list}' columns of '{table}' table values \n{logger_values}."
-            )
-            raise e
+            flattened_values = tuple(value for row in chunk for value in row)
+            try:
+                self.query(
+                    f"INSERT INTO {table} {column_list} VALUES {placeholder};",
+                    flattened_values,
+                )
+                self.logger.info(
+                    f"Inserted into '{column_list}' columns of '{table}' table values \n{logger_values}."
+                )
+                row_count += self.cursor.rowcount
+            except Exception as e:
+                self.logger.exception(
+                    f"Error inserting into '{column_list}' columns of '{table}' table values \n{logger_values}."
+                )
+                raise e
+        return row_count
 
     def select(
         self,
