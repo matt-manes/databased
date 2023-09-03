@@ -138,6 +138,13 @@ class Databased:
         self.cursor.execute(query_, parameters)
         return self.cursor.fetchall()
 
+    def execute_script(self, path: Pathish, encoding: str = "utf-8") -> sqlite3.Cursor:
+        """Execute sql script located at `path`."""
+        if not self.connected:
+            self.connect()
+        assert self.connection
+        return self.connection.executescript(Pathier(path).read_text(encoding))
+
     def create_table(self, table: str, *column_defs: str):
         """Create a table if it doesn't exist.
 
