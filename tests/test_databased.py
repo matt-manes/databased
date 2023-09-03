@@ -102,3 +102,9 @@ def test__select():
         print(rows)
         assert len(rows) == 3
         assert len(rows[0]) == 2
+
+
+def test__delete():
+    with DB() as db:
+        assert db.delete("cereals", "name = 'Shreddy Bois'") == 1
+        assert db.delete("cereals") == 3

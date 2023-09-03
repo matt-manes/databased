@@ -305,3 +305,29 @@ class Databased:
         query += ";"
         rows = self.query(query)
         return rows
+
+    def delete(self, table: str, where: str | None = None) -> int:
+        """Delete rows from `table` that satisfy the given `where` clause.
+
+        If `where` is `None`, all rows will be deleted.
+
+        Returns the number of deleted rows.
+
+        e.g.
+        >>> db = Databased()
+        >>> db.delete("rides", "distance < 5 AND average_speed < 7")"""
+        try:
+            if where:
+                self.query(f"DELETE FROM {table} WHERE {where};")
+            else:
+                self.query(f"DELETE FROM {table};")
+            row_count = self.cursor.rowcount
+            self.logger.info(
+                f"Deleted {row_count} rows from '{table}' where '{where}'."
+            )
+            return row_count
+        except Exception as e:
+            self.logger.exception(
+                f"Error deleting rows from '{table}' where '{where}'."
+            )
+            raise e
