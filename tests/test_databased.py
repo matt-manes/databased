@@ -95,6 +95,13 @@ def test__select():
         assert len(rows[0]) == 2
 
 
+def test__update():
+    with DB() as db:
+        assert db.update("cereals", "brand", "Big Gravy", "brand = 'Chompers'") == 1
+        assert db.update("cereals", "brand", "Lockheed", "brand != 'Big Gravy'") == 3
+        assert db.update("cereals", "brand", "littlegravy") == 4
+
+
 def test__delete():
     with DB() as db:
         assert db.delete("cereals", "name = 'Shreddy Bois'") == 1

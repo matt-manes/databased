@@ -345,3 +345,31 @@ class Databased:
                 f"Error deleting rows from '{table}' where '{where}'."
             )
             raise e
+
+    def update(
+        self, table: str, column: str, value: Any, where: str | None = None
+    ) -> int:
+        """Update `column` of `table` to `value` for rows satisfying the conditions in `where`.
+
+        If `where` is `None` all rows will be updated.
+
+        Returns the number of updated rows.
+
+        e.g.
+        >>> db = Databased()
+        >>> db.update("rides", "elevation", 100, "elevation < 100")"""
+        try:
+            if where:
+                self.query(f"UPDATE {table} SET {column} = ? WHERE {where};", (value,))
+            else:
+                self.query(f"UPDATE {table} SET {column} = ?;", (value,))
+            row_count = self.cursor.rowcount
+            self.logger.info(
+                f"Updated {row_count} rows in '{table}' table to '{column}' = '{value}' where '{where}'."
+            )
+            return row_count
+        except Exception as e:
+            self.logger.exception(
+                f"Failed to update rows in '{table}' table to '{column}' = '{value}' where '{where}'."
+            )
+            raise e
