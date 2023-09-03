@@ -36,6 +36,7 @@ class Databased:
         return self
 
     def __exit__(self, *args, **kwargs):
+        self.commit()
         self.close()
 
     @property
@@ -89,8 +90,8 @@ class Databased:
         self.connection.execute("pragma foreign_keys = 1;")
         self.connection.row_factory = dict_factory
 
-    def disconnect(self):
-        """Disconnect from the database."""
+    def close(self):
+        """Disconnect from the database. Does not call `commit()` for you."""
         if self.connection:
             self.connection.close()
             self.connection = None
@@ -104,11 +105,6 @@ class Databased:
             raise RuntimeError(
                 "Databased.commit(): Can't commit db with no open connection."
             )
-
-    def close(self):
-        """Commit the database and then disconnect."""
-        self.commit()
-        self.disconnect()
 
     def _logger_init(self, message_format: str, encoding: str):
         """:param: `message_format`: `{` style format string."""

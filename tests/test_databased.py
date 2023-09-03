@@ -43,14 +43,14 @@ def test__connection():
     assert db.connection is None
     db.connect()
     assert db.connection is not None
-    db.disconnect()
+    db.close()
     assert db.connection is None
 
 
 def test__query():
     db = DB()
     db.query("SELECT * FROM sqlite_Schema;")
-    db.disconnect()
+    db.close()
 
 
 def test__create_table():
