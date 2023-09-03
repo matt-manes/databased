@@ -14,15 +14,6 @@ dbpath = dummy_path / "dummy.sqlite3"
 DB = partial(Databased, dbpath)
 
 
-def setup_module():
-    ...
-
-
-def teardown_module():
-    """ """
-    dummy_path.delete()
-
-
 def test__init():
     db = DB()
     assert db.path.exists()
