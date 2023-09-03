@@ -22,12 +22,14 @@ class Databased:
         connection_timeout: float = 10,
         logger_encoding: str = "utf-8",
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
+        detect_types: bool = True,
     ):
         """ """
         self.path = dbpath
         self.connection_timeout = connection_timeout
         self.connection = None
         self._logger_init(logger_message_format, logger_encoding)
+        self.detect_types = detect_types
 
     def __enter__(self):
         self.connect()
@@ -47,6 +49,15 @@ class Databased:
         self._path = Pathier(new_path)
         if not self.path.exists():
             self.path.touch()
+
+    @property
+    def detect_types(self) -> bool:
+        """Should use `detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES` when establishing a database connection."""
+        return self._detect_types
+
+    @detect_types.setter
+    def detect_types(self, should_detect: bool):
+        self._detect_types = should_detect
 
     @property
     def name(self) -> str:
@@ -70,7 +81,9 @@ class Databased:
         """Connect to the database."""
         self.connection = sqlite3.connect(
             self.path,
-            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+            if self.detect_types
+            else 0,
             timeout=self.connection_timeout,
         )
         self.connection.execute("pragma foreign_keys = 1;")
