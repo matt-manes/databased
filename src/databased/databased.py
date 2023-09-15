@@ -210,35 +210,15 @@ class Databased:
         self.query("VACUUM;")
         return size - self.path.size
 
-    def insert(self, table: str, columns: tuple[str], values: tuple[Any]) -> int:
-        """Insert `values` into `columns` of `table`."""
-        placeholder = "(" + ", ".join("?" for _ in values) + ")"
-        logger_values = "(" + ", ".join(str(value) for value in values) + ")"
-        column_list = "(" + ", ".join(columns) + ")"
-        try:
-            self.query(
-                f"INSERT INTO {table} {column_list} VALUES {placeholder};",
-                values,
-            )
-            self.logger.info(
-                f"Inserted '{logger_values}' into '{column_list}' columns of '{table}' table."
-            )
-            return self.cursor.rowcount
-        except Exception as e:
-            self.logger.exception(
-                f"Error inserting '{logger_values}' into '{column_list}' columns of '{table}' table."
-            )
-            raise e
+    def insert(self, table: str, columns: tuple[str], values: list[tuple[Any]]) -> int:
+        """Insert rows of `values` into `columns` of `table`.
 
-    def insert_many(
-        self, table: str, columns: tuple[str], values: list[tuple[Any]]
-    ) -> int:
-        """Insert multiple rows of `values` into `columns` of `table`."""
-        chunk_size = 900
+        Each `tuple` in `values` corresponds to an individual row that is to be inserted."""
+        max_row_count = 900
         column_list = "(" + ", ".join(columns) + ")"
         row_count = 0
-        for i in range(0, len(values), chunk_size):
-            chunk = values[i : i + chunk_size]
+        for i in range(0, len(values), max_row_count):
+            chunk = values[i : i + max_row_count]
             placeholder = (
                 "(" + "),(".join(", ".join("?" for _ in row) for row in chunk) + ")"
             )
