@@ -155,7 +155,7 @@ class Databased:
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
 
-    def query(self, query_: str, parameters: tuple[Any] = tuple()) -> list[dict]:
+    def query(self, query_: str, parameters: tuple[Any, ...] = tuple()) -> list[dict]:
         """Execute an SQL query and return the results.
 
         Ensures that the database connection is opened before executing the command.
@@ -373,3 +373,27 @@ class Databased:
                 f"Failed to update rows in '{table}' table to '{column}' = '{value}' where '{where}'."
             )
             raise e
+
+    def rename_table(self, table_to_rename: str, new_table_name: str):
+        """Rename a table."""
+        self.query(f"ALTER TABLE {table_to_rename} RENAME TO {new_table_name};")
+
+    def rename_column(self, table: str, column_to_rename: str, new_column_name: str):
+        """Rename a column in `table`."""
+        self.query(
+            f"ALTER TABLE {table} RENAME {column_to_rename} TO {new_column_name};"
+        )
+
+    def add_column(self, table: str, column_def: str):
+        """Add a column to `table`.
+
+        `column_def` should be in the form `{column_name} {type_name} {constraint}`.
+
+        i.e.
+        >>> db = Databased()
+        >>> db.add_column("rides", "num_stops INTEGER NOT NULL DEFAULT 0")"""
+        self.query(f"ALTER TABLE {table} ADD {column_def};")
+
+    def drop_column(self, table: str, column: str):
+        """Drop `column` from `table`."""
+        self.query(f"ALTER TABLE {table} DROP {column};")

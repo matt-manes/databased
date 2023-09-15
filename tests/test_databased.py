@@ -107,6 +107,35 @@ def test__update():
         assert db.update("cereals", "brand", "littlegravy") == 4
 
 
+def test__rename_table():
+    with DB() as db:
+        db.rename_table("cereals", "serials")
+        assert "serials" in db.tables and "cereals" not in db.tables
+        db.rename_table("serials", "cereals")
+
+
+def test__rename_column():
+    with DB() as db:
+        db.rename_column("cereals", "brand", "company")
+        assert "company" in db.columns("cereals") and "brand" not in db.columns(
+            "cereals"
+        )
+        db.rename_column("cereals", "company", "brand")
+
+
+def test__add_column():
+    with DB() as db:
+        db.add_column("cereals", "sugar_content INTEGER NOT NULL DEFAULT 10000")
+        assert "sugar_content" in db.columns("cereals")
+
+
+def test__drop_column():
+    with DB() as db:
+        assert "sugar_content" in db.columns("cereals")
+        db.drop_column("cereals", "sugar_content")
+        assert "sugar_content" not in db.columns("cereals")
+
+
 def test__delete():
     with DB() as db:
         assert db.delete("cereals", "name = 'Shreddy Bois'") == 1
