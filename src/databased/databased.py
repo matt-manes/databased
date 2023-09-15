@@ -54,7 +54,9 @@ class Databased:
 
     @property
     def detect_types(self) -> bool:
-        """Should use `detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES` when establishing a database connection."""
+        """Should use `detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES` when establishing a database connection.
+
+        Changes to this property won't take effect until the current connection, if open, is closed and a new connection opened."""
         return self._detect_types
 
     @detect_types.setter
@@ -82,6 +84,7 @@ class Databased:
 
     @property
     def connection_timeout(self) -> float:
+        """Changes to this property won't take effect until the current connection, if open, is closed and a new connection opened."""
         return self._connection_timeout
 
     @connection_timeout.setter
