@@ -212,7 +212,7 @@ class Databased:
             )
         ]
 
-    def columns(self, table: str) -> list[str]:
+    def get_columns(self, table: str) -> list[str]:
         """Returns a list of column names in `table`."""
         return [
             column["name"] for column in self.query(f"pragma table_info('{table}');")

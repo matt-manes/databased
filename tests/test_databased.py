@@ -71,7 +71,7 @@ def test__tables():
 
 def test__columns():
     with DB() as db:
-        assert db.columns("cereals") == ["id", "name", "brand", "date_added"]
+        assert db.get_columns("cereals") == ["id", "name", "brand", "date_added"]
 
 
 def test__insert():
@@ -117,7 +117,7 @@ def test__rename_table():
 def test__rename_column():
     with DB() as db:
         db.rename_column("cereals", "brand", "company")
-        assert "company" in db.columns("cereals") and "brand" not in db.columns(
+        assert "company" in db.get_columns("cereals") and "brand" not in db.get_columns(
             "cereals"
         )
         db.rename_column("cereals", "company", "brand")
@@ -126,14 +126,14 @@ def test__rename_column():
 def test__add_column():
     with DB() as db:
         db.add_column("cereals", "sugar_content INTEGER NOT NULL DEFAULT 10000")
-        assert "sugar_content" in db.columns("cereals")
+        assert "sugar_content" in db.get_columns("cereals")
 
 
 def test__drop_column():
     with DB() as db:
-        assert "sugar_content" in db.columns("cereals")
+        assert "sugar_content" in db.get_columns("cereals")
         db.drop_column("cereals", "sugar_content")
-        assert "sugar_content" not in db.columns("cereals")
+        assert "sugar_content" not in db.get_columns("cereals")
 
 
 def test__delete():
