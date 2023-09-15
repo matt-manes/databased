@@ -24,6 +24,7 @@ class Databased:
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
         detect_types: bool = True,
         commit_on_close: bool = True,
+        enforce_foreign_keys: bool = True,
     ):
         """ """
         self.path = dbpath
@@ -32,6 +33,7 @@ class Databased:
         self._logger_init(logger_message_format, logger_encoding)
         self.detect_types = detect_types
         self.commit_on_close = commit_on_close
+        self.enforce_foreign_keys = enforce_foreign_keys
 
     def __enter__(self):
         self.connect()
@@ -39,6 +41,21 @@ class Databased:
 
     def __exit__(self, *args, **kwargs):
         self.close()
+
+    @property
+    def enforce_foreign_keys(self) -> bool:
+        return self._enforce_foreign_keys
+
+    @enforce_foreign_keys.setter
+    def enforce_foreign_keys(self, should_enforce: bool):
+        self._enforce_foreign_keys = should_enforce
+        self._set_foreign_key_enforcement()
+
+    def _set_foreign_key_enforcement(self):
+        if self.connection:
+            self.connection.execute(
+                f"pragma foreign_keys = {int(self.enforce_foreign_keys)};"
+            )
 
     @property
     def path(self) -> Pathier:
@@ -100,7 +117,7 @@ class Databased:
             else 0,
             timeout=self.connection_timeout,
         )
-        self.connection.execute("pragma foreign_keys = 1;")
+        self._set_foreign_key_enforcement()
         self.connection.row_factory = dict_factory
 
     def close(self):

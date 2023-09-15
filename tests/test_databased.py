@@ -38,6 +38,15 @@ def test__connection():
     assert db.connection is None
 
 
+def test__foreign_keys():
+    db = DB()
+    assert db.enforce_foreign_keys
+    db.enforce_foreign_keys = False
+    assert not db.enforce_foreign_keys
+    db.enforce_foreign_keys = True
+    assert db.enforce_foreign_keys
+
+
 def test__query():
     db = DB()
     db.query("SELECT * FROM sqlite_Schema;")
