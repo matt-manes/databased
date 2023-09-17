@@ -1,7 +1,6 @@
 import logging
 import sqlite3
 from typing import Any
-
 from pathier import Pathier, Pathish
 
 
@@ -40,44 +39,6 @@ class Databased:
         self.close()
 
     @property
-    def enforce_foreign_keys(self) -> bool:
-        return self._enforce_foreign_keys
-
-    @enforce_foreign_keys.setter
-    def enforce_foreign_keys(self, should_enforce: bool):
-        self._enforce_foreign_keys = should_enforce
-        self._set_foreign_key_enforcement()
-
-    def _set_foreign_key_enforcement(self):
-        if self.connection:
-            self.connection.execute(
-                f"pragma foreign_keys = {int(self.enforce_foreign_keys)};"
-            )
-
-    @property
-    def path(self) -> Pathier:
-        """The path to this database file."""
-        return self._path
-
-    @path.setter
-    def path(self, new_path: Pathish):
-        """If `new_path` doesn't exist, it will be created (including parent folders)."""
-        self._path = Pathier(new_path)
-        if not self.path.exists():
-            self.path.touch()
-
-    @property
-    def detect_types(self) -> bool:
-        """Should use `detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES` when establishing a database connection.
-
-        Changes to this property won't take effect until the current connection, if open, is closed and a new connection opened."""
-        return self._detect_types
-
-    @detect_types.setter
-    def detect_types(self, should_detect: bool):
-        self._detect_types = should_detect
-
-    @property
     def commit_on_close(self) -> bool:
         """Should commit database before closing connection when `self.close()` is called."""
         return self._commit_on_close
@@ -85,11 +46,6 @@ class Databased:
     @commit_on_close.setter
     def commit_on_close(self, should_commit_on_close: bool):
         self._commit_on_close = should_commit_on_close
-
-    @property
-    def name(self) -> str:
-        """The name of this database."""
-        return self.path.stem
 
     @property
     def connected(self) -> bool:
@@ -105,17 +61,83 @@ class Databased:
     def connection_timeout(self, timeout: float):
         self._connection_timeout = timeout
 
-    def connect(self):
-        """Connect to the database."""
-        self.connection = sqlite3.connect(
-            self.path,
-            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
-            if self.detect_types
-            else 0,
-            timeout=self.connection_timeout,
-        )
+    @property
+    def detect_types(self) -> bool:
+        """Should use `detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES` when establishing a database connection.
+
+        Changes to this property won't take effect until the current connection, if open, is closed and a new connection opened."""
+        return self._detect_types
+
+    @detect_types.setter
+    def detect_types(self, should_detect: bool):
+        self._detect_types = should_detect
+
+    @property
+    def enforce_foreign_keys(self) -> bool:
+        return self._enforce_foreign_keys
+
+    @enforce_foreign_keys.setter
+    def enforce_foreign_keys(self, should_enforce: bool):
+        self._enforce_foreign_keys = should_enforce
         self._set_foreign_key_enforcement()
-        self.connection.row_factory = dict_factory
+
+    @property
+    def name(self) -> str:
+        """The name of this database."""
+        return self.path.stem
+
+    @property
+    def path(self) -> Pathier:
+        """The path to this database file."""
+        return self._path
+
+    @path.setter
+    def path(self, new_path: Pathish):
+        """If `new_path` doesn't exist, it will be created (including parent folders)."""
+        self._path = Pathier(new_path)
+        if not self.path.exists():
+            self.path.touch()
+
+    @property
+    def tables(self) -> list[str]:
+        """List of table names for this database."""
+        return [
+            table["name"]
+            for table in self.query(
+                "SELECT name FROM sqlite_Schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';"
+            )
+        ]
+
+    def _logger_init(self, message_format: str, encoding: str):
+        """:param: `message_format`: `{` style format string."""
+        self.logger = logging.getLogger(self.name)
+        if not self.logger.hasHandlers():
+            handler = logging.FileHandler(
+                str(self.path).replace(".", "") + ".log", encoding=encoding
+            )
+            handler.setFormatter(
+                logging.Formatter(
+                    message_format, style="{", datefmt="%m/%d/%Y %I:%M:%S %p"
+                )
+            )
+            self.logger.addHandler(handler)
+            self.logger.setLevel(logging.INFO)
+
+    def _set_foreign_key_enforcement(self):
+        if self.connection:
+            self.connection.execute(
+                f"pragma foreign_keys = {int(self.enforce_foreign_keys)};"
+            )
+
+    def add_column(self, table: str, column_def: str):
+        """Add a column to `table`.
+
+        `column_def` should be in the form `{column_name} {type_name} {constraint}`.
+
+        i.e.
+        >>> db = Databased()
+        >>> db.add_column("rides", "num_stops INTEGER NOT NULL DEFAULT 0")"""
+        self.query(f"ALTER TABLE {table} ADD {column_def};")
 
     def close(self):
         """Disconnect from the database.
@@ -137,40 +159,36 @@ class Databased:
                 "Databased.commit(): Can't commit db with no open connection."
             )
 
-    def _logger_init(self, message_format: str, encoding: str):
-        """:param: `message_format`: `{` style format string."""
-        self.logger = logging.getLogger(self.name)
-        if not self.logger.hasHandlers():
-            handler = logging.FileHandler(
-                str(self.path).replace(".", "") + ".log", encoding=encoding
-            )
-            handler.setFormatter(
-                logging.Formatter(
-                    message_format, style="{", datefmt="%m/%d/%Y %I:%M:%S %p"
-                )
-            )
-            self.logger.addHandler(handler)
-            self.logger.setLevel(logging.INFO)
+    def connect(self):
+        """Connect to the database."""
+        self.connection = sqlite3.connect(
+            self.path,
+            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+            if self.detect_types
+            else 0,
+            timeout=self.connection_timeout,
+        )
+        self._set_foreign_key_enforcement()
+        self.connection.row_factory = dict_factory
 
-    def query(self, query_: str, parameters: tuple[Any, ...] = tuple()) -> list[dict]:
-        """Execute an SQL query and return the results.
+    def count(
+        self,
+        table: str,
+        column: str = "*",
+        where: str | None = None,
+        distinct: bool = False,
+    ) -> int:
+        """Return number of matching rows in `table` table.
 
-        Ensures that the database connection is opened before executing the command.
-
-        The cursor used to execute the query will be available through `self.cursor` until the next time `self.query()` is called."""
-        if not self.connected:
-            self.connect()
-        assert self.connection
-        self.cursor = self.connection.cursor()
-        self.cursor.execute(query_, parameters)
-        return self.cursor.fetchall()
-
-    def execute_script(self, path: Pathish, encoding: str = "utf-8") -> sqlite3.Cursor:
-        """Execute sql script located at `path`."""
-        if not self.connected:
-            self.connect()
-        assert self.connection
-        return self.connection.executescript(Pathier(path).read_text(encoding))
+        Equivalent to:
+        >>> SELECT COUNT({distinct} {column}) FROM {table} {where};"""
+        query = (
+            f"SELECT COUNT( {('DISTINCT' if distinct else '')} {column}) FROM {table}"
+        )
+        if where:
+            query += f" WHERE {where}"
+        query += ";"
+        return int(list(self.query(query)[0].values())[0])
 
     def create_table(self, table: str, *column_defs: str):
         """Create a table if it doesn't exist.
@@ -186,6 +204,40 @@ class Databased:
         self.logger.info(f"'{table}' table created.")
         return result
 
+    def delete(self, table: str, where: str | None = None) -> int:
+        """Delete rows from `table` that satisfy the given `where` clause.
+
+        If `where` is `None`, all rows will be deleted.
+
+        Returns the number of deleted rows.
+
+        e.g.
+        >>> db = Databased()
+        >>> db.delete("rides", "distance < 5 AND average_speed < 7")"""
+        try:
+            if where:
+                self.query(f"DELETE FROM {table} WHERE {where};")
+            else:
+                self.query(f"DELETE FROM {table};")
+            row_count = self.cursor.rowcount
+            self.logger.info(
+                f"Deleted {row_count} rows from '{table}' where '{where}'."
+            )
+            return row_count
+        except Exception as e:
+            self.logger.exception(
+                f"Error deleting rows from '{table}' where '{where}'."
+            )
+            raise e
+
+    def describe(self, table: str) -> list[dict]:
+        """Returns information about `table`."""
+        return self.query(f"pragma table_info('{table}');")
+
+    def drop_column(self, table: str, column: str):
+        """Drop `column` from `table`."""
+        self.query(f"ALTER TABLE {table} DROP {column};")
+
     def drop_table(self, table: str) -> bool:
         """Drop `table` from the database.
 
@@ -199,33 +251,18 @@ class Databased:
             self.logger.error(f"Failed to drop table '{table}'.")
             return False
 
-    @property
-    def tables(self) -> list[str]:
-        """List of table names for this database."""
-        return [
-            table["name"]
-            for table in self.query(
-                "SELECT name FROM sqlite_Schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';"
-            )
-        ]
+    def execute_script(self, path: Pathish, encoding: str = "utf-8") -> sqlite3.Cursor:
+        """Execute sql script located at `path`."""
+        if not self.connected:
+            self.connect()
+        assert self.connection
+        return self.connection.executescript(Pathier(path).read_text(encoding))
 
     def get_columns(self, table: str) -> list[str]:
         """Returns a list of column names in `table`."""
         return [
             column["name"] for column in self.query(f"pragma table_info('{table}');")
         ]
-
-    def describe(self, table: str) -> list[dict]:
-        """Returns information about `table`."""
-        return self.query(f"pragma table_info('{table}');")
-
-    def vacuum(self) -> int:
-        """Reduce disk size of database after row/table deletion.
-
-        Returns space freed up in bytes."""
-        size = self.path.size
-        self.query("VACUUM;")
-        return size - self.path.size
 
     def insert(self, table: str, columns: tuple[str], values: list[tuple[Any]]) -> int:
         """Insert rows of `values` into `columns` of `table`.
@@ -237,12 +274,15 @@ class Databased:
         for i in range(0, len(values), max_row_count):
             chunk = values[i : i + max_row_count]
             placeholder = (
-                "(" + "),(".join(", ".join("?" for _ in row) for row in chunk) + ")"
+                "(" + "),(".join((", ".join(("?" for _ in row)) for row in chunk)) + ")"
             )
             logger_values = "\n".join(
-                "'(" + ", ".join(str(value) for value in row) + ")'" for row in chunk
+                (
+                    "'(" + ", ".join((str(value) for value in row)) + ")'"
+                    for row in chunk
+                )
             )
-            flattened_values = tuple(value for row in chunk for value in row)
+            flattened_values = tuple((value for row in chunk for value in row))
             try:
                 self.query(
                     f"INSERT INTO {table} {column_list} VALUES {placeholder};",
@@ -258,6 +298,29 @@ class Databased:
                 )
                 raise e
         return row_count
+
+    def query(self, query_: str, parameters: tuple[Any, ...] = tuple()) -> list[dict]:
+        """Execute an SQL query and return the results.
+
+        Ensures that the database connection is opened before executing the command.
+
+        The cursor used to execute the query will be available through `self.cursor` until the next time `self.query()` is called."""
+        if not self.connected:
+            self.connect()
+        assert self.connection
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(query_, parameters)
+        return self.cursor.fetchall()
+
+    def rename_column(self, table: str, column_to_rename: str, new_column_name: str):
+        """Rename a column in `table`."""
+        self.query(
+            f"ALTER TABLE {table} RENAME {column_to_rename} TO {new_column_name};"
+        )
+
+    def rename_table(self, table_to_rename: str, new_table_name: str):
+        """Rename a table."""
+        self.query(f"ALTER TABLE {table_to_rename} RENAME TO {new_table_name};")
 
     def select(
         self,
@@ -317,49 +380,6 @@ class Databased:
         rows = self.query(query)
         return rows
 
-    def count(
-        self,
-        table: str,
-        column: str = "*",
-        where: str | None = None,
-        distinct: bool = False,
-    ) -> int:
-        """Return number of matching rows in `table` table.
-
-        Equivalent to:
-        >>> SELECT COUNT({distinct} {column}) FROM {table} {where};"""
-        query = f"SELECT COUNT( {'DISTINCT' if distinct else ''} {column}) FROM {table}"
-        if where:
-            query += f" WHERE {where}"
-        query += ";"
-        return int(list(self.query(query)[0].values())[0])
-
-    def delete(self, table: str, where: str | None = None) -> int:
-        """Delete rows from `table` that satisfy the given `where` clause.
-
-        If `where` is `None`, all rows will be deleted.
-
-        Returns the number of deleted rows.
-
-        e.g.
-        >>> db = Databased()
-        >>> db.delete("rides", "distance < 5 AND average_speed < 7")"""
-        try:
-            if where:
-                self.query(f"DELETE FROM {table} WHERE {where};")
-            else:
-                self.query(f"DELETE FROM {table};")
-            row_count = self.cursor.rowcount
-            self.logger.info(
-                f"Deleted {row_count} rows from '{table}' where '{where}'."
-            )
-            return row_count
-        except Exception as e:
-            self.logger.exception(
-                f"Error deleting rows from '{table}' where '{where}'."
-            )
-            raise e
-
     def update(
         self, table: str, column: str, value: Any, where: str | None = None
     ) -> int:
@@ -388,26 +408,10 @@ class Databased:
             )
             raise e
 
-    def rename_table(self, table_to_rename: str, new_table_name: str):
-        """Rename a table."""
-        self.query(f"ALTER TABLE {table_to_rename} RENAME TO {new_table_name};")
+    def vacuum(self) -> int:
+        """Reduce disk size of database after row/table deletion.
 
-    def rename_column(self, table: str, column_to_rename: str, new_column_name: str):
-        """Rename a column in `table`."""
-        self.query(
-            f"ALTER TABLE {table} RENAME {column_to_rename} TO {new_column_name};"
-        )
-
-    def add_column(self, table: str, column_def: str):
-        """Add a column to `table`.
-
-        `column_def` should be in the form `{column_name} {type_name} {constraint}`.
-
-        i.e.
-        >>> db = Databased()
-        >>> db.add_column("rides", "num_stops INTEGER NOT NULL DEFAULT 0")"""
-        self.query(f"ALTER TABLE {table} ADD {column_def};")
-
-    def drop_column(self, table: str, column: str):
-        """Drop `column` from `table`."""
-        self.query(f"ALTER TABLE {table} DROP {column};")
+        Returns space freed up in bytes."""
+        size = self.path.size
+        self.query("VACUUM;")
+        return size - self.path.size
