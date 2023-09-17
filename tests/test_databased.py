@@ -141,6 +141,11 @@ def test__drop_column(db: Databased):
         assert "sugar_content" not in db.get_columns("cereals")
 
 
+def test__count(db: Databased):
+    assert db.count("cereals") == 4
+    assert db.count("cereals", where="name LIKE '%s'")
+
+
 def test__delete(db: Databased):
     with db as db:
         assert db.delete("cereals", "name = 'Shreddy Bois'") == 1
