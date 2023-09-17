@@ -332,7 +332,7 @@ class Databased:
         having: str | None = None,
         order_by: str | None = None,
         desc: bool = False,
-        limit: int | None = None,
+        limit: int | str | None = None,
     ) -> list[dict]:
         """Return rows for given criteria.
 
