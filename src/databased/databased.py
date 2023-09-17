@@ -317,6 +317,23 @@ class Databased:
         rows = self.query(query)
         return rows
 
+    def count(
+        self,
+        table: str,
+        column: str = "*",
+        where: str | None = None,
+        distinct: bool = False,
+    ) -> int:
+        """Return number of matching rows in `table` table.
+
+        Equivalent to:
+        >>> SELECT COUNT({distinct} {column}) FROM {table} {where};"""
+        query = f"SELECT COUNT( {'DISTINCT' if distinct else ''} {column}) FROM {table}"
+        if where:
+            query += f" WHERE {where}"
+        query += ";"
+        return int(list(self.query(query)[0].values())[0])
+
     def delete(self, table: str, where: str | None = None) -> int:
         """Delete rows from `table` that satisfy the given `where` clause.
 
