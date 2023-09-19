@@ -22,7 +22,7 @@ Documentation = "https://github.com/matt-manes/databased/tree/main/docs"
 
 [project.scripts]
 dbshell = "databased.dbshell:main"
-createshell = "databased.create_shell:main"
+custom_dbshell = "databased.create_shell:main"
 
 [tool]
 [tool.pytest.ini_options]
