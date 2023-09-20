@@ -7,3 +7,4 @@ TODO.txt
 *.log
 tests/dbmanager.py
 *notes*
+shelltesting
