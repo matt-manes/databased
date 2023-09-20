@@ -1,19 +1,29 @@
 import argshell
 from griddle import griddy
 from pathier import Pathier
-
 from databased import Databased, dbparsers
 from databased.create_shell import create_shell
 
 
 class DBShell(argshell.ArgShell):
+    connection_timeout: float = 10
     dbpath: Pathier = None  # type: ignore
+    detect_types: bool = True
+    enforce_foreign_keys: bool = True
     intro = "Starting dbshell (enter help or ? for arg info)...\nUnrecognized commands will be executed as queries.\nPrepend query with a _ to force unrecognized behavior for commands like `select` or use the `query` command explicitly."
     prompt = "based>"
 
+    def _DB(self) -> Databased:
+        return Databased(
+            self.dbpath,
+            self.connection_timeout,
+            self.detect_types,
+            self.enforce_foreign_keys,
+        )
+
     def default(self, line: str):
         line = line.strip("_")
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             self.display(db.query(line))
 
     def display(self, data: list[dict]):
@@ -29,7 +39,7 @@ class DBShell(argshell.ArgShell):
     @argshell.with_parser(dbparsers.get_add_column_parser)
     def do_add_column(self, args: argshell.Namespace):
         """Add a new column to the specified tables."""
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             db.add_column(args.table, args.column_def)
 
     @argshell.with_parser(dbparsers.get_backup_parser)
@@ -63,19 +73,19 @@ class DBShell(argshell.ArgShell):
 
         ^will delete all rows in the 'users' table whose username contains 'chungus'^"""
         print("Deleting records...")
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             num_rows = db.delete(args.table, args.where)
             print(f"Deleted {num_rows} rows from {args.table} table.")
 
     @argshell.with_parser(dbparsers.get_drop_column_parser)
     def do_drop_column(self, args: argshell.Namespace):
         """Drop the specified column from the specified table."""
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             db.drop_column(args.table, args.column)
 
     def do_drop_table(self, table: str):
         """Drop the specified table."""
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             db.drop_table(table)
 
     def do_flush_log(self, _: str):
@@ -91,7 +101,7 @@ class DBShell(argshell.ArgShell):
     def do_info(self, args: argshell.Namespace):
         """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
         print("Getting database info...")
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             tables = args.tables or db.tables
             info = [
                 {
@@ -103,10 +113,15 @@ class DBShell(argshell.ArgShell):
             ]
         self.display(info)
 
+    def do_properties(self, _: str):
+        """See current database property settings."""
+        for property_ in ["connection_timeout", "detect_types", "enforce_foreign_keys"]:
+            print(f"{property_}: {getattr(self, property_)}")
+
     def do_query(self, query: str):
         """Execute a query against the current database."""
         print(f"Executing {query}")
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             results = db.query(query)
         self.display(results)
         print(f"{db.cursor.rowcount} affected rows")
@@ -134,7 +149,7 @@ class DBShell(argshell.ArgShell):
     def do_select(self, args: argshell.Namespace):
         """Execute a SELECT query with the given args."""
         print(f"Searching {args.table}... ")
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             rows = db.select(
                 args.table,
                 args.columns,
@@ -148,6 +163,18 @@ class DBShell(argshell.ArgShell):
             print(f"Found {len(rows)} rows:")
             self.display(rows)
             print(f"{len(rows)} rows from {args.table}")
+
+    def do_set_connection_timeout(self, seconds: str):
+        """Set database connection timeout to this number of seconds."""
+        self.connection_timeout = float(seconds)
+
+    def do_set_detect_types(self, should_detect: str):
+        """Pass a `1` to turn on and a `0` to turn off."""
+        self.detect_types = bool(int(should_detect))
+
+    def do_set_enforce_foreign_keys(self, should_enforce: str):
+        """Pass a `1` to turn on and a `0` to turn off."""
+        self.enforce_foreign_keys = bool(int(should_enforce))
 
     def do_size(self, _: str):
         """Display the size of the the current db file."""
@@ -163,7 +190,7 @@ class DBShell(argshell.ArgShell):
 
         ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
         print("Updating rows...")
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             num_updates = db.update(args.table, args.column, args.new_value, args.where)
             print(f"Updated {num_updates} rows in table {args.table}.")
 
@@ -183,7 +210,7 @@ class DBShell(argshell.ArgShell):
         """Reduce database disk memory."""
         print(f"Database size before vacuuming: {self.dbpath.formatted_size}")
         print("Vacuuming database...")
-        with Databased(self.dbpath) as db:
+        with self._DB() as db:
             freedspace = db.vacuum()
         print(f"Database size after vacuuming: {self.dbpath.formatted_size}")
         print(f"Freed up {Pathier.format_bytes(freedspace)} of disk space.")

@@ -8,7 +8,10 @@ root = Pathier(__file__).parent
 
 
 class CustomShell(DBShell):
+    connection_timeout: float = 10
     dbpath: Pathier = None  # Replace None with a path to a .db file to set a default database # type: ignore
+    detect_types: bool = True
+    enforce_foreign_keys: bool = True
     intro = "Starting customshell (enter help or ? for command info)..."
     prompt = "customshell>"
 
