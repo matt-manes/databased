@@ -16,11 +16,11 @@ class Databased:
         self,
         dbpath: Pathish = "db.sqlite3",
         connection_timeout: float = 10,
+        detect_types: bool = True,
+        enforce_foreign_keys: bool = True,
+        commit_on_close: bool = True,
         logger_encoding: str = "utf-8",
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
-        detect_types: bool = True,
-        commit_on_close: bool = True,
-        enforce_foreign_keys: bool = True,
     ):
         """ """
         self.path = dbpath
