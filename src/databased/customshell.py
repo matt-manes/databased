@@ -1,15 +1,16 @@
 from argshell import ArgShellParser, Namespace, with_parser
 from pathier import Pathier
 
-from databased import DataBased, DBShell, dbparsers
+from databased import Databased, dbparsers
+from databased.dbshell import DBShell
 
 root = Pathier(__file__).parent
 
 
 class CustomShell(DBShell):
+    dbpath: Pathier = None  # Replace None with a path to a .db file to set a default database # type: ignore
     intro = "Starting customshell (enter help or ? for command info)..."
     prompt = "customshell>"
-    dbpath: Pathier = None  # Replace None with a path to a .db file to set a default database # type: ignore
 
 
 # For help with adding custom functionality see:

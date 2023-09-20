@@ -2,15 +2,172 @@ import argshell
 from griddle import griddy
 from pathier import Pathier
 
-from databased import DataBased, create_shell, dbparsers
+from databased import Databased, dbparsers
+from databased.create_shell import create_shell
 
 
 class DBShell(argshell.ArgShell):
-    intro = "Starting dbshell (enter help or ? for arg info)..."
-    prompt = "based>"
     dbpath: Pathier = None  # type: ignore
+    intro = "Starting dbshell (enter help or ? for arg info)...\nUnrecognized commands will be executed as queries.\nPrepend query with a _ to force unrecognized behavior for commands like `select` or use the `query` command explicitly."
+    prompt = "based>"
 
-    def do_use_db(self, arg: str):
+    def default(self, line: str):
+        line = line.strip("_")
+        with Databased(self.dbpath) as db:
+            self.display(db.query(line))
+
+    def display(self, data: list[dict]):
+        """Print row data to terminal in a grid."""
+        try:
+            print(griddy(data, "keys"))
+        except Exception as e:
+            print("Could not fit data into grid :(")
+            print(e)
+
+    # Seat
+
+    @argshell.with_parser(dbparsers.get_add_column_parser)
+    def do_add_column(self, args: argshell.Namespace):
+        """Add a new column to the specified tables."""
+        with Databased(self.dbpath) as db:
+            db.add_column(args.table, args.column_def)
+
+    @argshell.with_parser(dbparsers.get_backup_parser)
+    def do_backup(self, args: argshell.Namespace):
+        """Create a backup of the current db file."""
+        print(f"Creating a back up for {self.dbpath}...")
+        backup_path = self.dbpath.backup(args.timestamp)
+        print("Creating backup is complete.")
+        print(f"Backup path: {backup_path}")
+
+    def do_customize(self, name: str):
+        """Generate a template file in the current working directory for creating a custom DBShell class.
+        Expects one argument: the name of the custom dbshell.
+        This will be used to name the generated file as well as several components in the file content."""
+        try:
+            create_shell(name)
+        except Exception as e:
+            print(f"{type(e).__name__}: {e}")
+
+    def do_dbpath(self, _: str):
+        """Print the .db file in use."""
+        print(self.dbpath)
+
+    @argshell.with_parser(dbparsers.get_delete_parser)
+    def do_delete(self, args: argshell.Namespace):
+        """Delete rows from the database.
+
+        Syntax:
+        >>> delete {table} {where}
+        >>> based>delete users "username LIKE '%chungus%"
+
+        ^will delete all rows in the 'users' table whose username contains 'chungus'^"""
+        print("Deleting records...")
+        with Databased(self.dbpath) as db:
+            num_rows = db.delete(args.table, args.where)
+            print(f"Deleted {num_rows} rows from {args.table} table.")
+
+    @argshell.with_parser(dbparsers.get_drop_column_parser)
+    def do_drop_column(self, args: argshell.Namespace):
+        """Drop the specified column from the specified table."""
+        with Databased(self.dbpath) as db:
+            db.drop_column(args.table, args.column)
+
+    def do_drop_table(self, table: str):
+        """Drop the specified table."""
+        with Databased(self.dbpath) as db:
+            db.drop_table(table)
+
+    def do_flush_log(self, _: str):
+        """Clear the log file for this database."""
+        log_path = self.dbpath.with_name(self.dbpath.stem + "db.log")
+        if not log_path.exists():
+            print(f"No log file at path {log_path}")
+        else:
+            print(f"Flushing log...")
+            log_path.write_text("")
+
+    @argshell.with_parser(dbparsers.get_info_parser)
+    def do_info(self, args: argshell.Namespace):
+        """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
+        print("Getting database info...")
+        with Databased(self.dbpath) as db:
+            tables = args.tables or db.tables
+            info = [
+                {
+                    "Table Name": table,
+                    "Columns": ", ".join(db.get_columns(table)),
+                    "Number of Rows": db.count(table) if args.rowcount else "n/a",
+                }
+                for table in tables
+            ]
+        self.display(info)
+
+    def do_query(self, query: str):
+        """Execute a query against the current database."""
+        print(f"Executing {query}")
+        with Databased(self.dbpath) as db:
+            results = db.query(query)
+        self.display(results)
+        print(f"{db.cursor.rowcount} affected rows")
+
+    def do_restore(self, file: str):
+        """Replace the current db file with the given db backup file."""
+        print(f"Restoring from {file}...")
+        self.dbpath.write_bytes(Pathier(file).read_bytes())
+        print("Restore complete.")
+
+    @argshell.with_parser(dbparsers.get_scan_dbs_parser)
+    def do_scan_dbs(self, args: argshell.Namespace):
+        """Scan the current working directory for database files."""
+        cwd = Pathier.cwd()
+        dbs = []
+        globber = cwd.glob
+        if args.recursive:
+            cwd.rglob
+        for extension in args.extensions:
+            dbs.extend(list(globber(f"*{extension}")))
+        for db in dbs:
+            print(db.separate(cwd.stem))
+
+    @argshell.with_parser(dbparsers.get_select_parser, [dbparsers.select_post_parser])
+    def do_select(self, args: argshell.Namespace):
+        """Execute a SELECT query with the given args."""
+        print(f"Searching {args.table}... ")
+        with Databased(self.dbpath) as db:
+            rows = db.select(
+                args.table,
+                args.columns,
+                args.joins,
+                args.where,
+                args.group_by,
+                args.having,
+                args.order_by,
+                limit=args.limit,
+            )
+            print(f"Found {len(rows)} rows:")
+            self.display(rows)
+            print(f"{len(rows)} rows from {args.table}")
+
+    def do_size(self, _: str):
+        """Display the size of the the current db file."""
+        print(f"{self.dbpath.name} is {self.dbpath.formatted_size}.")
+
+    @argshell.with_parser(dbparsers.get_update_parser)
+    def do_update(self, args: argshell.Namespace):
+        """Update a column to a new value.
+
+        Syntax:
+        >>> update {table} {column} {value} {where}
+        >>> based>update users username big_chungus "username = lil_chungus"
+
+        ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
+        print("Updating rows...")
+        with Databased(self.dbpath) as db:
+            num_updates = db.update(args.table, args.column, args.new_value, args.where)
+            print(f"Updated {num_updates} rows in table {args.table}.")
+
+    def do_use(self, arg: str):
         """Set which database file to use."""
         dbpath = Pathier(arg)
         if not dbpath.exists():
@@ -22,227 +179,16 @@ class DBShell(argshell.ArgShell):
         else:
             self.dbpath = dbpath
 
-    def do_dbpath(self, arg: str):
-        """Print the .db file in use."""
-        print(self.dbpath)
-
-    @argshell.with_parser(dbparsers.get_backup_parser)
-    def do_backup(self, args: argshell.Namespace):
-        """Create a backup of the current db file."""
-        print(f"Creating a back up for {self.dbpath}...")
-        backup_path = self.dbpath.backup(args.timestamp)
-        print("Creating backup is complete.")
-        print(f"Backup path: {backup_path}")
-
-    def do_size(self, arg: str):
-        """Display the size of the the current db file."""
-        print(f"{self.dbpath.name} is {self.dbpath.formatted_size}.")
-
-    @argshell.with_parser(dbparsers.get_create_table_parser)
-    def do_add_table(self, args: argshell.Namespace):
-        """Add a new table to the database."""
-        with DataBased(self.dbpath) as db:
-            db.create_table(args.table_name, args.columns)
-
-    def do_drop_table(self, arg: str):
-        """Drop the specified table."""
-        with DataBased(self.dbpath) as db:
-            db.drop_table(arg)
-
-    @argshell.with_parser(
-        dbparsers.get_add_row_parser, [dbparsers.verify_matching_length]
-    )
-    def do_add_row(self, args: argshell.Namespace):
-        """Add a row to a table."""
-        with DataBased(self.dbpath) as db:
-            if db.add_row(args.table_name, args.values, args.columns or None):
-                print(f"Added row to {args.table_name} table successfully.")
-            else:
-                print(f"Failed to add row to {args.table_name} table.")
-
-    @argshell.with_parser(dbparsers.get_info_parser)
-    def do_info(self, args: argshell.Namespace):
-        """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
-        print("Getting database info...")
-        with DataBased(self.dbpath) as db:
-            tables = args.tables or db.get_table_names()
-            info = [
-                {
-                    "Table Name": table,
-                    "Columns": ", ".join(db.get_column_names(table)),
-                    "Number of Rows": db.count(table) if args.rowcount else "n/a",
-                }
-                for table in tables
-            ]
-        print(DataBased.data_to_string(info))
-
-    @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
-    def do_show(self, args: argshell.Namespace):
-        """Find and print rows from the database.
-        Use the -t/--tables, -m/--match_pairs, and -l/--limit flags to limit the search.
-        Use the -c/--columns flag to limit what columns are printed.
-        Use the -o/--order_by flag to order the results.
-        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs
-        Pass -h/--help flag for parser help."""
-        print("Finding records... ")
-        if len(args.columns) == 0:
-            args.columns = None
-        with DataBased(self.dbpath) as db:
-            tables = args.tables or db.get_table_names()
-            for table in tables:
-                results = db.get_rows(
-                    table,
-                    args.match_pairs,
-                    columns_to_return=args.columns,
-                    order_by=args.order_by,
-                    limit=args.limit,
-                    exact_match=not args.partial_matching,
-                )
-                db.close()
-                print(f"{len(results)} matching rows in {table} table.")
-                try:
-                    print(DataBased.data_to_string(results))  # type: ignore
-                except Exception as e:
-                    print("Couldn't fit data into a grid.")
-                    print(*results, sep="\n")
-                if results:
-                    print(f"{len(results)} matching rows in {table} table.")
-                print()
-
-    @argshell.with_parser(dbparsers.get_search_parser)
-    def do_search(self, args: argshell.Namespace):
-        """Search and return any rows containg the searched substring in any of its columns.
-        Use the -t/--tables flag to limit the search to a specific table(s).
-        Use the -c/--columns flag to limit the search to a specific column(s)."""
-        print(f"Searching for {args.search_string}...")
-        with DataBased(self.dbpath) as db:
-            tables = args.tables or db.get_table_names()
-            for table in tables:
-                columns = args.columns or db.get_column_names(table)
-                matcher = " OR ".join(
-                    f'{column} LIKE "%{args.search_string}%"' for column in columns
-                )
-                query = f"SELECT * FROM {table} WHERE {matcher};"
-                results = db.query(query)
-                results = [db._get_dict(table, result) for result in results]
-                print(f"Found {len(results)} results in {table} table.")
-                print(DataBased.data_to_string(results))
-
-    @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
-    def do_count(self, args: argshell.Namespace):
-        """Print the number of rows in the database.
-        Use the -t/--tables flag to limit results to a specific table(s).
-        Use the -m/--match_pairs flag to limit the results to rows matching these criteria.
-        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
-        Pass -h/--help flag for parser help."""
-        print("Counting rows...")
-        with DataBased(self.dbpath) as db:
-            tables = args.tables or db.get_table_names()
-            for table in tables:
-                num_rows = db.count(table, args.match_pairs, not args.partial_matching)
-                print(f"{num_rows} matching rows in {table} table.")
-
-    def do_query(self, arg: str):
-        """Execute a query against the current database."""
-        print(f"Executing {arg}")
-        with DataBased(self.dbpath) as db:
-            results = db.query(arg)
-        try:
-            try:
-                print(griddy(results))
-            except Exception as e:
-                for result in results:
-                    print(*result, sep="|-|")
-        except Exception as e:
-            print(f"{type(e).__name__}: {e}")
-        print(f"{db.cursor.rowcount} affected rows")
-
-    @argshell.with_parser(dbparsers.get_update_parser, [dbparsers.convert_match_pairs])
-    def do_update(self, args: argshell.Namespace):
-        """Update a column to a new value.
-        Two required args: the column (-c/--column) to update and the value (-v/--value) to update to.
-        Use the -t/--tables flag to limit what tables are updated.
-        Use the -m/--match_pairs flag to specify which rows are updated.
-        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
-        >>> based>update -c username -v big_chungus -t users -m username lil_chungus
-
-        ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
-        print("Updating rows...")
-        with DataBased(self.dbpath) as db:
-            tables = args.tables or db.get_table_names()
-            for table in tables:
-                num_updates = db.update(
-                    table,
-                    args.column,
-                    args.new_value,
-                    args.match_pairs,
-                    not args.partial_matching,
-                )
-                print(f"Updated {num_updates} rows in {table} table.")
-
-    @argshell.with_parser(dbparsers.get_lookup_parser, [dbparsers.convert_match_pairs])
-    def do_delete(self, args: argshell.Namespace):
-        """Delete rows from the database.
-        Use the -t/--tables flag to limit what tables rows are deleted from.
-        Use the -m/--match_pairs flag to specify which rows are deleted.
-        Use the -p/--partial_matching flag to enable substring matching on -m/--match_pairs.
-        >>> based>delete -t users -m username chungus -p
-
-        ^will delete all rows in the 'users' table whose username contains 'chungus'^"""
-        print("Deleting records...")
-        with DataBased(self.dbpath) as db:
-            tables = args.tables or db.get_table_names()
-            for table in tables:
-                num_rows = db.delete(table, args.match_pairs, not args.partial_matching)
-                print(f"Deleted {num_rows} rows from {table} table.")
-
-    @argshell.with_parser(dbparsers.get_add_column_parser)
-    def do_add_column(self, args: argshell.Namespace):
-        """Add a new column to the specified tables."""
-        with DataBased(self.dbpath) as db:
-            tables = args.tables or db.get_table_names()
-            for table in tables:
-                db.add_column(table, args.column_name, args.type, args.default_value)
-
-    def do_flush_log(self, arg: str):
-        """Clear the log file for this database."""
-        log_path = self.dbpath.with_name(self.dbpath.stem + "db.log")
-        if not log_path.exists():
-            print(f"No log file at path {log_path}")
-        else:
-            print(f"Flushing log...")
-            log_path.write_text("")
-
-    def do_scan_dbs(self, arg: str):
-        """Scan the current working directory for `*.db` files and display them.
-
-        If the command is entered as `based>scan_dbs r`, the scan will be performed recursively."""
-        cwd = Pathier.cwd()
-        if arg.strip() == "r":
-            dbs = cwd.rglob("*.db")
-        else:
-            dbs = cwd.glob("*.db")
-        for db in dbs:
-            print(db.separate(cwd.stem))
-
-    def do_customize(self, arg: str):
-        """Generate a template file in the current working directory for creating a custom DBShell class.
-        Expects one argument: the name of the custom dbshell.
-        This will be used to name the generated file as well as several components in the file content."""
-        try:
-            create_shell(arg)
-        except Exception as e:
-            print(f"{type(e).__name__}: {e}")
-
-    def do_vacuum(self, arg: str):
+    def do_vacuum(self, _: str):
         """Reduce database disk memory."""
-        starting_size = self.dbpath.size
         print(f"Database size before vacuuming: {self.dbpath.formatted_size}")
         print("Vacuuming database...")
-        with DataBased(self.dbpath) as db:
+        with Databased(self.dbpath) as db:
             freedspace = db.vacuum()
         print(f"Database size after vacuuming: {self.dbpath.formatted_size}")
         print(f"Freed up {Pathier.format_bytes(freedspace)} of disk space.")
+
+    # Seat
 
     def _choose_db(self, options: list[Pathier]) -> Pathier:
         """Prompt the user to select from a list of files."""
@@ -250,7 +196,7 @@ class DBShell(argshell.ArgShell):
         paths = [path.separate(cwd.stem) for path in options]
         while True:
             print(
-                f"DB options:\n{' '.join([f'({i}) {path}' for i,path in enumerate(paths,1)])}"
+                f"DB options:\n{' '.join([f'({i}) {path}' for i, path in enumerate(paths, 1)])}"
             )
             choice = input("Enter the number of the option to use: ")
             try:
