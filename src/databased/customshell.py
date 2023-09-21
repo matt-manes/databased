@@ -4,12 +4,10 @@ from pathier import Pathier
 from databased import Databased, dbparsers
 from databased.dbshell import DBShell
 
-root = Pathier(__file__).parent
-
 
 class CustomShell(DBShell):
+    _dbpath: Pathier = None  # Replace None with a path to a database file to set a default database # type: ignore
     connection_timeout: float = 10
-    dbpath: Pathier = None  # Replace None with a path to a .db file to set a default database # type: ignore
     detect_types: bool = True
     enforce_foreign_keys: bool = True
     intro = "Starting customshell (enter help or ? for command info)..."

@@ -25,7 +25,7 @@ def get_select_parser() -> argshell.ArgShellParser:
         type=str,
         default=["*"],
         nargs="*",
-        help=""" The columns to select. Should be given as a comma delimited string. If not given, `*` will be used. """,
+        help=""" The columns to select. Should be given as a space delimited string. If a column identifier has a space in it, like `COUNT(*) AS num_things`, enclose it in quotes. If no args given, `*` will be used. """,
     )
     parser.add_argument(
         "-j",
@@ -43,15 +43,15 @@ def get_select_parser() -> argshell.ArgShellParser:
     )
     parser.add_argument(
         "-g",
-        "--groub_by",
+        "--group_by",
         type=str,
         default=None,
         nargs="*",
         help=""" The `GROUP BY` clause to use, if any. Don't include the keyword. """,
     )
     parser.add_argument(
-        "-ha",
-        "--having",
+        "-H",
+        "--Having",
         type=str,
         default=None,
         help=""" The `HAVING` clause to use, if any. Don't include keyword. """,
@@ -131,7 +131,7 @@ def get_update_parser() -> argshell.ArgShellParser:
     parser.add_argument("table", type=str, help=""" The table to update. """)
     parser.add_argument("column", type=str, help=""" The column to update. """)
     parser.add_argument(
-        "value", type=str, help=""" The value to update the column to. """
+        "new_value", type=str, help=""" The value to update the column to. """
     )
     parser = add_where_argument(parser)
     return parser
@@ -152,7 +152,7 @@ def get_add_column_parser() -> argshell.ArgShellParser:
     parser.add_argument(
         "column_def",
         type=str,
-        help=""" The column definition: {name} {type} {constraints} """,
+        help=""" The column definition: "{name} {type} {constraints}" """,
     )
     return parser
 

@@ -1,17 +1,26 @@
 import argshell
 from griddle import griddy
-from pathier import Pathier
-from databased import Databased, dbparsers
+from pathier import Pathier, Pathish
+from databased import Databased, __version__, dbparsers
 from databased.create_shell import create_shell
 
 
 class DBShell(argshell.ArgShell):
+    _dbpath: Pathier = None  # type: ignore
     connection_timeout: float = 10
-    dbpath: Pathier = None  # type: ignore
     detect_types: bool = True
     enforce_foreign_keys: bool = True
-    intro = "Starting dbshell (enter help or ? for arg info)...\nUnrecognized commands will be executed as queries.\nPrepend query with a _ to force unrecognized behavior for commands like `select` or use the `query` command explicitly."
-    prompt = "based>"
+    intro = f"Starting dbshell v{__version__} (enter help or ? for arg info)...\n"
+    prompt = f"based>"
+
+    @property
+    def dbpath(self) -> Pathier:
+        return self._dbpath
+
+    @dbpath.setter
+    def dbpath(self, path: Pathish):
+        self._dbpath = Pathier(path)
+        self.prompt = f"{self._dbpath.name}>"
 
     def _DB(self) -> Databased:
         return Databased(
@@ -90,12 +99,22 @@ class DBShell(argshell.ArgShell):
 
     def do_flush_log(self, _: str):
         """Clear the log file for this database."""
-        log_path = self.dbpath.with_name(self.dbpath.stem + "db.log")
+        log_path = self.dbpath.with_name(self.dbpath.name.replace(".", "") + ".log")
         if not log_path.exists():
             print(f"No log file at path {log_path}")
         else:
             print(f"Flushing log...")
             log_path.write_text("")
+
+    def do_help(self, args: str):
+        """Display help messages."""
+        super().do_help(args)
+        if args == "":
+            print("Unrecognized commands will be executed as queries.")
+            print(
+                "Use the `query` command explicitly if you don't want to capitalize your key words."
+            )
+        print()
 
     @argshell.with_parser(dbparsers.get_info_parser)
     def do_info(self, args: argshell.Namespace):
@@ -128,22 +147,20 @@ class DBShell(argshell.ArgShell):
 
     def do_restore(self, file: str):
         """Replace the current db file with the given db backup file."""
-        print(f"Restoring from {file}...")
-        self.dbpath.write_bytes(Pathier(file).read_bytes())
-        print("Restore complete.")
+        backup = Pathier(file.strip('"'))
+        if not backup.exists():
+            print(f"{backup} does not exist.")
+        else:
+            print(f"Restoring from {file}...")
+            self.dbpath.write_bytes(backup.read_bytes())
+            print("Restore complete.")
 
     @argshell.with_parser(dbparsers.get_scan_dbs_parser)
-    def do_scan_dbs(self, args: argshell.Namespace):
+    def do_scan(self, args: argshell.Namespace):
         """Scan the current working directory for database files."""
-        cwd = Pathier.cwd()
-        dbs = []
-        globber = cwd.glob
-        if args.recursive:
-            cwd.rglob
-        for extension in args.extensions:
-            dbs.extend(list(globber(f"*{extension}")))
+        dbs = self._scan(args.extensions, args.recursive)
         for db in dbs:
-            print(db.separate(cwd.stem))
+            print(db.separate(Pathier.cwd().stem))
 
     @argshell.with_parser(dbparsers.get_select_parser, [dbparsers.select_post_parser])
     def do_select(self, args: argshell.Namespace):
@@ -151,13 +168,13 @@ class DBShell(argshell.ArgShell):
         print(f"Searching {args.table}... ")
         with self._DB() as db:
             rows = db.select(
-                args.table,
-                args.columns,
-                args.joins,
-                args.where,
-                args.group_by,
-                args.having,
-                args.order_by,
+                table=args.table,
+                columns=args.columns,
+                joins=args.joins,
+                where=args.where,
+                group_by=args.group_by,
+                having=args.Having,
+                order_by=args.order_by,
                 limit=args.limit,
             )
             print(f"Found {len(rows)} rows:")
@@ -205,6 +222,7 @@ class DBShell(argshell.ArgShell):
             print(f"Still using {self.dbpath}")
         else:
             self.dbpath = dbpath
+            self.prompt = f"{self.dbpath.name}>"
 
     def do_vacuum(self, _: str):
         """Reduce database disk memory."""
@@ -235,6 +253,18 @@ class DBShell(argshell.ArgShell):
             except Exception as e:
                 print(f"{choice} is not a valid option.")
 
+    def _scan(
+        self, extensions: list[str] = [".sqlite3", ".db"], recursive: bool = False
+    ) -> list[Pathier]:
+        cwd = Pathier.cwd()
+        dbs = []
+        globber = cwd.glob
+        if recursive:
+            globber = cwd.rglob
+        for extension in extensions:
+            dbs.extend(list(globber(f"*{extension}")))
+        return dbs
+
     def preloop(self):
         """Scan the current directory for a .db file to use.
         If not found, prompt the user for one or to try again recursively."""
@@ -244,7 +274,7 @@ class DBShell(argshell.ArgShell):
         else:
             print("Searching for database...")
             cwd = Pathier.cwd()
-            dbs = list(cwd.glob("*.db"))
+            dbs = self._scan()
             if len(dbs) == 1:
                 self.dbpath = dbs[0]
                 print(f"Using database {self.dbpath}.")
@@ -259,7 +289,7 @@ class DBShell(argshell.ArgShell):
                     self.dbpath = Pathier(path)
                 elif not path:
                     print("Searching recursively...")
-                    dbs = list(cwd.rglob("*.db"))
+                    dbs = self._scan(recursive=True)
                     if len(dbs) == 1:
                         self.dbpath = dbs[0]
                         print(f"Using database {self.dbpath}.")
