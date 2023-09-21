@@ -203,7 +203,6 @@ class Databased:
         columns = ", ".join(column_defs)
         result = self.query(f"CREATE TABLE IF NOT EXISTS {table} ({columns});")
         self.logger.info(f"'{table}' table created.")
-        return result
 
     def delete(self, table: str, where: str | None = None) -> int:
         """Delete rows from `table` that satisfy the given `where` clause.
