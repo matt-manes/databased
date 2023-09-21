@@ -1,6 +1,7 @@
 import logging
 import sqlite3
 from typing import Any
+from griddle import griddy
 from pathier import Pathier, Pathish
 
 
@@ -264,7 +265,9 @@ class Databased:
             column["name"] for column in self.query(f"pragma table_info('{table}');")
         ]
 
-    def insert(self, table: str, columns: tuple[str,...], values: list[tuple[Any,...]]) -> int:
+    def insert(
+        self, table: str, columns: tuple[str, ...], values: list[tuple[Any, ...]]
+    ) -> int:
         """Insert rows of `values` into `columns` of `table`.
 
         Each `tuple` in `values` corresponds to an individual row that is to be inserted."""
@@ -379,6 +382,13 @@ class Databased:
         query += ";"
         rows = self.query(query)
         return rows
+
+    @staticmethod
+    def to_grid(data: list[dict], shrink_to_terminal: bool = True) -> str:
+        """Returns a tabular grid from `data`.
+
+        If `shrink_to_terminal` is `True`, the column widths of the grid will be reduced to fit within the current terminal."""
+        return griddy(data, "keys", shrink_to_terminal)
 
     def update(
         self, table: str, column: str, value: Any, where: str | None = None
