@@ -114,6 +114,7 @@ class DBShell(argshell.ArgShell):
             print(
                 "Use the `query` command explicitly if you don't want to capitalize your key words."
             )
+            print("All transactions initiated by commands are committed immediately.")
         print()
 
     @argshell.with_parser(dbparsers.get_info_parser)
