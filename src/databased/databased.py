@@ -264,7 +264,7 @@ class Databased:
             column["name"] for column in self.query(f"pragma table_info('{table}');")
         ]
 
-    def insert(self, table: str, columns: tuple[str], values: list[tuple[Any]]) -> int:
+    def insert(self, table: str, columns: tuple[str,...], values: list[tuple[Any,...]]) -> int:
         """Insert rows of `values` into `columns` of `table`.
 
         Each `tuple` in `values` corresponds to an individual row that is to be inserted."""
