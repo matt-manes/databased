@@ -333,7 +333,6 @@ class Databased:
         group_by: str | None = None,
         having: str | None = None,
         order_by: str | None = None,
-        desc: bool = False,
         limit: int | str | None = None,
     ) -> list[dict]:
         """Return rows for given criteria.
@@ -374,8 +373,6 @@ class Databased:
             query += f" HAVING {having}"
         if order_by:
             query += f" ORDER BY {order_by}"
-            if desc:
-                query += " DESC"
         if limit:
             query += f" LIMIT {limit}"
         query += ";"
