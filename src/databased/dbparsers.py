@@ -91,7 +91,7 @@ def get_drop_column_parser() -> argshell.ArgShellParser:
     return parser
 
 
-def get_info_parser() -> argshell.ArgShellParser:
+def get_schema_parser() -> argshell.ArgShellParser:
     """Returns info parser."""
     parser = argshell.ArgShellParser()
     parser.add_argument(

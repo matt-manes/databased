@@ -117,10 +117,10 @@ class DBShell(argshell.ArgShell):
             print("All transactions initiated by commands are committed immediately.")
         print()
 
-    @argshell.with_parser(dbparsers.get_info_parser)
-    def do_info(self, args: argshell.Namespace):
+    @argshell.with_parser(dbparsers.get_schema_parser)
+    def do_schema(self, args: argshell.Namespace):
         """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
-        print("Getting database info...")
+        print("Getting database schema...")
         with self._DB() as db:
             tables = args.tables or db.tables
             info = [
