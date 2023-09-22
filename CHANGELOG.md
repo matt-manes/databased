@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.0.0 (2023-09-22)
+
+#### New Features
+
+* Complete overhaul
+
+
 ## v2.5.0 (2023-07-02)
 
 #### New Features
