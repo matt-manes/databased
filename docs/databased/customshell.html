@@ -60,24 +60,26 @@
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">argshell</span> <span class="kn">import</span> <span class="n">ArgShellParser</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">with_parser</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">pathier</span> <span class="kn">import</span> <span class="n">Pathier</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">databased</span> <span class="kn">import</span> <span class="n">DataBased</span><span class="p">,</span> <span class="n">DBShell</span><span class="p">,</span> <span class="n">dbparsers</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="n">root</span> <span class="o">=</span> <span class="n">Pathier</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">databased</span> <span class="kn">import</span> <span class="n">Databased</span><span class="p">,</span> <span class="n">dbparsers</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">databased.dbshell</span> <span class="kn">import</span> <span class="n">DBShell</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span> <span class="nc">CustomShell</span><span class="p">(</span><span class="n">DBShell</span><span class="p">):</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="n">intro</span> <span class="o">=</span> <span class="s2">&quot;Starting customshell (enter help or ? for command info)...&quot;</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;customshell&gt;&quot;</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">dbpath</span><span class="p">:</span> <span class="n">Pathier</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Replace None with a path to a .db file to set a default database # type: ignore</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="c1"># For help with adding custom functionality see:</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="c1"># https://github.com/matt-manes/argshell</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="c1"># https://github.com/matt-manes/databased/blob/main/src/databased/dbshell.py</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="c1"># https://github.com/matt-manes/databased/blob/main/src/databased/dbparsers.py</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">CustomShell</span><span class="p">()</span><span class="o">.</span><span class="n">cmdloop</span><span class="p">()</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span> <span class="nc">CustomShell</span><span class="p">(</span><span class="n">DBShell</span><span class="p">):</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="n">_dbpath</span><span class="p">:</span> <span class="n">Pathier</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Replace None with a path to a database file to set a default database # type: ignore</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="n">connection_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="n">detect_types</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">enforce_foreign_keys</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="n">intro</span> <span class="o">=</span> <span class="s2">&quot;Starting customshell (enter help or ? for command info)...&quot;</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;customshell&gt;&quot;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="c1"># For help with adding custom functionality see:</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="c1"># https://github.com/matt-manes/argshell</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="c1"># https://github.com/matt-manes/databased/blob/main/src/databased/dbshell.py</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="c1"># https://github.com/matt-manes/databased/blob/main/src/databased/dbparsers.py</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="n">CustomShell</span><span class="p">()</span><span class="o">.</span><span class="n">cmdloop</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -93,10 +95,13 @@
 
     </div>
     <a class="headerlink" href="#CustomShell"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CustomShell-10"><a href="#CustomShell-10"><span class="linenos">10</span></a><span class="k">class</span> <span class="nc">CustomShell</span><span class="p">(</span><span class="n">DBShell</span><span class="p">):</span>
-</span><span id="CustomShell-11"><a href="#CustomShell-11"><span class="linenos">11</span></a>    <span class="n">intro</span> <span class="o">=</span> <span class="s2">&quot;Starting customshell (enter help or ? for command info)...&quot;</span>
-</span><span id="CustomShell-12"><a href="#CustomShell-12"><span class="linenos">12</span></a>    <span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;customshell&gt;&quot;</span>
-</span><span id="CustomShell-13"><a href="#CustomShell-13"><span class="linenos">13</span></a>    <span class="n">dbpath</span><span class="p">:</span> <span class="n">Pathier</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Replace None with a path to a .db file to set a default database # type: ignore</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CustomShell-9"><a href="#CustomShell-9"><span class="linenos"> 9</span></a><span class="k">class</span> <span class="nc">CustomShell</span><span class="p">(</span><span class="n">DBShell</span><span class="p">):</span>
+</span><span id="CustomShell-10"><a href="#CustomShell-10"><span class="linenos">10</span></a>    <span class="n">_dbpath</span><span class="p">:</span> <span class="n">Pathier</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Replace None with a path to a database file to set a default database # type: ignore</span>
+</span><span id="CustomShell-11"><a href="#CustomShell-11"><span class="linenos">11</span></a>    <span class="n">connection_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="CustomShell-12"><a href="#CustomShell-12"><span class="linenos">12</span></a>    <span class="n">detect_types</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="CustomShell-13"><a href="#CustomShell-13"><span class="linenos">13</span></a>    <span class="n">enforce_foreign_keys</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="CustomShell-14"><a href="#CustomShell-14"><span class="linenos">14</span></a>    <span class="n">intro</span> <span class="o">=</span> <span class="s2">&quot;Starting customshell (enter help or ? for command info)...&quot;</span>
+</span><span id="CustomShell-15"><a href="#CustomShell-15"><span class="linenos">15</span></a>    <span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;customshell&gt;&quot;</span>
 </span></pre></div>
 
 
@@ -114,7 +119,6 @@
                 <dd id="CustomShell.postloop" class="function">postloop</dd>
                 <dd id="CustomShell.parseline" class="function">parseline</dd>
                 <dd id="CustomShell.onecmd" class="function">onecmd</dd>
-                <dd id="CustomShell.default" class="function">default</dd>
                 <dd id="CustomShell.completedefault" class="function">completedefault</dd>
                 <dd id="CustomShell.completenames" class="function">completenames</dd>
                 <dd id="CustomShell.complete" class="function">complete</dd>
@@ -125,24 +129,30 @@
 
             </div>
             <div><dt><a href="dbshell.html#DBShell">databased.dbshell.DBShell</a></dt>
-                                <dd id="CustomShell.do_use_db" class="function"><a href="dbshell.html#DBShell.do_use_db">do_use_db</a></dd>
-                <dd id="CustomShell.do_dbpath" class="function"><a href="dbshell.html#DBShell.do_dbpath">do_dbpath</a></dd>
-                <dd id="CustomShell.do_backup" class="function"><a href="dbshell.html#DBShell.do_backup">do_backup</a></dd>
-                <dd id="CustomShell.do_size" class="function"><a href="dbshell.html#DBShell.do_size">do_size</a></dd>
-                <dd id="CustomShell.do_add_table" class="function"><a href="dbshell.html#DBShell.do_add_table">do_add_table</a></dd>
-                <dd id="CustomShell.do_drop_table" class="function"><a href="dbshell.html#DBShell.do_drop_table">do_drop_table</a></dd>
-                <dd id="CustomShell.do_add_row" class="function"><a href="dbshell.html#DBShell.do_add_row">do_add_row</a></dd>
-                <dd id="CustomShell.do_info" class="function"><a href="dbshell.html#DBShell.do_info">do_info</a></dd>
-                <dd id="CustomShell.do_show" class="function"><a href="dbshell.html#DBShell.do_show">do_show</a></dd>
-                <dd id="CustomShell.do_search" class="function"><a href="dbshell.html#DBShell.do_search">do_search</a></dd>
-                <dd id="CustomShell.do_count" class="function"><a href="dbshell.html#DBShell.do_count">do_count</a></dd>
-                <dd id="CustomShell.do_query" class="function"><a href="dbshell.html#DBShell.do_query">do_query</a></dd>
-                <dd id="CustomShell.do_update" class="function"><a href="dbshell.html#DBShell.do_update">do_update</a></dd>
-                <dd id="CustomShell.do_delete" class="function"><a href="dbshell.html#DBShell.do_delete">do_delete</a></dd>
+                                <dd id="CustomShell.default" class="function"><a href="dbshell.html#DBShell.default">default</a></dd>
+                <dd id="CustomShell.display" class="function"><a href="dbshell.html#DBShell.display">display</a></dd>
                 <dd id="CustomShell.do_add_column" class="function"><a href="dbshell.html#DBShell.do_add_column">do_add_column</a></dd>
-                <dd id="CustomShell.do_flush_log" class="function"><a href="dbshell.html#DBShell.do_flush_log">do_flush_log</a></dd>
-                <dd id="CustomShell.do_scan_dbs" class="function"><a href="dbshell.html#DBShell.do_scan_dbs">do_scan_dbs</a></dd>
+                <dd id="CustomShell.do_backup" class="function"><a href="dbshell.html#DBShell.do_backup">do_backup</a></dd>
                 <dd id="CustomShell.do_customize" class="function"><a href="dbshell.html#DBShell.do_customize">do_customize</a></dd>
+                <dd id="CustomShell.do_dbpath" class="function"><a href="dbshell.html#DBShell.do_dbpath">do_dbpath</a></dd>
+                <dd id="CustomShell.do_delete" class="function"><a href="dbshell.html#DBShell.do_delete">do_delete</a></dd>
+                <dd id="CustomShell.do_describe" class="function"><a href="dbshell.html#DBShell.do_describe">do_describe</a></dd>
+                <dd id="CustomShell.do_drop_column" class="function"><a href="dbshell.html#DBShell.do_drop_column">do_drop_column</a></dd>
+                <dd id="CustomShell.do_drop_table" class="function"><a href="dbshell.html#DBShell.do_drop_table">do_drop_table</a></dd>
+                <dd id="CustomShell.do_flush_log" class="function"><a href="dbshell.html#DBShell.do_flush_log">do_flush_log</a></dd>
+                <dd id="CustomShell.do_help" class="function"><a href="dbshell.html#DBShell.do_help">do_help</a></dd>
+                <dd id="CustomShell.do_schema" class="function"><a href="dbshell.html#DBShell.do_schema">do_schema</a></dd>
+                <dd id="CustomShell.do_properties" class="function"><a href="dbshell.html#DBShell.do_properties">do_properties</a></dd>
+                <dd id="CustomShell.do_query" class="function"><a href="dbshell.html#DBShell.do_query">do_query</a></dd>
+                <dd id="CustomShell.do_restore" class="function"><a href="dbshell.html#DBShell.do_restore">do_restore</a></dd>
+                <dd id="CustomShell.do_scan" class="function"><a href="dbshell.html#DBShell.do_scan">do_scan</a></dd>
+                <dd id="CustomShell.do_select" class="function"><a href="dbshell.html#DBShell.do_select">do_select</a></dd>
+                <dd id="CustomShell.do_set_connection_timeout" class="function"><a href="dbshell.html#DBShell.do_set_connection_timeout">do_set_connection_timeout</a></dd>
+                <dd id="CustomShell.do_set_detect_types" class="function"><a href="dbshell.html#DBShell.do_set_detect_types">do_set_detect_types</a></dd>
+                <dd id="CustomShell.do_set_enforce_foreign_keys" class="function"><a href="dbshell.html#DBShell.do_set_enforce_foreign_keys">do_set_enforce_foreign_keys</a></dd>
+                <dd id="CustomShell.do_size" class="function"><a href="dbshell.html#DBShell.do_size">do_size</a></dd>
+                <dd id="CustomShell.do_update" class="function"><a href="dbshell.html#DBShell.do_update">do_update</a></dd>
+                <dd id="CustomShell.do_use" class="function"><a href="dbshell.html#DBShell.do_use">do_use</a></dd>
                 <dd id="CustomShell.do_vacuum" class="function"><a href="dbshell.html#DBShell.do_vacuum">do_vacuum</a></dd>
                 <dd id="CustomShell.preloop" class="function"><a href="dbshell.html#DBShell.preloop">preloop</a></dd>
 
@@ -150,7 +160,6 @@
             <div><dt>argshell.argshell.ArgShell</dt>
                                 <dd id="CustomShell.do_quit" class="function">do_quit</dd>
                 <dd id="CustomShell.do_sys" class="function">do_sys</dd>
-                <dd id="CustomShell.do_help" class="function">do_help</dd>
                 <dd id="CustomShell.cmdloop" class="function">cmdloop</dd>
                 <dd id="CustomShell.emptyline" class="function">emptyline</dd>
 
