@@ -66,7 +66,8 @@ class Databased:
     def detect_types(self) -> bool:
         """Should use `detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES` when establishing a database connection.
 
-        Changes to this property won't take effect until the current connection, if open, is closed and a new connection opened."""
+        Changes to this property won't take effect until the current connection, if open, is closed and a new connection opened.
+        """
         return self._detect_types
 
     @detect_types.setter
@@ -143,7 +144,8 @@ class Databased:
     def close(self):
         """Disconnect from the database.
 
-        Does not call `commit()` for you unless the `commit_on_close` property is set to `True`."""
+        Does not call `commit()` for you unless the `commit_on_close` property is set to `True`.
+        """
         if self.connection:
             if self.commit_on_close:
                 self.commit()
@@ -269,7 +271,8 @@ class Databased:
     ) -> int:
         """Insert rows of `values` into `columns` of `table`.
 
-        Each `tuple` in `values` corresponds to an individual row that is to be inserted."""
+        Each `tuple` in `values` corresponds to an individual row that is to be inserted.
+        """
         max_row_count = 900
         column_list = "(" + ", ".join(columns) + ")"
         row_count = 0
@@ -306,7 +309,8 @@ class Databased:
 
         Ensures that the database connection is opened before executing the command.
 
-        The cursor used to execute the query will be available through `self.cursor` until the next time `self.query()` is called."""
+        The cursor used to execute the query will be available through `self.cursor` until the next time `self.query()` is called.
+        """
         if not self.connected:
             self.connect()
         assert self.connection
@@ -327,8 +331,8 @@ class Databased:
     def select(
         self,
         table: str,
-        columns: str = "*",
-        joins: str | None = None,
+        columns: list[str] = ["*"],
+        joins: list[str] | None = None,
         where: str | None = None,
         group_by: str | None = None,
         having: str | None = None,
@@ -362,9 +366,9 @@ class Databased:
             ORDER BY
                 distance DESC
             Limit 10;"""
-        query = f"SELECT {columns} FROM {table}"
+        query = f"SELECT {', '.join(columns)} FROM {table}"
         if joins:
-            query += f" {joins}"
+            query += f" {' '.join(joins)}"
         if where:
             query += f" WHERE {where}"
         if group_by:
@@ -383,7 +387,8 @@ class Databased:
     def to_grid(data: list[dict], shrink_to_terminal: bool = True) -> str:
         """Returns a tabular grid from `data`.
 
-        If `shrink_to_terminal` is `True`, the column widths of the grid will be reduced to fit within the current terminal."""
+        If `shrink_to_terminal` is `True`, the column widths of the grid will be reduced to fit within the current terminal.
+        """
         return griddy(data, "keys", shrink_to_terminal)
 
     def update(

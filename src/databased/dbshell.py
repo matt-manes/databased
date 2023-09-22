@@ -62,7 +62,8 @@ class DBShell(argshell.ArgShell):
     def do_customize(self, name: str):
         """Generate a template file in the current working directory for creating a custom DBShell class.
         Expects one argument: the name of the custom dbshell.
-        This will be used to name the generated file as well as several components in the file content."""
+        This will be used to name the generated file as well as several components in the file content.
+        """
         try:
             create_shell(name)
         except Exception as e:
@@ -85,9 +86,9 @@ class DBShell(argshell.ArgShell):
         with self._DB() as db:
             num_rows = db.delete(args.table, args.where)
             print(f"Deleted {num_rows} rows from {args.table} table.")
-    
+
     def do_describe(self, tables: str):
-        """ Describe each table in `tables`. If no table list is given, all tables will be described. """
+        """Describe each table in `tables`. If no table list is given, all tables will be described."""
         with self._DB() as db:
             table_list = tables.split() or db.tables
             for table in table_list:
@@ -174,7 +175,7 @@ class DBShell(argshell.ArgShell):
     @argshell.with_parser(dbparsers.get_select_parser, [dbparsers.select_post_parser])
     def do_select(self, args: argshell.Namespace):
         """Execute a SELECT query with the given args."""
-        print(f"Searching {args.table}... ")
+        print(f"Querying {args.table}... ")
         with self._DB() as db:
             rows = db.select(
                 table=args.table,
@@ -214,7 +215,8 @@ class DBShell(argshell.ArgShell):
         >>> update {table} {column} {value} {where}
         >>> based>update users username big_chungus "username = lil_chungus"
 
-        ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^"""
+        ^will update the username in the users 'table' to 'big_chungus' where the username is currently 'lil_chungus'^
+        """
         print("Updating rows...")
         with self._DB() as db:
             num_updates = db.update(args.table, args.column, args.new_value, args.where)

@@ -25,14 +25,15 @@ def get_select_parser() -> argshell.ArgShellParser:
         type=str,
         default=["*"],
         nargs="*",
-        help=""" The columns to select. Should be given as a space delimited string. If a column identifier has a space in it, like `COUNT(*) AS num_things`, enclose it in quotes. If no args given, `*` will be used. """,
+        help=""" The columns to select. If a column identifier has a space in it, like `COUNT(*) AS num_things`, enclose it in quotes. If no args given, `*` will be used. """,
     )
     parser.add_argument(
         "-j",
         "--joins",
         type=str,
+        nargs="*",
         default=None,
-        help=""" Joins to perform, if any. Should be in the form: `"{join type} JOIN {table2} ON {table}.{column} = {table2}.{column}"` """,
+        help=""" Joins to perform, if any. Should be in the form: `"{join type} JOIN {table2} ON {table}.{column} = {table2}.{column}"`. Enclose separate joins in quotes. """,
     )
     parser.add_argument(
         "-w",
@@ -75,7 +76,7 @@ def get_select_parser() -> argshell.ArgShellParser:
 
 
 def select_post_parser(args: argshell.Namespace) -> argshell.Namespace:
-    for field in ["columns", "group_by", "order_by"]:
+    for field in ["group_by", "order_by"]:
         arglist = getattr(args, field)
         if arglist:
             setattr(args, field, ", ".join(arglist))
