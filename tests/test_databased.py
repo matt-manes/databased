@@ -1,7 +1,4 @@
 # type: ignore
-from datetime import datetime
-from functools import partial
-import pandas
 import pytest
 from pathier import Pathier
 
@@ -99,7 +96,7 @@ def test__select(db: Databased):
         print(rows)
         assert len(rows) == 4
         assert len(rows[0]) == 4
-        rows = db.select("cereals", columns="name, brand", where="name LIKE 's%'")
+        rows = db.select("cereals", columns=["name", "brand"], where="name LIKE 's%'")
         print(rows)
         assert len(rows) == 3
         assert len(rows[0]) == 2
