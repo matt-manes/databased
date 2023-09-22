@@ -85,6 +85,14 @@ class DBShell(argshell.ArgShell):
         with self._DB() as db:
             num_rows = db.delete(args.table, args.where)
             print(f"Deleted {num_rows} rows from {args.table} table.")
+    
+    def do_describe(self, tables: str):
+        """ Describe each table in `tables`. If no table list is given, all tables will be described. """
+        with self._DB() as db:
+            table_list = tables.split() or db.tables
+            for table in table_list:
+                print(f"<{table}>")
+                print(db.to_grid(db.describe(table)))
 
     @argshell.with_parser(dbparsers.get_drop_column_parser)
     def do_drop_column(self, args: argshell.Namespace):
