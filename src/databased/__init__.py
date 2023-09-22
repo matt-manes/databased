@@ -1,3 +1,2 @@
 from .databased import Databased
-
-__version__ = "3.0.0"
+__version__ = "2.5.0"

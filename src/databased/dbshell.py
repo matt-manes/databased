@@ -1,7 +1,6 @@
 import argshell
 from griddle import griddy
 from pathier import Pathier, Pathish
-
 from databased import Databased, __version__, dbparsers
 from databased.create_shell import create_shell
 
