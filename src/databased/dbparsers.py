@@ -173,3 +173,22 @@ def get_scan_dbs_parser() -> argshell.ArgShellParser:
         "-r", "--recursive", action="store_true", help=""" Scan recursively. """
     )
     return parser
+
+
+def get_rename_table_parser() -> argshell.ArgShellParser:
+    """Returns rename table parser."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument("table", type=str, help=""" The table to rename. """)
+    parser.add_argument("new_name", type=str, help=""" The new name for the table. """)
+    return parser
+
+
+def get_rename_column_parser() -> argshell.ArgShellParser:
+    """Returns rename column parser."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument(
+        "table", type=str, help=""" The table with the column to rename. """
+    )
+    parser.add_argument("column", type=str, help=""" The column to rename. """)
+    parser.add_argument("new_name", type=str, help=""" The new name for the column. """)
+    return parser

@@ -1,7 +1,6 @@
 import argshell
 from griddle import griddy
 from pathier import Pathier, Pathish
-
 from databased import Databased, __version__, dbparsers
 from databased.create_shell import create_shell
 
@@ -127,22 +126,6 @@ class DBShell(argshell.ArgShell):
             print("All transactions initiated by commands are committed immediately.")
         print()
 
-    @argshell.with_parser(dbparsers.get_schema_parser)
-    def do_schema(self, args: argshell.Namespace):
-        """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
-        print("Getting database schema...")
-        with self._DB() as db:
-            tables = args.tables or db.tables
-            info = [
-                {
-                    "Table Name": table,
-                    "Columns": ", ".join(db.get_columns(table)),
-                    "Number of Rows": db.count(table) if args.rowcount else "n/a",
-                }
-                for table in tables
-            ]
-        self.display(info)
-
     def do_properties(self, _: str):
         """See current database property settings."""
         for property_ in ["connection_timeout", "detect_types", "enforce_foreign_keys"]:
@@ -155,6 +138,18 @@ class DBShell(argshell.ArgShell):
             results = db.query(query)
         self.display(results)
         print(f"{db.cursor.rowcount} affected rows")
+
+    @argshell.with_parser(dbparsers.get_rename_column_parser)
+    def do_rename_column(self, args: argshell.Namespace):
+        """Rename a column."""
+        with self._DB() as db:
+            db.rename_column(args.table, args.column, args.new_name)
+
+    @argshell.with_parser(dbparsers.get_rename_table_parser)
+    def do_rename_table(self, args: argshell.Namespace):
+        """Rename a table."""
+        with self._DB() as db:
+            db.rename_table(args.table, args.new_name)
 
     def do_restore(self, file: str):
         """Replace the current db file with the given db backup file."""
@@ -172,6 +167,22 @@ class DBShell(argshell.ArgShell):
         dbs = self._scan(args.extensions, args.recursive)
         for db in dbs:
             print(db.separate(Pathier.cwd().stem))
+
+    @argshell.with_parser(dbparsers.get_schema_parser)
+    def do_schema(self, args: argshell.Namespace):
+        """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
+        print("Getting database schema...")
+        with self._DB() as db:
+            tables = args.tables or db.tables
+            info = [
+                {
+                    "Table Name": table,
+                    "Columns": ", ".join(db.get_columns(table)),
+                    "Number of Rows": db.count(table) if args.rowcount else "n/a",
+                }
+                for table in tables
+            ]
+        self.display(info)
 
     @argshell.with_parser(dbparsers.get_select_parser, [dbparsers.select_post_parser])
     def do_select(self, args: argshell.Namespace):
