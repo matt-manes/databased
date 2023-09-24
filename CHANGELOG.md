@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.2.0 (2023-09-23)
+
+#### Refactorings
+
+* return row factor from execute_script() instead of a cursor
+
 ## v3.1.0 (2023-09-23)
 
 #### New Features
