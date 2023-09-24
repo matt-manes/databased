@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.2.1 (2023-09-23)
+
+#### Fixes
+
+* fix execute_script not working correctly
+
 ## v3.2.0 (2023-09-23)
 
 #### Refactorings
