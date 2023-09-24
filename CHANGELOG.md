@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.1.0 (2023-09-23)
+
+#### New Features
+
+* add shell commands for rename table and rename column
+
 ## v3.0.0 (2023-09-22)
 
 #### New Features
