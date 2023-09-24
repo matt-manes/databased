@@ -254,12 +254,13 @@ class Databased:
             self.logger.error(f"Failed to drop table '{table}'.")
             return False
 
-    def execute_script(self, path: Pathish, encoding: str = "utf-8") -> sqlite3.Cursor:
+    def execute_script(self, path: Pathish, encoding: str = "utf-8") -> list[dict]:
         """Execute sql script located at `path`."""
         if not self.connected:
             self.connect()
         assert self.connection
-        return self.connection.executescript(Pathier(path).read_text(encoding))
+        self.cursor = self.connection.executescript(Pathier(path).read_text(encoding))
+        return self.cursor.fetchall()
 
     def get_columns(self, table: str) -> list[str]:
         """Returns a list of column names in `table`."""
