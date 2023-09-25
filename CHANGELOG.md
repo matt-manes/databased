@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.3.0 (2023-09-25)
+
+#### New Features
+
+* add 'add_table' command to shell
+
 ## v3.2.1 (2023-09-23)
 
 #### Fixes
