@@ -66,6 +66,9 @@
             <li>
                     <a class="function" href="#get_rename_column_parser">get_rename_column_parser</a>
             </li>
+            <li>
+                    <a class="function" href="#get_add_table_parser">get_add_table_parser</a>
+            </li>
     </ul>
 
 
@@ -281,6 +284,20 @@
 </span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;column&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The column to rename. &quot;&quot;&quot;</span><span class="p">)</span>
 </span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;new_name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The new name for the column. &quot;&quot;&quot;</span><span class="p">)</span>
 </span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>    <span class="k">return</span> <span class="n">parser</span>
+</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>
+</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>
+</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="k">def</span> <span class="nf">get_add_table_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">:</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>    <span class="sd">&quot;&quot;&quot;Returns a add_table parser.&quot;&quot;&quot;</span>
+</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">()</span>
+</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The new table&#39;s name. &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a>        <span class="s2">&quot;columns&quot;</span><span class="p">,</span>
+</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a>        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The column definitions for the new table. Each individual column definition should be enclosed in quotes.</span>
+</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a><span class="s2">        i.e. shell&gt;add_table tablename &quot;id INTEGER AUTOINCREMENT&quot; &quot;first_name TEXT&quot; &quot;last_name TEXT&quot; &quot;email TEXT UNIQUE&quot; &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a>    <span class="p">)</span>
+</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>    <span class="k">return</span> <span class="n">parser</span>
 </span></pre></div>
 
 
@@ -674,6 +691,37 @@
 
 
             <div class="docstring"><p>Returns rename column parser.</p>
+</div>
+
+
+                </section>
+                <section id="get_add_table_parser">
+                            <input id="get_add_table_parser-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_add_table_parser</span><span class="signature pdoc-code condensed">(<span class="return-annotation">) -> <span class="n">argshell</span><span class="o">.</span><span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span>:</span></span>
+
+                <label class="view-source-button" for="get_add_table_parser-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#get_add_table_parser"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_add_table_parser-198"><a href="#get_add_table_parser-198"><span class="linenos">198</span></a><span class="k">def</span> <span class="nf">get_add_table_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">:</span>
+</span><span id="get_add_table_parser-199"><a href="#get_add_table_parser-199"><span class="linenos">199</span></a>    <span class="sd">&quot;&quot;&quot;Returns a add_table parser.&quot;&quot;&quot;</span>
+</span><span id="get_add_table_parser-200"><a href="#get_add_table_parser-200"><span class="linenos">200</span></a>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">()</span>
+</span><span id="get_add_table_parser-201"><a href="#get_add_table_parser-201"><span class="linenos">201</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The new table&#39;s name. &quot;&quot;&quot;</span><span class="p">)</span>
+</span><span id="get_add_table_parser-202"><a href="#get_add_table_parser-202"><span class="linenos">202</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="get_add_table_parser-203"><a href="#get_add_table_parser-203"><span class="linenos">203</span></a>        <span class="s2">&quot;columns&quot;</span><span class="p">,</span>
+</span><span id="get_add_table_parser-204"><a href="#get_add_table_parser-204"><span class="linenos">204</span></a>        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+</span><span id="get_add_table_parser-205"><a href="#get_add_table_parser-205"><span class="linenos">205</span></a>        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+</span><span id="get_add_table_parser-206"><a href="#get_add_table_parser-206"><span class="linenos">206</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The column definitions for the new table. Each individual column definition should be enclosed in quotes.</span>
+</span><span id="get_add_table_parser-207"><a href="#get_add_table_parser-207"><span class="linenos">207</span></a><span class="s2">        i.e. shell&gt;add_table tablename &quot;id INTEGER AUTOINCREMENT&quot; &quot;first_name TEXT&quot; &quot;last_name TEXT&quot; &quot;email TEXT UNIQUE&quot; &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="get_add_table_parser-208"><a href="#get_add_table_parser-208"><span class="linenos">208</span></a>    <span class="p">)</span>
+</span><span id="get_add_table_parser-209"><a href="#get_add_table_parser-209"><span class="linenos">209</span></a>    <span class="k">return</span> <span class="n">parser</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Returns a add_table parser.</p>
 </div>
 
 
