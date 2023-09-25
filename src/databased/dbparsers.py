@@ -192,3 +192,17 @@ def get_rename_column_parser() -> argshell.ArgShellParser:
     parser.add_argument("column", type=str, help=""" The column to rename. """)
     parser.add_argument("new_name", type=str, help=""" The new name for the column. """)
     return parser
+
+
+def get_add_table_parser() -> argshell.ArgShellParser:
+    """Returns a add_table parser."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument("table", type=str, help=""" The new table's name. """)
+    parser.add_argument(
+        "columns",
+        type=str,
+        nargs="*",
+        help=""" The column definitions for the new table. Each individual column definition should be enclosed in quotes.
+        i.e. shell>add_table tablename "id INTEGER AUTOINCREMENT" "first_name TEXT" "last_name TEXT" "email TEXT UNIQUE" """,
+    )
+    return parser

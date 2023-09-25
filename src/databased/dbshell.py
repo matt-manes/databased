@@ -52,6 +52,12 @@ class DBShell(argshell.ArgShell):
         with self._DB() as db:
             db.add_column(args.table, args.column_def)
 
+    @argshell.with_parser(dbparsers.get_add_table_parser)
+    def do_add_table(self, args: argshell.Namespace):
+        """Add a new table to the database."""
+        with self._DB() as db:
+            db.create_table(args.table, *args.columns)
+
     @argshell.with_parser(dbparsers.get_backup_parser)
     def do_backup(self, args: argshell.Namespace):
         """Create a backup of the current db file."""
