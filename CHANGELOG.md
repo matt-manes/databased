@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.4.0 (2023-09-25)
+
+#### New Features
+
+* add 'script' command to shell
+
 ## v3.3.0 (2023-09-25)
 
 #### New Features
