@@ -113,6 +113,11 @@ class DBShell(argshell.ArgShell):
         with self._DB() as db:
             db.drop_table(table)
 
+    def do_script(self, path: str):
+        """Execute the given SQL script."""
+        with self._DB() as db:
+            self.display(db.execute_script(path))
+
     def do_flush_log(self, _: str):
         """Clear the log file for this database."""
         log_path = self.dbpath.with_name(self.dbpath.name.replace(".", "") + ".log")
