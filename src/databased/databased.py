@@ -262,11 +262,11 @@ class Databased:
         script = Pathier(path).read_text(encoding).replace("\n", " ")
         return self.query(script)
 
-    def get_columns(self, table: str) -> list[str]:
+    def get_columns(self, table: str) -> tuple[str]:
         """Returns a list of column names in `table`."""
-        return [
+        return tuple(
             column["name"] for column in self.query(f"pragma table_info('{table}');")
-        ]
+        )
 
     def insert(
         self, table: str, columns: tuple[str, ...], values: list[tuple[Any, ...]]
