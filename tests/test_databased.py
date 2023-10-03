@@ -73,7 +73,7 @@ def test__tables(db: Databased):
 
 def test__columns(db: Databased):
     with db as db:
-        assert db.get_columns("cereals") == ["id", "name", "brand", "date_added"]
+        assert db.get_columns("cereals") == ("id", "name", "brand", "date_added")
 
 
 def test__insert(db: Databased):
