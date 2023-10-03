@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.5.0 (2023-10-03)
+
+#### New Features
+
+* add separate 'tables' and 'views' commands
+* add 'views' and 'indicies' properties
+#### Refactorings
+
+* get_columns returns a tuple instead of a list
+
 ## v3.4.0 (2023-09-25)
 
 #### New Features
