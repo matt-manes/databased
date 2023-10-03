@@ -1,7 +1,6 @@
 import argshell
 from griddle import griddy
 from pathier import Pathier, Pathish
-
 from databased import Databased, __version__, dbparsers
 from databased.create_shell import create_shell
 
@@ -45,6 +44,42 @@ class DBShell(argshell.ArgShell):
             print(e)
 
     # Seat
+
+    def _show_tables(self, args: argshell.Namespace):
+        with self._DB() as db:
+            if args.tables:
+                tables = [table for table in args.tables if table in db.tables]
+            else:
+                tables = db.tables
+            if tables:
+                print("Getting database tables...")
+                info = [
+                    {
+                        "Table Name": table,
+                        "Columns": ", ".join(db.get_columns(table)),
+                        "Number of Rows": db.count(table) if args.rowcount else "n/a",
+                    }
+                    for table in tables
+                ]
+                self.display(info)
+
+    def _show_views(self, args: argshell.Namespace):
+        with self._DB() as db:
+            if args.tables:
+                views = [view for view in args.tables if view in db.views]
+            else:
+                views = db.views
+            if views:
+                print("Getting database views...")
+                info = [
+                    {
+                        "View Name": view,
+                        "Columns": ", ".join(db.get_columns(view)),
+                        "Number of Rows": db.count(view) if args.rowcount else "n/a",
+                    }
+                    for view in views
+                ]
+                self.display(info)
 
     @argshell.with_parser(dbparsers.get_add_column_parser)
     def do_add_column(self, args: argshell.Namespace):
@@ -113,11 +148,6 @@ class DBShell(argshell.ArgShell):
         with self._DB() as db:
             db.drop_table(table)
 
-    def do_script(self, path: str):
-        """Execute the given SQL script."""
-        with self._DB() as db:
-            self.display(db.execute_script(path))
-
     def do_flush_log(self, _: str):
         """Clear the log file for this database."""
         log_path = self.dbpath.with_name(self.dbpath.name.replace(".", "") + ".log")
@@ -182,19 +212,14 @@ class DBShell(argshell.ArgShell):
 
     @argshell.with_parser(dbparsers.get_schema_parser)
     def do_schema(self, args: argshell.Namespace):
-        """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
-        print("Getting database schema...")
+        """Print out the names of the database tables and views, their columns, and, optionally, the number of rows."""
+        self._show_tables(args)
+        self._show_views(args)
+
+    def do_script(self, path: str):
+        """Execute the given SQL script."""
         with self._DB() as db:
-            tables = args.tables or db.tables
-            info = [
-                {
-                    "Table Name": table,
-                    "Columns": ", ".join(db.get_columns(table)),
-                    "Number of Rows": db.count(table) if args.rowcount else "n/a",
-                }
-                for table in tables
-            ]
-        self.display(info)
+            self.display(db.execute_script(path))
 
     @argshell.with_parser(dbparsers.get_select_parser, [dbparsers.select_post_parser])
     def do_select(self, args: argshell.Namespace):
@@ -230,6 +255,11 @@ class DBShell(argshell.ArgShell):
     def do_size(self, _: str):
         """Display the size of the the current db file."""
         print(f"{self.dbpath.name} is {self.dbpath.formatted_size}.")
+
+    @argshell.with_parser(dbparsers.get_schema_parser)
+    def do_tables(self, args: argshell.Namespace):
+        """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
+        self._show_tables(args)
 
     @argshell.with_parser(dbparsers.get_update_parser)
     def do_update(self, args: argshell.Namespace):
@@ -267,6 +297,11 @@ class DBShell(argshell.ArgShell):
             freedspace = db.vacuum()
         print(f"Database size after vacuuming: {self.dbpath.formatted_size}")
         print(f"Freed up {Pathier.format_bytes(freedspace)} of disk space.")
+
+    @argshell.with_parser(dbparsers.get_schema_parser)
+    def do_views(self, args: argshell.Namespace):
+        """Print out the names of the database views, their columns, and, optionally, the number of rows."""
+        self._show_views(args)
 
     # Seat
 

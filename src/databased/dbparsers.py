@@ -96,8 +96,7 @@ def get_schema_parser() -> argshell.ArgShellParser:
     """Returns info parser."""
     parser = argshell.ArgShellParser()
     parser.add_argument(
-        "-t",
-        "--tables",
+        "tables",
         type=str,
         nargs="*",
         default=[],
