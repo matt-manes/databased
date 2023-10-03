@@ -1,7 +1,6 @@
 import logging
 import sqlite3
 from typing import Any
-
 from griddle import griddy
 from pathier import Pathier, Pathish
 
@@ -85,6 +84,16 @@ class Databased:
         self._set_foreign_key_enforcement()
 
     @property
+    def indicies(self) -> list[str]:
+        """List of indicies for this database."""
+        return [
+            table["name"]
+            for table in self.query(
+                "SELECT name FROM sqlite_Schema WHERE type = 'index';"
+            )
+        ]
+
+    @property
     def name(self) -> str:
         """The name of this database."""
         return self.path.stem
@@ -108,6 +117,16 @@ class Databased:
             table["name"]
             for table in self.query(
                 "SELECT name FROM sqlite_Schema WHERE type = 'table' AND name NOT LIKE 'sqlite_%';"
+            )
+        ]
+
+    @property
+    def views(self) -> list[str]:
+        """List of view for this database."""
+        return [
+            table["name"]
+            for table in self.query(
+                "SELECT name FROM sqlite_Schema WHERE type = 'view' AND name NOT LIKE 'sqlite_%';"
             )
         ]
 
@@ -262,10 +281,10 @@ class Databased:
         script = Pathier(path).read_text(encoding).replace("\n", " ")
         return self.query(script)
 
-    def get_columns(self, table: str) -> tuple[str]:
+    def get_columns(self, table: str) -> tuple[str, ...]:
         """Returns a list of column names in `table`."""
         return tuple(
-            column["name"] for column in self.query(f"pragma table_info('{table}');")
+            (column["name"] for column in self.query(f"pragma table_info('{table}');"))
         )
 
     def insert(
