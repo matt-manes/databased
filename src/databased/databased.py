@@ -279,8 +279,9 @@ class Databased:
         if not self.connected:
             self.connect()
         assert self.connection
-        script = Pathier(path).read_text(encoding).replace("\n", " ")
-        return self.query(script)
+        return self.connection.executescript(
+            Pathier(path).read_text(encoding)
+        ).fetchall()
 
     def get_columns(self, table: str) -> tuple[str, ...]:
         """Returns a list of column names in `table`."""
