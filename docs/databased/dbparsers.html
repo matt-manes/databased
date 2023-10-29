@@ -69,6 +69,9 @@
             <li>
                     <a class="function" href="#get_add_table_parser">get_add_table_parser</a>
             </li>
+            <li>
+                    <a class="function" href="#get_dump_parser">get_dump_parser</a>
+            </li>
     </ul>
 
 
@@ -297,6 +300,27 @@
 </span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a><span class="s2">        i.e. shell&gt;add_table tablename &quot;id INTEGER AUTOINCREMENT&quot; &quot;first_name TEXT&quot; &quot;last_name TEXT&quot; &quot;email TEXT UNIQUE&quot; &quot;&quot;&quot;</span><span class="p">,</span>
 </span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a>    <span class="p">)</span>
 </span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a>    <span class="k">return</span> <span class="n">parser</span>
+</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>
+</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>
+</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a><span class="k">def</span> <span class="nf">get_dump_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">:</span>
+</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>    <span class="sd">&quot;&quot;&quot;Returns a dump parser.&quot;&quot;&quot;</span>
+</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">()</span>
+</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>        <span class="s2">&quot;tables&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The tables to dump. &quot;&quot;&quot;</span>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>    <span class="p">)</span>
+</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
+</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>        <span class="s2">&quot;--schema_only&quot;</span><span class="p">,</span>
+</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a>        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; Only create a schema dump file. &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>    <span class="p">)</span>
+</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>        <span class="s2">&quot;--data_only&quot;</span><span class="p">,</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; Only create a data dump file. &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>    <span class="p">)</span>
+</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>    <span class="k">return</span> <span class="n">parser</span>
 </span></pre></div>
 
 
@@ -720,6 +744,44 @@
 
 
             <div class="docstring"><p>Returns a add_table parser.</p>
+</div>
+
+
+                </section>
+                <section id="get_dump_parser">
+                            <input id="get_dump_parser-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_dump_parser</span><span class="signature pdoc-code condensed">(<span class="return-annotation">) -> <span class="n">argshell</span><span class="o">.</span><span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span>:</span></span>
+
+                <label class="view-source-button" for="get_dump_parser-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#get_dump_parser"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_dump_parser-211"><a href="#get_dump_parser-211"><span class="linenos">211</span></a><span class="k">def</span> <span class="nf">get_dump_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">:</span>
+</span><span id="get_dump_parser-212"><a href="#get_dump_parser-212"><span class="linenos">212</span></a>    <span class="sd">&quot;&quot;&quot;Returns a dump parser.&quot;&quot;&quot;</span>
+</span><span id="get_dump_parser-213"><a href="#get_dump_parser-213"><span class="linenos">213</span></a>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argshell</span><span class="o">.</span><span class="n">ArgShellParser</span><span class="p">()</span>
+</span><span id="get_dump_parser-214"><a href="#get_dump_parser-214"><span class="linenos">214</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="get_dump_parser-215"><a href="#get_dump_parser-215"><span class="linenos">215</span></a>        <span class="s2">&quot;tables&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; The tables to dump. &quot;&quot;&quot;</span>
+</span><span id="get_dump_parser-216"><a href="#get_dump_parser-216"><span class="linenos">216</span></a>    <span class="p">)</span>
+</span><span id="get_dump_parser-217"><a href="#get_dump_parser-217"><span class="linenos">217</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="get_dump_parser-218"><a href="#get_dump_parser-218"><span class="linenos">218</span></a>        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
+</span><span id="get_dump_parser-219"><a href="#get_dump_parser-219"><span class="linenos">219</span></a>        <span class="s2">&quot;--schema_only&quot;</span><span class="p">,</span>
+</span><span id="get_dump_parser-220"><a href="#get_dump_parser-220"><span class="linenos">220</span></a>        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+</span><span id="get_dump_parser-221"><a href="#get_dump_parser-221"><span class="linenos">221</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; Only create a schema dump file. &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="get_dump_parser-222"><a href="#get_dump_parser-222"><span class="linenos">222</span></a>    <span class="p">)</span>
+</span><span id="get_dump_parser-223"><a href="#get_dump_parser-223"><span class="linenos">223</span></a>    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+</span><span id="get_dump_parser-224"><a href="#get_dump_parser-224"><span class="linenos">224</span></a>        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
+</span><span id="get_dump_parser-225"><a href="#get_dump_parser-225"><span class="linenos">225</span></a>        <span class="s2">&quot;--data_only&quot;</span><span class="p">,</span>
+</span><span id="get_dump_parser-226"><a href="#get_dump_parser-226"><span class="linenos">226</span></a>        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+</span><span id="get_dump_parser-227"><a href="#get_dump_parser-227"><span class="linenos">227</span></a>        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot; Only create a data dump file. &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="get_dump_parser-228"><a href="#get_dump_parser-228"><span class="linenos">228</span></a>    <span class="p">)</span>
+</span><span id="get_dump_parser-229"><a href="#get_dump_parser-229"><span class="linenos">229</span></a>    <span class="k">return</span> <span class="n">parser</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Returns a dump parser.</p>
 </div>
 
 
