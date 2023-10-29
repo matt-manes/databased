@@ -1,7 +1,7 @@
-import logging
 import sqlite3
 from typing import Any
 
+import loggi
 from griddle import griddy
 from pathier import Pathier, Pathish
 
@@ -133,18 +133,32 @@ class Databased:
 
     def _logger_init(self, message_format: str, encoding: str):
         """:param: `message_format`: `{` style format string."""
-        self.logger = logging.getLogger(self.name)
-        if not self.logger.hasHandlers():
-            handler = logging.FileHandler(
-                str(self.path).replace(".", "") + ".log", encoding=encoding
+        self.logger = loggi.getLogger(self.name)
+
+    def _prepare_insert_queries(
+        self, table: str, columns: tuple[str, ...], values: list[tuple[Any, ...]]
+    ) -> list[tuple[str, tuple[Any, ...]]]:
+        """Format a list of insert statements.
+
+        The returned value is a list because `values` will be broken up into chunks.
+
+        Each list element is a two tuple consisting of the parameterized query string and a tuple of values."""
+        inserts = []
+        max_row_count = 900
+        column_list = "(" + ", ".join(columns) + ")"
+        for i in range(0, len(values), max_row_count):
+            chunk = values[i : i + max_row_count]
+            placeholder = (
+                "(" + "),(".join((", ".join(("?" for _ in row)) for row in chunk)) + ")"
             )
-            handler.setFormatter(
-                logging.Formatter(
-                    message_format, style="{", datefmt="%m/%d/%Y %I:%M:%S %p"
+            flattened_values = tuple((value for row in chunk for value in row))
+            inserts.append(
+                (
+                    f"INSERT INTO {table} {column_list} VALUES {placeholder};",
+                    flattened_values,
                 )
             )
-            self.logger.addHandler(handler)
-            self.logger.setLevel(logging.INFO)
+        return inserts
 
     def _set_foreign_key_enforcement(self):
         if self.connection:
@@ -296,34 +310,14 @@ class Databased:
 
         Each `tuple` in `values` corresponds to an individual row that is to be inserted.
         """
-        max_row_count = 900
-        column_list = "(" + ", ".join(columns) + ")"
         row_count = 0
-        for i in range(0, len(values), max_row_count):
-            chunk = values[i : i + max_row_count]
-            placeholder = (
-                "(" + "),(".join((", ".join(("?" for _ in row)) for row in chunk)) + ")"
-            )
-            logger_values = "\n".join(
-                (
-                    "'(" + ", ".join((str(value) for value in row)) + ")'"
-                    for row in chunk
-                )
-            )
-            flattened_values = tuple((value for row in chunk for value in row))
+        for insert in self._prepare_insert_queries(table, columns, values):
             try:
-                self.query(
-                    f"INSERT INTO {table} {column_list} VALUES {placeholder};",
-                    flattened_values,
-                )
-                self.logger.info(
-                    f"Inserted into '{column_list}' columns of '{table}' table values \n{logger_values}."
-                )
+                self.query(insert[0], insert[1])
                 row_count += self.cursor.rowcount
+                self.logger.info(f"Inserted {row_count} rows into '{table}' table.")
             except Exception as e:
-                self.logger.exception(
-                    f"Error inserting into '{column_list}' columns of '{table}' table values \n{logger_values}."
-                )
+                self.logger.exception(f"Error inserting rows into '{table}' table.")
                 raise e
         return row_count
 
@@ -449,3 +443,85 @@ class Databased:
         size = self.path.size
         self.query("VACUUM;")
         return size - self.path.size
+
+    # Seat ========================== Database Dump =========================================
+
+    def _format_column_def(self, description: dict) -> str:
+        name = description["name"]
+        type_ = description["type"]
+        primary_key = bool(description["pk"])
+        not_null = bool(description["notnull"])
+        default = description["dflt_value"]
+        column = f"{name} {type_}"
+        if primary_key:
+            column += f" PRIMARY KEY"
+        if not_null:
+            column += f" NOT NULL"
+        if default:
+            if isinstance(default, str):
+                default = f"{default}"
+            column += f" DEFAULT {default}"
+        return column
+
+    def _format_table_data(self, table: str) -> str:
+        columns = self.get_columns(table)
+        rows = [tuple(row.values()) for row in self.select(table)]
+        inserts = self._prepare_insert_queries(table, columns, rows)
+        insert_strings = []
+        indent = " " * 4
+        for insert in inserts:
+            text = insert[0]
+            sub = "^$data$based$^"
+            text = text.replace("?", sub)
+            for value in insert[1]:
+                if not value:
+                    value = ""
+                if isinstance(value, bool):
+                    value = int(value)
+                if not isinstance(value, int) and (not isinstance(value, float)):
+                    if isinstance(value, str):
+                        value = value.replace('"', "'")
+                    value = f'"{value}"'
+                text = text.replace(sub, str(value), 1)
+            for pair in [
+                ("INSERT INTO ", f"INSERT INTO\n{indent}"),
+                (") VALUES (", f")\nVALUES\n{indent}("),
+                ("),", f"),\n{indent}"),
+            ]:
+                text = text.replace(pair[0], pair[1])
+            insert_strings.append(text)
+        return "\n".join(insert_strings)
+
+    def _format_table_def(self, table: str) -> str:
+        description = self.describe(table)
+        indent = " " * 4
+        columns = ",\n".join(
+            (f"{indent * 2}{self._format_column_def(column)}" for column in description)
+        )
+        table_def = (
+            "CREATE TABLE IF NOT EXISTS\n"
+            + f"{indent}{table} (\n"
+            + columns
+            + f"\n{indent});"
+        )
+        return table_def
+
+    def _get_data_dump_string(self, tables: list[str]) -> str:
+        return "\n\n".join((self._format_table_data(table) for table in tables))
+
+    def _get_schema_dump_string(self, tables: list[str]) -> str:
+        return "\n\n".join((self._format_table_def(table) for table in tables))
+
+    def dump_data(self, path: Pathish, tables: list[str] | None = None):
+        """Create a data dump file for the specified tables or all tables, if none are given."""
+        tables = tables or self.tables
+        path = Pathier(path)
+        path.write_text(self._get_data_dump_string(tables), encoding="utf-8")
+
+    def dump_schema(self, path: Pathish, tables: list[str] | None = None):
+        """Create a schema dump file for the specified tables or all tables, if none are given.
+
+        NOTE: Foreign key relationships/constraints are not preserved when dumping the schema."""
+        tables = tables or self.tables
+        path = Pathier(path)
+        path.write_text(self._get_schema_dump_string(tables), encoding="utf-8")

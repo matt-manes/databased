@@ -205,3 +205,24 @@ def get_add_table_parser() -> argshell.ArgShellParser:
         i.e. shell>add_table tablename "id INTEGER AUTOINCREMENT" "first_name TEXT" "last_name TEXT" "email TEXT UNIQUE" """,
     )
     return parser
+
+
+def get_dump_parser() -> argshell.ArgShellParser:
+    """Returns a dump parser."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument(
+        "tables", type=str, nargs="*", default=None, help=""" The tables to dump. """
+    )
+    parser.add_argument(
+        "-s",
+        "--schema_only",
+        action="store_true",
+        help=""" Only create a schema dump file. """,
+    )
+    parser.add_argument(
+        "-d",
+        "--data_only",
+        action="store_true",
+        help=""" Only create a data dump file. """,
+    )
+    return parser

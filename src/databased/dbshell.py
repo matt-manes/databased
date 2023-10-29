@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import argshell
 from griddle import griddy
 from pathier import Pathier, Pathish
@@ -131,9 +133,9 @@ class DBShell(argshell.ArgShell):
             print(f"Deleted {num_rows} rows from {args.table} table.")
 
     def do_describe(self, tables: str):
-        """Describe each table in `tables`. If no table list is given, all tables will be described."""
+        """Describe each given table or view. If no list is given, all tables and views will be described."""
         with self._DB() as db:
-            table_list = tables.split() or db.tables
+            table_list = tables.split() or (db.tables + db.views)
             for table in table_list:
                 print(f"<{table}>")
                 print(db.to_grid(db.describe(table)))
@@ -148,6 +150,21 @@ class DBShell(argshell.ArgShell):
         """Drop the specified table."""
         with self._DB() as db:
             db.drop_table(table)
+
+    @argshell.with_parser(dbparsers.get_dump_parser)
+    def do_dump(self, args: argshell.Namespace):
+        """Create `.sql` dump files for the current database."""
+        date = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
+        if not args.data_only:
+            print("Dumping schema...")
+            with self._DB() as db:
+                db.dump_schema(
+                    Pathier.cwd() / f"{db.name}_schema_{date}.sql", args.tables
+                )
+        if not args.schema_only:
+            print("Dumping data...")
+            with self._DB() as db:
+                db.dump_data(Pathier.cwd() / f"{db.name}_data_{date}.sql", args.tables)
 
     def do_flush_log(self, _: str):
         """Clear the log file for this database."""
@@ -168,6 +185,12 @@ class DBShell(argshell.ArgShell):
             )
             print("All transactions initiated by commands are committed immediately.")
         print()
+
+    def do_new_db(self, dbname: str):
+        """Create a new, empty database with the given name."""
+        dbpath = Pathier(dbname)
+        self.dbpath = dbpath
+        self.prompt = f"{self.dbpath.name}>"
 
     def do_properties(self, _: str):
         """See current database property settings."""
@@ -277,9 +300,9 @@ class DBShell(argshell.ArgShell):
             num_updates = db.update(args.table, args.column, args.new_value, args.where)
             print(f"Updated {num_updates} rows in table {args.table}.")
 
-    def do_use(self, arg: str):
+    def do_use(self, dbname: str):
         """Set which database file to use."""
-        dbpath = Pathier(arg)
+        dbpath = Pathier(dbname)
         if not dbpath.exists():
             print(f"{dbpath} does not exist.")
             print(f"Still using {self.dbpath}")
