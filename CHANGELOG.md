@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.6.0 (2023-10-29)
+
+#### New Features
+
+* add noiftimer.time_it() to some dbshell commands
+* implement schema and data dumping
+
 ## v3.5.1 (2023-10-21)
 
 #### Fixes
