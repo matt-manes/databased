@@ -6,6 +6,7 @@ from pathier import Pathier, Pathish
 
 from databased import Databased, __version__, dbparsers
 from databased.create_shell import create_shell
+from noiftimer import time_it
 
 
 class DBShell(argshell.ArgShell):
@@ -33,6 +34,7 @@ class DBShell(argshell.ArgShell):
             self.enforce_foreign_keys,
         )
 
+    @time_it()
     def default(self, line: str):
         line = line.strip("_")
         with self._DB() as db:
@@ -97,6 +99,7 @@ class DBShell(argshell.ArgShell):
             db.create_table(args.table, *args.columns)
 
     @argshell.with_parser(dbparsers.get_backup_parser)
+    @time_it()
     def do_backup(self, args: argshell.Namespace):
         """Create a backup of the current db file."""
         print(f"Creating a back up for {self.dbpath}...")
@@ -119,6 +122,7 @@ class DBShell(argshell.ArgShell):
         print(self.dbpath)
 
     @argshell.with_parser(dbparsers.get_delete_parser)
+    @time_it()
     def do_delete(self, args: argshell.Namespace):
         """Delete rows from the database.
 
@@ -152,6 +156,7 @@ class DBShell(argshell.ArgShell):
             db.drop_table(table)
 
     @argshell.with_parser(dbparsers.get_dump_parser)
+    @time_it()
     def do_dump(self, args: argshell.Namespace):
         """Create `.sql` dump files for the current database."""
         date = datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
@@ -197,6 +202,7 @@ class DBShell(argshell.ArgShell):
         for property_ in ["connection_timeout", "detect_types", "enforce_foreign_keys"]:
             print(f"{property_}: {getattr(self, property_)}")
 
+    @time_it()
     def do_query(self, query: str):
         """Execute a query against the current database."""
         print(f"Executing {query}")
@@ -235,17 +241,20 @@ class DBShell(argshell.ArgShell):
             print(db.separate(Pathier.cwd().stem))
 
     @argshell.with_parser(dbparsers.get_schema_parser)
+    @time_it()
     def do_schema(self, args: argshell.Namespace):
         """Print out the names of the database tables and views, their columns, and, optionally, the number of rows."""
         self._show_tables(args)
         self._show_views(args)
 
+    @time_it()
     def do_script(self, path: str):
         """Execute the given SQL script."""
         with self._DB() as db:
             self.display(db.execute_script(path))
 
     @argshell.with_parser(dbparsers.get_select_parser, [dbparsers.select_post_parser])
+    @time_it()
     def do_select(self, args: argshell.Namespace):
         """Execute a SELECT query with the given args."""
         print(f"Querying {args.table}... ")
@@ -281,11 +290,13 @@ class DBShell(argshell.ArgShell):
         print(f"{self.dbpath.name} is {self.dbpath.formatted_size}.")
 
     @argshell.with_parser(dbparsers.get_schema_parser)
+    @time_it()
     def do_tables(self, args: argshell.Namespace):
         """Print out the names of the database tables, their columns, and, optionally, the number of rows."""
         self._show_tables(args)
 
     @argshell.with_parser(dbparsers.get_update_parser)
+    @time_it()
     def do_update(self, args: argshell.Namespace):
         """Update a column to a new value.
 
@@ -313,6 +324,7 @@ class DBShell(argshell.ArgShell):
             self.dbpath = dbpath
             self.prompt = f"{self.dbpath.name}>"
 
+    @time_it()
     def do_vacuum(self, _: str):
         """Reduce database disk memory."""
         print(f"Database size before vacuuming: {self.dbpath.formatted_size}")
@@ -323,6 +335,7 @@ class DBShell(argshell.ArgShell):
         print(f"Freed up {Pathier.format_bytes(freedspace)} of disk space.")
 
     @argshell.with_parser(dbparsers.get_schema_parser)
+    @time_it()
     def do_views(self, args: argshell.Namespace):
         """Print out the names of the database views, their columns, and, optionally, the number of rows."""
         self._show_views(args)
