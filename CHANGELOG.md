@@ -1,5 +1,11 @@
 # Changelog
 
+## v3.7.0 (2023-11-18)
+
+#### New Features
+
+* add count command to dbshell
+
 ## v3.6.0 (2023-10-29)
 
 #### New Features
