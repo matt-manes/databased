@@ -107,6 +107,24 @@ class DBShell(argshell.ArgShell):
         print("Creating backup is complete.")
         print(f"Backup path: {backup_path}")
 
+    @argshell.with_parser(dbparsers.get_count_parser)
+    @time_it()
+    def do_count(self, args: argshell.Namespace):
+        """Count the number of matching records."""
+        with self._DB() as db:
+            count = db.count(args.table, args.column, args.where, args.distinct)
+            self.display(
+                [
+                    {
+                        "Table": args.table,
+                        "Column": args.column,
+                        "Distinct": args.distinct,
+                        "Where": args.where,
+                        "Count": count,
+                    }
+                ]
+            )
+
     def do_customize(self, name: str):
         """Generate a template file in the current working directory for creating a custom DBShell class.
         Expects one argument: the name of the custom dbshell.

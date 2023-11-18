@@ -3,6 +3,20 @@ import argshell
 """ Parser building functions for DBShell """
 
 
+def add_where_argument(parser: argshell.ArgShellParser) -> argshell.ArgShellParser:
+    """Add an optional `where` argument to the parser and return it.
+
+    The added argument has a default value of `None` and has `nargs="?"`"""
+    parser.add_argument(
+        "where",
+        type=str,
+        default=None,
+        nargs="?",
+        help=""" The `WHERE` clause to use, if any. Don't include "WHERE" keyword in argument string. """,
+    )
+    return parser
+
+
 def get_backup_parser() -> argshell.ArgShellParser:
     """Returns a parser for the backup command."""
     parser = argshell.ArgShellParser()
@@ -75,12 +89,25 @@ def get_select_parser() -> argshell.ArgShellParser:
     return parser
 
 
-def select_post_parser(args: argshell.Namespace) -> argshell.Namespace:
-    for field in ["group_by", "order_by"]:
-        arglist = getattr(args, field)
-        if arglist:
-            setattr(args, field, ", ".join(arglist))
-    return args
+def get_count_parser() -> argshell.ArgShellParser:
+    """Returns a count parser."""
+    parser = argshell.ArgShellParser()
+    parser.add_argument("table", type=str, help=""" The table to count from. """)
+    parser = add_where_argument(parser)
+    parser.add_argument(
+        "-c",
+        "--column",
+        type=str,
+        default="*",
+        help=""" The column to count on. Default is `*`.""",
+    )
+    parser.add_argument(
+        "-d",
+        "--distinct",
+        action="store_true",
+        help=""" Whether the count should use `DISTINCT`.""",
+    )
+    return parser
 
 
 def get_drop_column_parser() -> argshell.ArgShellParser:
@@ -107,20 +134,6 @@ def get_schema_parser() -> argshell.ArgShellParser:
         "--rowcount",
         action="store_true",
         help=""" Count and display the number of rows for each table. """,
-    )
-    return parser
-
-
-def add_where_argument(parser: argshell.ArgShellParser) -> argshell.ArgShellParser:
-    """Add an optional `where` argument to the parser and return it.
-
-    The added argument has a default value of `None` and has `nargs="?"`"""
-    parser.add_argument(
-        "where",
-        type=str,
-        default=None,
-        nargs="?",
-        help=""" The `WHERE` clause to use, if any. Don't include "WHERE" keyword in argument string. """,
     )
     return parser
 
@@ -226,3 +239,11 @@ def get_dump_parser() -> argshell.ArgShellParser:
         help=""" Only create a data dump file. """,
     )
     return parser
+
+
+def select_post_parser(args: argshell.Namespace) -> argshell.Namespace:
+    for field in ["group_by", "order_by"]:
+        arglist = getattr(args, field)
+        if arglist:
+            setattr(args, field, ", ".join(arglist))
+    return args
