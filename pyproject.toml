@@ -1,19 +1,16 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [project]
 name = "databased"
 description = "Wrapper for the standard library Sqlite3 module to make setting up and using a database quicker and easier."
-version = "3.6.0"
-requires-python = ">=3.10"
+version = "3.7.0"
 dependencies = ["pandas", "tabulate", "pytest", "argshell", "pathier", "griddle", "loggi", "noiftimer"]
 readme = "README.md"
 keywords = ["database", "sqlite", "sqlite3"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]
+requires-python = ">=3.10"
 
 [[project.authors]]
 name = "Matt Manes"
+email = ""
 
 [project.urls]
 Homepage = "https://github.com/matt-manes/databased"
@@ -31,3 +28,7 @@ pythonpath = "src"
 
 [tool.hatch.build.targets.sdist]
 exclude = [".coverage", ".pytest_cache", ".vscode", "tests", "shelltesting"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
