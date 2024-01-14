@@ -21,15 +21,13 @@ class Databased:
         detect_types: bool = True,
         enforce_foreign_keys: bool = True,
         commit_on_close: bool = True,
-        logger_encoding: str = "utf-8",
-        logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
         log_dir: Pathish | None = None,
     ):
         """ """
         self.path = dbpath
         self.connection_timeout = connection_timeout
         self.connection = None
-        self._logger_init(logger_message_format, logger_encoding, log_dir)
+        self._logger_init(log_dir)
         self.detect_types = detect_types
         self.commit_on_close = commit_on_close
         self.enforce_foreign_keys = enforce_foreign_keys
@@ -132,9 +130,7 @@ class Databased:
             )
         ]
 
-    def _logger_init(
-        self, message_format: str, encoding: str, log_path: Pathish | None = None
-    ):
+    def _logger_init(self, log_path: Pathish | None = None):
         """:param: `message_format`: `{` style format string."""
         self.logger = loggi.getLogger(
             self.name, Pathier(log_path) if log_path else Pathier.cwd()
