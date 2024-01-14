@@ -86,6 +86,14 @@ def get_select_parser() -> argshell.ArgShellParser:
         default=None,
         help=""" The `LIMIT` clause to use, if any. Don't include keyword. """,
     )
+    parser.add_argument(
+        "-ec",
+        "--exclude_columns",
+        type=str,
+        nargs="*",
+        default=None,
+        help=""" Return all columns except these columns.""",
+    )
     return parser
 
 

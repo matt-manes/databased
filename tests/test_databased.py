@@ -143,15 +143,23 @@ def test__count(db: Databased):
     assert db.count("cereals", where="name LIKE '%s'")
 
 
-def test__delete(db: Databased):
-    with db as db:
-        assert db.delete("cereals", "name = 'Shreddy Bois'") == 1
-        assert db.delete("cereals") == 3
-
-
 def test__logpath(dbpath: Pathier):
     new_log_path = dbpath.parent / "logs"
     assert not new_log_path.exists()
     with Databased(dbpath, log_dir=new_log_path) as db:
         pass
     assert new_log_path.exists()
+
+
+def test__column_excludes(db: Databased):
+    with db as db:
+        row = db.select("cereals", exclude_columns=["date_added"])[0]
+        assert len(row.keys()) == 3
+        assert "date_added" not in row
+
+
+def test__delete(db: Databased):
+    # This test needs to be last
+    with db as db:
+        assert db.delete("cereals", "name = 'Shreddy Bois'") == 1
+        assert db.delete("cereals") == 3

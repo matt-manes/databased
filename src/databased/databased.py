@@ -383,8 +383,11 @@ class Databased:
         having: str | None = None,
         order_by: str | None = None,
         limit: int | str | None = None,
+        exclude_columns: list[str] | None = None,
     ) -> list[dict]:
         """Return rows for given criteria.
+
+        If `exclude_columns` is given, `columns` will be ignored and data will be returned with all columns except the ones specified by `exclude_columns`.
 
         For complex queries, use the `databased.query()` method.
 
@@ -395,7 +398,7 @@ class Databased:
 
         >>> Databased().select(
             "bike_rides",
-            "id, date, distance, moving_time, AVG(distance/moving_time) as average_speed",
+            ["id", "date", "distance", "moving_time", "AVG(distance/moving_time) as average_speed"],
             where="distance > 20",
             order_by="distance",
             desc=True,
@@ -411,6 +414,13 @@ class Databased:
             ORDER BY
                 distance DESC
             Limit 10;"""
+        # Assume implicit `[*]` for `columns` param when `exclude_columns` is used.
+        if exclude_columns:
+            columns = [
+                column
+                for column in self.get_columns(table)
+                if column not in exclude_columns
+            ]
         query = f"SELECT {', '.join(columns)} FROM {table}"
         if joins:
             query += f" {' '.join(joins)}"

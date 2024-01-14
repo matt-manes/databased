@@ -286,6 +286,7 @@ class DBShell(argshell.ArgShell):
                 having=args.Having,
                 order_by=args.order_by,
                 limit=args.limit,
+                exclude_columns=args.exclude_columns,
             )
             print(f"Found {len(rows)} rows:")
             self.display(rows)
