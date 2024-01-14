@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.1.0 (2024-01-14)
+
+#### Docs
+
+* convert list and tuple annotations to Iterable or Sequence
+
+
 ## v4.0.0 (2024-01-14)
 
 #### New Features
