@@ -147,3 +147,11 @@ def test__delete(db: Databased):
     with db as db:
         assert db.delete("cereals", "name = 'Shreddy Bois'") == 1
         assert db.delete("cereals") == 3
+
+
+def test__logpath(dbpath: Pathier):
+    new_log_path = dbpath.parent / "logs"
+    assert not new_log_path.exists()
+    with Databased(dbpath, log_dir=new_log_path) as db:
+        pass
+    assert new_log_path.exists()

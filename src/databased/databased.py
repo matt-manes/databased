@@ -23,12 +23,13 @@ class Databased:
         commit_on_close: bool = True,
         logger_encoding: str = "utf-8",
         logger_message_format: str = "{levelname}|-|{asctime}|-|{message}",
+        log_dir: Pathish | None = None,
     ):
         """ """
         self.path = dbpath
         self.connection_timeout = connection_timeout
         self.connection = None
-        self._logger_init(logger_message_format, logger_encoding)
+        self._logger_init(logger_message_format, logger_encoding, log_dir)
         self.detect_types = detect_types
         self.commit_on_close = commit_on_close
         self.enforce_foreign_keys = enforce_foreign_keys
@@ -131,9 +132,13 @@ class Databased:
             )
         ]
 
-    def _logger_init(self, message_format: str, encoding: str):
+    def _logger_init(
+        self, message_format: str, encoding: str, log_path: Pathish | None = None
+    ):
         """:param: `message_format`: `{` style format string."""
-        self.logger = loggi.getLogger(self.name)
+        self.logger = loggi.getLogger(
+            self.name, Pathier(log_path) if log_path else Pathier.cwd()
+        )
 
     def _prepare_insert_queries(
         self, table: str, columns: tuple[str, ...], values: list[tuple[Any, ...]]
@@ -142,7 +147,8 @@ class Databased:
 
         The returned value is a list because `values` will be broken up into chunks.
 
-        Each list element is a two tuple consisting of the parameterized query string and a tuple of values."""
+        Each list element is a two tuple consisting of the parameterized query string and a tuple of values.
+        """
         inserts = []
         max_row_count = 900
         column_list = "(" + ", ".join(columns) + ")"
@@ -521,7 +527,8 @@ class Databased:
     def dump_schema(self, path: Pathish, tables: list[str] | None = None):
         """Create a schema dump file for the specified tables or all tables, if none are given.
 
-        NOTE: Foreign key relationships/constraints are not preserved when dumping the schema."""
+        NOTE: Foreign key relationships/constraints are not preserved when dumping the schema.
+        """
         tables = tables or self.tables
         path = Pathier(path)
         path.write_text(self._get_schema_dump_string(tables), encoding="utf-8")
