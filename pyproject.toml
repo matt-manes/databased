@@ -10,7 +10,7 @@ requires-python = ">=3.10, <=3.12"
 
 [[project.authors]]
 name = "Matt Manes"
-email = ""
+email = "mattmanes@pm.me"
 
 [project.urls]
 Homepage = "https://github.com/matt-manes/databased"
