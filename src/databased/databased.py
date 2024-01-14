@@ -12,7 +12,24 @@ def dict_factory(cursor: sqlite3.Cursor, row: tuple) -> dict:
 
 
 class Databased:
-    """SQLite3 wrapper."""
+    """SQLite3 wrapper.
+
+    Anytime `Databased.query()` is called, a connection to the database will be opened if it isn't already open.
+
+    (All builtin class functions that access the database do so through the query method.)
+
+    Connections, however, need to be closed manually.
+
+    Manually closing the connection can be avoiding by using `Databased` with a context manager, which will close the connection upon exiting:
+    >>> with Databased() as db:
+    >>>     # connection closed
+    >>>     rows = db.select("some_table")
+    >>>     # connection opened
+    >>> # connection closed
+
+    Data is returned as a list of dictionaries where each dictionary is `{"column": value}`.
+
+    """
 
     def __init__(
         self,
@@ -23,7 +40,16 @@ class Databased:
         commit_on_close: bool = True,
         log_dir: Pathish | None = None,
     ):
-        """ """
+        """
+        :params:
+        * `dbpath`: The path to the database file. Will be created if it doesn't exist.
+        * `connection_timeout`: How long (in seconds) to wait before raising an exception when trying to connect to the database.
+        * `detect_types`: Whether columns with values that can be converted to Python objects should be,
+        i.e. `TIMESTAMP` table data can be recieved and is converted to, upon retrieval, a `datetime.datetime` object.
+        * `enforce_foreign_keys`: Whether to enfore foreign key constraints.
+        * `commit_on_close`: Whether to automatically commit transactions when the connection is closed.
+        * `log_dir`: The directory the transaction log should be saved in. If `None`, it'll be saved in the same directory as the database file.
+        """
         self.path = dbpath
         self.connection_timeout = connection_timeout
         self.connection = None
