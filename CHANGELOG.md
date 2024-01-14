@@ -1,5 +1,23 @@
 # Changelog
 
+## v4.0.0 (2024-01-14)
+
+#### New Features
+
+* add param to exclude columns instead of specifying which to include when using `select()`
+* log storage directory can be specified in constructor
+#### Refactorings
+
+* BREAKING: remove log format and encoding `__init__` params
+#### Docs
+
+* add class and `__init__` docstrings
+#### Others
+
+* add email to authors field of pyproject
+* update pyproject deps and py version
+
+
 ## v3.7.0 (2023-11-18)
 
 #### New Features
