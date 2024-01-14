@@ -2,11 +2,11 @@
 name = "databased"
 description = "Wrapper for the standard library Sqlite3 module to make setting up and using a database quicker and easier."
 version = "3.7.0"
-dependencies = ["pandas", "tabulate", "pytest", "argshell", "pathier", "griddle", "loggi", "noiftimer"]
+dependencies = ["pandas", "tabulate", "argshell", "pathier", "griddle", "loggi", "noiftimer"]
 readme = "README.md"
 keywords = ["database", "sqlite", "sqlite3"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]
-requires-python = ">=3.10"
+requires-python = ">=3.10, <=3.12"
 
 [[project.authors]]
 name = "Matt Manes"
