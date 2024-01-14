@@ -1,5 +1,5 @@
 import sqlite3
-from typing import Any
+from typing import Any, Iterable, Sequence
 
 import loggi
 from griddle import griddy
@@ -163,7 +163,7 @@ class Databased:
         )
 
     def _prepare_insert_queries(
-        self, table: str, columns: tuple[str, ...], values: list[tuple[Any, ...]]
+        self, table: str, columns: Iterable[str], values: Sequence[Iterable[Any]]
     ) -> list[tuple[str, tuple[Any, ...]]]:
         """Format a list of insert statements.
 
@@ -332,7 +332,7 @@ class Databased:
         )
 
     def insert(
-        self, table: str, columns: tuple[str, ...], values: list[tuple[Any, ...]]
+        self, table: str, columns: Iterable[str], values: Sequence[Iterable[Any]]
     ) -> int:
         """Insert rows of `values` into `columns` of `table`.
 
@@ -349,7 +349,7 @@ class Databased:
                 raise e
         return row_count
 
-    def query(self, query_: str, parameters: tuple[Any, ...] = tuple()) -> list[dict]:
+    def query(self, query_: str, parameters: Sequence[Any] = tuple()) -> list[dict]:
         """Execute an SQL query and return the results.
 
         Ensures that the database connection is opened before executing the command.
@@ -376,14 +376,14 @@ class Databased:
     def select(
         self,
         table: str,
-        columns: list[str] = ["*"],
-        joins: list[str] | None = None,
+        columns: Iterable[str] = ["*"],
+        joins: Iterable[str] | None = None,
         where: str | None = None,
         group_by: str | None = None,
         having: str | None = None,
         order_by: str | None = None,
         limit: int | str | None = None,
-        exclude_columns: list[str] | None = None,
+        exclude_columns: Iterable[str] | None = None,
     ) -> list[dict]:
         """Return rows for given criteria.
 
@@ -439,7 +439,7 @@ class Databased:
         return rows
 
     @staticmethod
-    def to_grid(data: list[dict], shrink_to_terminal: bool = True) -> str:
+    def to_grid(data: Iterable[dict], shrink_to_terminal: bool = True) -> str:
         """Returns a tabular grid from `data`.
 
         If `shrink_to_terminal` is `True`, the column widths of the grid will be reduced to fit within the current terminal.
@@ -544,19 +544,19 @@ class Databased:
         )
         return table_def
 
-    def _get_data_dump_string(self, tables: list[str]) -> str:
+    def _get_data_dump_string(self, tables: Iterable[str]) -> str:
         return "\n\n".join((self._format_table_data(table) for table in tables))
 
-    def _get_schema_dump_string(self, tables: list[str]) -> str:
+    def _get_schema_dump_string(self, tables: Iterable[str]) -> str:
         return "\n\n".join((self._format_table_def(table) for table in tables))
 
-    def dump_data(self, path: Pathish, tables: list[str] | None = None):
+    def dump_data(self, path: Pathish, tables: Iterable[str] | None = None):
         """Create a data dump file for the specified tables or all tables, if none are given."""
         tables = tables or self.tables
         path = Pathier(path)
         path.write_text(self._get_data_dump_string(tables), encoding="utf-8")
 
-    def dump_schema(self, path: Pathish, tables: list[str] | None = None):
+    def dump_schema(self, path: Pathish, tables: Iterable[str] | None = None):
         """Create a schema dump file for the specified tables or all tables, if none are given.
 
         NOTE: Foreign key relationships/constraints are not preserved when dumping the schema.
