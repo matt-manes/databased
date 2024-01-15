@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.2.0 (2024-01-14)
+
+#### New Features
+
+* optionally specify database file path as cl arg when starting dbshell
+
+
 ## v4.1.0 (2024-01-14)
 
 #### Docs
