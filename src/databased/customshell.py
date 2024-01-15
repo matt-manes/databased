@@ -1,3 +1,5 @@
+import argparse
+
 from argshell import ArgShellParser, Namespace, with_parser
 from pathier import Pathier
 
@@ -19,5 +21,29 @@ class CustomShell(DBShell):
 # https://github.com/matt-manes/databased/blob/main/src/databased/dbshell.py
 # https://github.com/matt-manes/databased/blob/main/src/databased/dbparsers.py
 
+
+def get_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "dbpath",
+        nargs="?",
+        type=str,
+        help=""" The database file to use. If not provided the current working directory will be scanned for database files. """,
+    )
+    args = parser.parse_args()
+
+    return args
+
+
+def main(args: argparse.Namespace | None = None):
+    if not args:
+        args = get_args()
+    dbshell = CustomShell()
+    if args.dbpath:
+        dbshell.dbpath = Pathier(args.dbpath)
+    dbshell.cmdloop()
+
+
 if __name__ == "__main__":
-    CustomShell().cmdloop()
+    main(get_args())

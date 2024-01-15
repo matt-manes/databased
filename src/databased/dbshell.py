@@ -1,3 +1,4 @@
+import argparse
 from datetime import datetime
 
 import argshell
@@ -430,5 +431,28 @@ class DBShell(argshell.ArgShell):
             raise ValueError(f"{self.dbpath} is not a file.")
 
 
-def main():
-    DBShell().cmdloop()
+def get_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "dbpath",
+        nargs="?",
+        type=str,
+        help=""" The database file to use. If not provided the current working directory will be scanned for database files. """,
+    )
+    args = parser.parse_args()
+
+    return args
+
+
+def main(args: argparse.Namespace | None = None):
+    if not args:
+        args = get_args()
+    dbshell = DBShell()
+    if args.dbpath:
+        dbshell.dbpath = Pathier(args.dbpath)
+    dbshell.cmdloop()
+
+
+if __name__ == "__main__":
+    main(get_args())
