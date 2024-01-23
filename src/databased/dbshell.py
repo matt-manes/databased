@@ -15,6 +15,8 @@ class DBShell(argshell.ArgShell):
     connection_timeout: float = 10
     detect_types: bool = True
     enforce_foreign_keys: bool = True
+    commit_on_close: bool = True
+    log_dir: Pathier = Pathier.cwd()
     intro = f"Starting dbshell v{__version__} (enter help or ? for arg info)...\n"
     prompt = f"based>"
 
@@ -33,6 +35,8 @@ class DBShell(argshell.ArgShell):
             self.connection_timeout,
             self.detect_types,
             self.enforce_foreign_keys,
+            self.commit_on_close,
+            self.log_dir,
         )
 
     @time_it()
@@ -218,7 +222,13 @@ class DBShell(argshell.ArgShell):
 
     def do_properties(self, _: str):
         """See current database property settings."""
-        for property_ in ["connection_timeout", "detect_types", "enforce_foreign_keys"]:
+        for property_ in [
+            "connection_timeout",
+            "detect_types",
+            "enforce_foreign_keys",
+            "commit_on_close",
+            "log_dir",
+        ]:
             print(f"{property_}: {getattr(self, property_)}")
 
     @time_it()
@@ -304,6 +314,10 @@ class DBShell(argshell.ArgShell):
     def do_set_enforce_foreign_keys(self, should_enforce: str):
         """Pass a `1` to turn on and a `0` to turn off."""
         self.enforce_foreign_keys = bool(int(should_enforce))
+
+    def do_set_commit_on_close(self, should_commit: str):
+        """Pass a `1` to turn on and a `0` to turn off."""
+        self.commit_on_close = bool(int(should_commit))
 
     def do_size(self, _: str):
         """Display the size of the the current db file."""

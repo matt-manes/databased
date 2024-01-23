@@ -12,6 +12,8 @@ class CustomShell(DBShell):
     connection_timeout: float = 10
     detect_types: bool = True
     enforce_foreign_keys: bool = True
+    commit_on_close: bool = True
+    log_dir: Pathier = Pathier(__file__).parent
     intro = "Starting customshell (enter help or ? for command info)..."
     prompt = "customshell>"
 
