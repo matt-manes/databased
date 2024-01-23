@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.3.0 (2024-01-23)
+
+#### New Features
+
+* dbshell can toggle commit on close and customshell has access `log_dir`
+
+
 ## v4.2.0 (2024-01-14)
 
 #### New Features
