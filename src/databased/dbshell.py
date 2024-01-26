@@ -422,9 +422,9 @@ class DBShell(argshell.ArgShell):
             elif dbs:
                 self.dbpath = self._choose_db(dbs)
             else:
-                print(f"Could not find a .db file in {cwd}.")
+                print(f"Could not find a database file in {cwd}.")
                 path = input(
-                    "Enter path to .db file to use or press enter to search again recursively: "
+                    "Enter path to database file to use (creating it if necessary) or press enter to search again recursively: "
                 )
                 if path:
                     self.dbpath = Pathier(path)
@@ -437,12 +437,12 @@ class DBShell(argshell.ArgShell):
                     elif dbs:
                         self.dbpath = self._choose_db(dbs)
                     else:
-                        print("Could not find a .db file.")
-                        self.dbpath = Pathier(input("Enter path to a .db file: "))
-        if not self.dbpath.exists():
-            raise FileNotFoundError(f"{self.dbpath} does not exist.")
-        if not self.dbpath.is_file():
-            raise ValueError(f"{self.dbpath} is not a file.")
+                        print("Could not find a database file.")
+                        self.dbpath = Pathier(
+                            input(
+                                "Enter path to a database file (creating it if necessary): "
+                            )
+                        )
 
 
 def get_args() -> argparse.Namespace:
