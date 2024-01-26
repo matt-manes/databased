@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.3.1 (2024-01-26)
+
+#### Refactorings
+
+* non existent db file will be created instead of refusing to start the shell
+
+
 ## v4.3.0 (2024-01-23)
 
 #### New Features
