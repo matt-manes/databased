@@ -1,7 +1,7 @@
 [project]
 name = "databased"
 description = "Wrapper for the standard library Sqlite3 module to make setting up and using a database quicker and easier."
-version = "4.3.1"
+version = "4.3.2"
 dependencies = ["tabulate", "argshell", "pathier", "griddle", "loggi", "noiftimer"]
 readme = "README.md"
 keywords = ["database", "sqlite", "sqlite3"]
