@@ -5,8 +5,11 @@ import loggi
 from griddle import griddy
 from pathier import Pathier, Pathish
 
+Row = dict[str, Any]
+Rows = list[Row]
 
-def dict_factory(cursor: sqlite3.Cursor, row: tuple) -> dict:
+
+def dict_factory(cursor: sqlite3.Cursor, row: tuple[Any, ...]) -> Row:
     fields = [column[0] for column in cursor.description]
     return {column: value for column, value in zip(fields, row)}
 
@@ -62,7 +65,7 @@ class Databased:
         self.connect()
         return self
 
-    def __exit__(self, *args, **kwargs):
+    def __exit__(self, *args: Any, **kwargs: Any):
         self.close()
 
     @property
@@ -171,7 +174,7 @@ class Databased:
 
         Each list element is a two tuple consisting of the parameterized query string and a tuple of values.
         """
-        inserts = []
+        inserts: list[tuple[str, tuple[Any, ...]]] = []
         max_row_count = 900
         column_list = "(" + ", ".join(columns) + ")"
         for i in range(0, len(values), max_row_count):
@@ -229,9 +232,11 @@ class Databased:
         """Connect to the database."""
         self.connection = sqlite3.connect(
             self.path,
-            detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
-            if self.detect_types
-            else 0,
+            detect_types=(
+                sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES
+                if self.detect_types
+                else 0
+            ),
             timeout=self.connection_timeout,
         )
         self._set_foreign_key_enforcement()
@@ -295,7 +300,7 @@ class Databased:
             )
             raise e
 
-    def describe(self, table: str) -> list[dict]:
+    def describe(self, table: str) -> Rows:
         """Returns information about `table`."""
         return self.query(f"pragma table_info('{table}');")
 
@@ -316,7 +321,7 @@ class Databased:
             self.logger.error(f"Failed to drop table '{table}'.")
             return False
 
-    def execute_script(self, path: Pathish, encoding: str = "utf-8") -> list[dict]:
+    def execute_script(self, path: Pathish, encoding: str = "utf-8") -> Rows:
         """Execute sql script located at `path`."""
         if not self.connected:
             self.connect()
@@ -349,7 +354,7 @@ class Databased:
                 raise e
         return row_count
 
-    def query(self, query_: str, parameters: Sequence[Any] = tuple()) -> list[dict]:
+    def query(self, query_: str, parameters: Sequence[Any] = tuple()) -> Rows:
         """Execute an SQL query and return the results.
 
         Ensures that the database connection is opened before executing the command.
@@ -384,7 +389,7 @@ class Databased:
         order_by: str | None = None,
         limit: int | str | None = None,
         exclude_columns: Iterable[str] | None = None,
-    ) -> list[dict]:
+    ) -> Rows:
         """Return rows for given criteria.
 
         If `exclude_columns` is given, `columns` will be ignored and data will be returned with all columns except the ones specified by `exclude_columns`.
@@ -439,7 +444,7 @@ class Databased:
         return rows
 
     @staticmethod
-    def to_grid(data: Iterable[dict], shrink_to_terminal: bool = True) -> str:
+    def to_grid(data: Iterable[dict[Any, Any]], shrink_to_terminal: bool = True) -> str:
         """Returns a tabular grid from `data`.
 
         If `shrink_to_terminal` is `True`, the column widths of the grid will be reduced to fit within the current terminal.
@@ -484,7 +489,7 @@ class Databased:
 
     # Seat ========================== Database Dump =========================================
 
-    def _format_column_def(self, description: dict) -> str:
+    def _format_column_def(self, description: Row) -> str:
         name = description["name"]
         type_ = description["type"]
         primary_key = bool(description["pk"])
@@ -505,7 +510,7 @@ class Databased:
         columns = self.get_columns(table)
         rows = [tuple(row.values()) for row in self.select(table)]
         inserts = self._prepare_insert_queries(table, columns, rows)
-        insert_strings = []
+        insert_strings: list[str] = []
         indent = " " * 4
         for insert in inserts:
             text = insert[0]

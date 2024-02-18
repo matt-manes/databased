@@ -6,8 +6,11 @@ from griddle import griddy
 from noiftimer import time_it
 from pathier import Pathier, Pathish
 
-from databased import Databased, __version__, dbparsers
-from databased.create_shell import create_shell
+from .databased import Databased, Rows
+from .create_shell import create_shell
+import databased.dbparsers as dbparsers
+
+__version__ = "test"
 
 
 class DBShell(argshell.ArgShell):
@@ -45,7 +48,7 @@ class DBShell(argshell.ArgShell):
         with self._DB() as db:
             self.display(db.query(line))
 
-    def display(self, data: list[dict]):
+    def display(self, data: Rows):
         """Print row data to terminal in a grid."""
         try:
             print(griddy(data, "keys"))
@@ -203,10 +206,10 @@ class DBShell(argshell.ArgShell):
             print(f"Flushing log...")
             log_path.write_text("")
 
-    def do_help(self, args: str):
+    def do_help(self, arg: str):
         """Display help messages."""
-        super().do_help(args)
-        if args == "":
+        super().do_help(arg)
+        if arg == "":
             print("Unrecognized commands will be executed as queries.")
             print(
                 "Use the `query` command explicitly if you don't want to capitalize your key words."
@@ -398,7 +401,7 @@ class DBShell(argshell.ArgShell):
         self, extensions: list[str] = [".sqlite3", ".db"], recursive: bool = False
     ) -> list[Pathier]:
         cwd = Pathier.cwd()
-        dbs = []
+        dbs: list[Pathier] = []
         globber = cwd.glob
         if recursive:
             globber = cwd.rglob

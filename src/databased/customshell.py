@@ -3,12 +3,13 @@ import argparse
 from argshell import ArgShellParser, Namespace, with_parser
 from pathier import Pathier
 
-from databased import Databased, dbparsers
-from databased.dbshell import DBShell
+from databased import Databased, DBShell, dbparsers
 
 
 class CustomShell(DBShell):
-    _dbpath: Pathier = None  # Replace None with a path to a database file to set a default database # type: ignore
+    _dbpath: Pathier = (
+        None  # Replace None with a path to a database file to set a default database # type: ignore
+    )
     connection_timeout: float = 10
     detect_types: bool = True
     enforce_foreign_keys: bool = True

@@ -2,7 +2,7 @@
 name = "databased"
 description = "Wrapper for the standard library Sqlite3 module to make setting up and using a database quicker and easier."
 version = "4.3.1"
-dependencies = ["pandas", "tabulate", "argshell", "pathier", "griddle", "loggi", "noiftimer"]
+dependencies = ["tabulate", "argshell", "pathier", "griddle", "loggi", "noiftimer"]
 readme = "README.md"
 keywords = ["database", "sqlite", "sqlite3"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent"]
@@ -27,7 +27,7 @@ addopts = ["--import-mode=importlib"]
 pythonpath = "src"
 
 [tool.hatch.build.targets.sdist]
-exclude = [".coverage", ".pytest_cache", ".vscode", "tests", "shelltesting"]
+exclude = [".coverage", ".pytest_cache", ".vscode", "tests", "shelltesting", "*.log", "htmlcov", "docs", "*.md", "*.txt"]
 
 [build-system]
 requires = ["hatchling"]
