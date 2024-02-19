@@ -2,16 +2,17 @@ import argparse
 from datetime import datetime
 
 import argshell
-from griddle import griddy
 from noiftimer import time_it
 from pathier import Pathier, Pathish
+from printbuddies import Grid
+from rich.console import Console
 
 import databased.dbparsers as dbparsers
 
 from .create_shell import create_shell
 from .databased import Databased, Rows
 
-__version__ = "test"
+console = Console()
 
 
 class DBShell(argshell.ArgShell):
@@ -21,7 +22,7 @@ class DBShell(argshell.ArgShell):
     enforce_foreign_keys: bool = True
     commit_on_close: bool = True
     log_dir: Pathier = Pathier.cwd()
-    intro = f"Starting dbshell v{__version__} (enter help or ? for arg info)...\n"
+    intro = f"Starting dbshell (enter help or ? for arg info)...\n"
     prompt = f"based>"
 
     @property
@@ -52,7 +53,7 @@ class DBShell(argshell.ArgShell):
     def display(self, data: Rows):
         """Print row data to terminal in a grid."""
         try:
-            print(griddy(data, "keys"))
+            console.print(Grid(data, cast_values_to_strings=True))
         except Exception as e:
             print("Could not fit data into grid :(")
             print(e)
