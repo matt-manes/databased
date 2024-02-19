@@ -1,5 +1,12 @@
 # Changelog
 
+## v4.3.3 (2024-02-18)
+
+#### Refactorings
+
+* replace `griddy` with `printbuddies.Grid`
+
+
 ## v4.3.2 (2024-02-18)
 
 #### Refactorings
