@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.3.4 (2024-02-24)
+
+#### Refactorings
+
+* replace `print` with `self.console.print`
+* replace `argparse.ArgumentParser` with `argshell.ArgumentParser`
+
+
 ## v4.3.3 (2024-02-18)
 
 #### Refactorings
