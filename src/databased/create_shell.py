@@ -1,5 +1,4 @@
 import argshell
-
 from pathier import Pathier
 
 root = Pathier(__file__).parent
