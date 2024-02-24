@@ -1,13 +1,13 @@
-import argparse
-
-from argshell import ArgShellParser, Namespace, with_parser
+from argshell import ArgShellParser, ArgumentParser, Namespace, with_parser
 from pathier import Pathier
 
 from databased import Databased, DBShell, dbparsers
 
 
 class CustomShell(DBShell):
-    _dbpath: Pathier = None  # Replace None with a path to a database file to set a default database # type: ignore
+    _dbpath: Pathier = (
+        None  # Replace None with a path to a database file to set a default database # type: ignore
+    )
     connection_timeout: float = 10
     detect_types: bool = True
     enforce_foreign_keys: bool = True
@@ -23,8 +23,8 @@ class CustomShell(DBShell):
 # https://github.com/matt-manes/databased/blob/main/src/databased/dbparsers.py
 
 
-def get_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
+def get_args() -> Namespace:
+    parser = ArgumentParser()
 
     parser.add_argument(
         "dbpath",
@@ -37,7 +37,7 @@ def get_args() -> argparse.Namespace:
     return args
 
 
-def main(args: argparse.Namespace | None = None):
+def main(args: Namespace | None = None):
     if not args:
         args = get_args()
     dbshell = CustomShell()

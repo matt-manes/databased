@@ -1,4 +1,3 @@
-import argparse
 from datetime import datetime
 
 import argshell
@@ -450,8 +449,8 @@ class DBShell(argshell.ArgShell):
                         )
 
 
-def get_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
+def get_args() -> argshell.Namespace:
+    parser = argshell.ArgumentParser()
 
     parser.add_argument(
         "dbpath",
@@ -464,7 +463,7 @@ def get_args() -> argparse.Namespace:
     return args
 
 
-def main(args: argparse.Namespace | None = None):
+def main(args: argshell.Namespace | None = None):
     if not args:
         args = get_args()
     dbshell = DBShell()
