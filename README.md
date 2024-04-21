@@ -1,28 +1,32 @@
 # Databased
-Databased is a module that wraps the standard library SQLite3 module to streamline integrating a database into a project.<br>
+
+Databased is a module that wraps the standard library SQLite3 module to streamline integrating a database into a project.  
 
 Install with:
-<pre>pip install databased</pre>
+```pip install databased```
 
-
-## Usage:
+## Usage
 
 ### Creation and Connections
-<pre>
+
+```python
 from databased import Databased
 
 # for reference, "chi.db" is database of Chicago food inspections and business licenses
 db = Databased("chi.db") # The file will be created if it doesn't exist
-</pre>
+```
 
-You can call `db.connect()` manually, but generally you shouldn't need to.<br>
-All database functions are built on the `db.query()` function, which will open a connection if one isn't already established.<br>
+You can call `db.connect()` manually, but generally you shouldn't need to.  
+All database functions are built on the `db.query()` function, which will open a connection if one isn't already established.  
 e.g. Accessing the `db.tables` property uses the `db.query()` function and opens a connection for you
-<pre>
+
+```python
 print(*db.tables, sep="\n")
-</pre>
+```
+
 Output:
-<pre>
+
+```console
 business_addresses
 businesses
 license_codes
@@ -37,56 +41,66 @@ result_types
 inspections
 violation_types
 violations
-</pre>
+```
 
 `db.query()` executes SQL strings and returns the results as a list of dictionaries
-<pre>
+
+```python
 print(
     *db.query("SELECT * FROM businesses WHERE legal_name LIKE 'z%' LIMIT 5;"), sep="\n"
 )
-</pre>
+```
+
 Output:
-<pre>
+
+```json
 {'account_number': 106, 'legal_name': 'Zaven, Inc.', 'dba': 'Zaven / Lepetit Paris', 'address_id': 6880}
 {'account_number': 113, 'legal_name': 'Zanies Comedy Clubs, Inc.', 'dba': 'Zanies Comedy Club', 'address_id': 5702}
 {'account_number': 122, 'legal_name': 'Ziemek Corporation, Inc.', 'dba': 'The Thirsty Tavern', 'address_id': 146144}
 {'account_number': 1918, 'legal_name': 'Zimmies Inc #8', 'dba': 'Original Pancake House', 'address_id': 143541}
 {'account_number': 3007, 'legal_name': 'Zikainan Nursing Home Inc', 'dba': 'All American Nursing Home', 'address_id': 155957}
-</pre>
+```
 
 When a connection is no longer needed, it will need to be manually closed.
-<pre>
+
+```python
 db.close()
-</pre>
-By default the database will be committed when db.close() is called.<br>
-This can be prevented by setting `commit_on_close` to `False` in either the Databased constructor or through the property `db.commit_on_close`.<br>
-<pre>
+```
+
+By default the database will be committed when db.close() is called.  
+This can be prevented by setting `commit_on_close` to `False` in either the Databased constructor or through the property `db.commit_on_close`.  
+
+```python
 db = Databased("chi.db", commit_on_close=False)
 # or
 db.commit_on_close = False
-</pre>
+```
 
-The database can always be committed manually with `db.commit()`.<br>
+The database can always be committed manually with `db.commit()`.  
 
-Using Databased with a context manager will call the close() method for you (and commit the database if `commit_on_close` is `True`)<br>
-<pre>
+Using Databased with a context manager will call the close() method for you (and commit the database if `commit_on_close` is `True`)  
+
+```python
 with Databased("chi.db") as db:
     print(f"{db.connected=}")
     print(*db.get_columns("businesses"), sep="\n")
 print(f"{db.connected=}")
-</pre>
+```
+
 Output:
-<pre>
+
+```python
 db.connected=True
 account_number
 legal_name
 dba
 address_id
 db.connected=False
-</pre>
+```
 
 ### Tables and Columns
-<pre>
+
+```python
 with Databased("chi.db") as db:
     db.create_table(
         "inspectors",
@@ -113,9 +127,11 @@ with Databased("chi.db") as db:
     print(db.to_grid(db.select("inspectors")))
     print()
     db.drop_table("inspectors")
-</pre>
+```
+
 Output:
-<pre>
+
+```console
 +------+--------------+-------------+--------+
 | id   | first_name   | last_name   | ward   |
 +======+==============+=============+========+
@@ -145,13 +161,15 @@ Output:
 +------+--------------+-------------+--------+
 | 3    | Tiny         | Tim         | 25     |
 +------+--------------+-------------+--------+
-</pre>
+```
 
 ### Select
-Moderately complex queries can be executed with `db.select()`.<br>
-More advanced queries will need to be written out and executed directly with `db.query()`.<br>
+
+Moderately complex queries can be executed with `db.select()`.  
+More advanced queries will need to be written out and executed directly with `db.query()`.  
 Example using all available `db.select()` parameters:
-<pre>
+
+```python
 with Databased("chi.db") as db:
     print(
         db.to_grid(
@@ -201,9 +219,11 @@ with Databased("chi.db") as db:
             """
             )
         )
-</pre>
+```
+
 Output:
-<pre>
+
+```console
 +------------------+-------------------------+------+--------------------+--------+-------------------+
 | license_number   | legal_name              | id   | description        | ward   | num_inspections   |
 +==================+=========================+======+====================+========+===================+
@@ -231,10 +251,11 @@ Output:
 +------------------+-------------------------+------+--------------------+--------+-------------------+
 | 55418            | 2053 W. Division Inc.   | 5    | Out Of Business    | 1      | 16                |
 +------------------+-------------------------+------+--------------------+--------+-------------------+
-</pre>
+```
 
 ### Update
-<pre>
+
+```python
 with Databased("chi.db", commit_on_close=False) as db:
     print(db.to_grid(db.select("businesses", where="dba LIKE 'deli %'")))
     num_rows = db.update(
@@ -242,9 +263,11 @@ with Databased("chi.db", commit_on_close=False) as db:
     )
     print(f"num rows updated: {num_rows}")
     print(db.to_grid(db.select("businesses", where="dba LIKE 'deli %'")))
-</pre>
+```
+
 Output:
-<pre>
+
+```console
 +------------------+-------------------------+---------------------------------+--------------+
 | account_number   | legal_name              | dba                             | address_id   |
 +==================+=========================+=================================+==============+
@@ -272,28 +295,32 @@ num rows updated: 5
 +------------------+-------------------------+---------------------+--------------+
 | 421955           | Deli Flavor, Inc.       | deli BreadMeat City | 5057         |
 +------------------+-------------------------+---------------------+--------------+
-</pre>
+```
 
 ### Delete
-<pre>
+
+```python
 with Databased("chi.db", commit_on_close=False) as db:
     num_rows = db.delete("businesses", "dba LIKE 'deli %' AND address_id > 6000")
     print(f"num rows deleted: {num_rows}")
     print(db.to_grid(db.select("businesses", where="dba LIKE 'deli %'")))
-</pre>
+```
+
 Output:
-<pre>
+
+```console
 num rows deleted: 4
 +------------------+-------------------+-------------+--------------+
 | account_number   | legal_name        | dba         | address_id   |
 +==================+===================+=============+==============+
 | 421955           | Deli Flavor, Inc. | Deli Flavor | 5057         |
 +------------------+-------------------+-------------+--------------+
-</pre>
+```
 
-`databased` also comes with an interactive shell called `dbshell`, which is built from the [argshell](https://github.com/matt-manes/argshell) package.<br>
+`databased` also comes with an interactive shell called `dbshell`, which is built from the [argshell](https://github.com/matt-manes/argshell) package.  
 It can be launched from the terminal by entering `dbshell`
-<pre>
+
+```console
 >dbshell
 Searching for database...
 Could not find a .db file in e:/1vsCode/python/databased.
@@ -393,9 +420,7 @@ chi.db>SELECT * FROM violation_types ORDER BY id DESC LIMIT 5;
 +------+----------------------------------------------------+
 | 60   | Previous Core Violation Corrected                  |
 +------+----------------------------------------------------+
-</pre>
-The `customize` command or the `custom_shell` script can be used to generate a template file in the current directory that subclasses `DBManager`.<br>
+```
+
+The `customize` command or the `custom_shell` script can be used to generate a template file in the current directory that subclasses `DBManager`.  
 This allows for project specific additional commands as well as modifications of available commands.
-
-
-
