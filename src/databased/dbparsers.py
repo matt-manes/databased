@@ -8,7 +8,8 @@ def add_where_argument(parser: argshell.ArgShellParser) -> argshell.ArgShellPars
 
     The added argument has a default value of `None` and has `nargs="?"`"""
     parser.add_argument(
-        "where",
+        "-w",
+        "--where",
         type=str,
         default=None,
         nargs="?",
