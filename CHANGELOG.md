@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.3.6 (2024-07-14)
+
+#### Fixes
+
+* check for empty or null data list in shell display function
+
 ## v4.3.5 (2024-04-21)
 
 #### Refactorings
