@@ -51,6 +51,9 @@ class DBShell(argshell.ArgShell):
 
     def display(self, data: Rows):
         """Print row data to terminal in a grid."""
+        if not data or len(data) == 0:
+            self.console.print("Nothing to display.")
+            return
         try:
             self.console.print(Grid(data, cast_values_to_strings=True))
         except Exception as e:
