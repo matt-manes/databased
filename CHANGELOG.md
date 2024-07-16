@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.3.7 (2024-07-16)
+
+#### Refactorings
+
+* change default log location to 'logs'
+
 ## v4.3.6 (2024-07-14)
 
 #### Fixes
