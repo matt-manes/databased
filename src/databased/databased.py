@@ -14,7 +14,7 @@ def dict_factory(cursor: sqlite3.Cursor, row: tuple[Any, ...]) -> Row:
     return {column: value for column, value in zip(fields, row)}
 
 
-class Databased:
+class Databased(loggi.LoggerMixin):
     """SQLite3 wrapper.
 
     Anytime `Databased.query()` is called, a connection to the database will be opened if it isn't already open.
@@ -41,7 +41,7 @@ class Databased:
         detect_types: bool = True,
         enforce_foreign_keys: bool = True,
         commit_on_close: bool = True,
-        log_dir: Pathish | None = None,
+        log_dir: Pathish | None = "logs",
     ):
         """
         :params:
@@ -56,7 +56,7 @@ class Databased:
         self.path = dbpath
         self.connection_timeout = connection_timeout
         self.connection = None
-        self._logger_init(log_dir)
+        self.init_logger(self.name, log_dir or Pathier.cwd())
         self.detect_types = detect_types
         self.commit_on_close = commit_on_close
         self.enforce_foreign_keys = enforce_foreign_keys
@@ -158,12 +158,6 @@ class Databased:
                 "SELECT name FROM sqlite_Schema WHERE type = 'view' AND name NOT LIKE 'sqlite_%';"
             )
         ]
-
-    def _logger_init(self, log_path: Pathish | None = None):
-        """:param: `message_format`: `{` style format string."""
-        self.logger = loggi.getLogger(
-            self.name, Pathier(log_path) if log_path else Pathier.cwd()
-        )
 
     def _prepare_insert_queries(
         self, table: str, columns: Iterable[str], values: Sequence[Iterable[Any]]

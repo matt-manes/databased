@@ -144,7 +144,7 @@ def test__count(db: Databased):
 
 
 def test__logpath(dbpath: Pathier):
-    new_log_path = dbpath.parent / "logs"
+    new_log_path = dbpath.parent / "new_logs"
     assert not new_log_path.exists()
     with Databased(dbpath, log_dir=new_log_path) as db:
         pass
