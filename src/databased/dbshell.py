@@ -20,7 +20,7 @@ class DBShell(argshell.ArgShell):
     detect_types: bool = True
     enforce_foreign_keys: bool = True
     commit_on_close: bool = True
-    log_dir: Pathier = Pathier.cwd()
+    log_dir: Pathier = Pathier.cwd() / "logs"
     intro = f"Starting dbshell (enter help or ? for arg info)...\n"
     prompt = f"based>"
 
