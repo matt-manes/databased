@@ -277,7 +277,7 @@ databased    </h1>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">3</span></a>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">4</span></a><span class="kn">from</span> <span class="nn">.databased</span> <span class="kn">import</span> <span class="n">Databased</span><span class="p">,</span> <span class="n">Row</span><span class="p">,</span> <span class="n">Rows</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">6</span></a><span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;4.3.7&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">6</span></a><span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;4.3.8&quot;</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">7</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Databased&quot;</span><span class="p">,</span> <span class="s2">&quot;Row&quot;</span><span class="p">,</span> <span class="s2">&quot;Rows&quot;</span><span class="p">,</span> <span class="s2">&quot;DBShell&quot;</span><span class="p">,</span> <span class="s2">&quot;dbparsers&quot;</span><span class="p">]</span>
 </span></pre></div>
 
@@ -1888,7 +1888,7 @@ their corresponding key word in their string, but should otherwise be valid SQL.
 </span><span id="DBShell-21"><a href="#DBShell-21"><span class="linenos"> 21</span></a>    <span class="n">detect_types</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 </span><span id="DBShell-22"><a href="#DBShell-22"><span class="linenos"> 22</span></a>    <span class="n">enforce_foreign_keys</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 </span><span id="DBShell-23"><a href="#DBShell-23"><span class="linenos"> 23</span></a>    <span class="n">commit_on_close</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="DBShell-24"><a href="#DBShell-24"><span class="linenos"> 24</span></a>    <span class="n">log_dir</span><span class="p">:</span> <span class="n">Pathier</span> <span class="o">=</span> <span class="n">Pathier</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+</span><span id="DBShell-24"><a href="#DBShell-24"><span class="linenos"> 24</span></a>    <span class="n">log_dir</span><span class="p">:</span> <span class="n">Pathier</span> <span class="o">=</span> <span class="n">Pathier</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;logs&quot;</span>
 </span><span id="DBShell-25"><a href="#DBShell-25"><span class="linenos"> 25</span></a>    <span class="n">intro</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Starting dbshell (enter help or ? for arg info)...</span><span class="se">\n</span><span class="s2">&quot;</span>
 </span><span id="DBShell-26"><a href="#DBShell-26"><span class="linenos"> 26</span></a>    <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;based&gt;&quot;</span>
 </span><span id="DBShell-27"><a href="#DBShell-27"><span class="linenos"> 27</span></a>
