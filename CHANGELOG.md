@@ -1,5 +1,11 @@
 # Changelog
 
+## v4.3.8 (2024-11-02)
+
+#### Fixes
+
+* change dbshell log file default to 'logs' like everything else
+
 ## v4.3.7 (2024-07-16)
 
 #### Refactorings
